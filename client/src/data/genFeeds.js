@@ -1,14 +1,20 @@
 import React from 'react';
 
+Date.prototype.formatDate = function() {
+  return (this.getDate() + 1) + 
+    "/" +  this.getMonth() +
+    "/" +  this.getFullYear();
+}
+
 function getRandomDateArray(numItems) {
     // Create random array of objects (with date)
     let data = [];
-    let baseTime = new Date('2018-05-01T00:00:00').getTime();
+    let baseTime = new Date('2021-02-09T00:00:00').getTime();
     let dayMs = 24 * 60 * 60 * 1000;
     for(var i = 0; i < numItems; i++) {
       data.push({
-        time: new Date(baseTime + i * dayMs),
-        value: Math.round(20 + 80 * Math.random())
+        time: new Date(baseTime + i * dayMs).formatDate(),
+        value: Math.round(10 + 5 * Math.random())
       });
     }
     return data;
@@ -19,8 +25,8 @@ const genFeeds = () => {
     
     // For the line chart
     feeds.push({
-        title: 'Visits',
-        data: getRandomDateArray(150)
+        title: 'Feed',
+        data: getRandomDateArray(10)
     });
 
     return feeds;

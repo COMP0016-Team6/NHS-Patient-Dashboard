@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Linechart from "./LineChart";
 import { toast } from "react-toastify";
 
 const Dashboard = ({ setAuth }) => {
@@ -37,6 +38,7 @@ const Dashboard = ({ setAuth }) => {
     <div>
       <h1 className="mt-5">Dashboard</h1>
       <h2>Welcome {name}</h2>
+      <Linechart />
       <button onClick={e => logout(e)} className="btn btn-primary">
         Logout
       </button>
