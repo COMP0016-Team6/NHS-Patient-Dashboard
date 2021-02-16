@@ -11,7 +11,7 @@ In the project directory, you can run:
 This project contains Ant Design which includes a set of high quality components and demos for building rich, interactive user interfaces. \
 You have to install Ant Design to run this app. \
 
-For more information about And Design, please check (https://ant.design/).
+See the section about [And Design](https://ant.design/) for more information.
 
 ### `npm start`
 
