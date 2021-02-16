@@ -6,6 +6,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+### `npm install antd --save`
+
+This project contains Ant Design which includes a set of high quality components and demos for building rich, interactive user interfaces. \
+You have to install Ant Design to run this app. \
+
+For more information about And Design, please check (https://ant.design/).
+
 ### `npm start`
 
 Runs the app in the development mode.\
