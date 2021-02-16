@@ -1,7 +1,9 @@
 import React, { Fragment, useState } from "react";
 import { Link, Redirect } from "react-router-dom";
-
 import { toast } from "react-toastify";
+import { Row, Col, Layout, Breadcrumb } from "antd";
+
+const { Header, Content, Footer } = Layout;
 
 const Login = ({ setAuth }) => {
   const [inputs, setInputs] = useState({
@@ -45,29 +47,47 @@ const Login = ({ setAuth }) => {
   };
 
   return (
-    <Fragment>
-      <h1 className="mt-5 text-center">Login</h1>
-      <form onSubmit={onSubmitForm}>
-        <input
-          type="text"
-          name="email"
-          placeholder="email"
-          value={email}
-          onChange={e => onChange(e)}
-          className="form-control my-3"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="password"
-          value={password}
-          onChange={e => onChange(e)}
-          className="form-control my-3"
-        />
-        <button className="btn btn-success btn-block">Submit</button>
-      </form>
-      <Link to="/register">register</Link>
-    </Fragment>
+    <Layout className="loginLayout">
+    <Header>
+      <img height="40px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/NHS-Logo.svg/200px-NHS-Logo.svg.png"/>
+    </Header>
+    <Content style={{ padding: '0 50px' }}>
+      <Breadcrumb style={{ margin: '16px 0' }}>
+      </Breadcrumb>
+      <div className="site-layout-content">
+        <br/><br/><br/><br/><br/><br/>
+        <Row justify="space-around" align="middle">
+          <Col span={10}>
+            <h1 className="mt-5 text-center">Login</h1>
+            <form onSubmit={onSubmitForm}>
+              <input
+                type="text"
+                name="email"
+                placeholder="email"
+                value={email}
+                onChange={e => onChange(e)}
+                className="form-control my-3"
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="password"
+                value={password}
+                onChange={e => onChange(e)}
+                className="form-control my-3"
+              />
+              <button className="btn btn-primary btn-block">Submit</button>
+            </form>
+            <Link to="/register">register</Link>
+          </Col>
+          <Col span={8}>
+            <img src="https://www.gosh.nhs.uk/static/images/logo.e57c277b2a23.svg" />
+          </Col>
+        </Row>
+      </div>
+    </Content>
+    <Footer style={{ textAlign: 'center' }}>GOSH ©2020-2021 Created by COMP0016 Team6</Footer>
+  </Layout>
   );
 };
 

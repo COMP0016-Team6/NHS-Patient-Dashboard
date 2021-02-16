@@ -1,5 +1,17 @@
 import React, { useEffect, useState } from "react";
+import Linechart from "./LineChart";
 import { toast } from "react-toastify";
+import { Link, Redirect } from "react-router-dom";
+import { Layout, Menu, Breadcrumb, Input, Row, Col, Space, Button, Avatar, Popover, Divider } from "antd";
+import {
+  DesktopOutlined,
+  AreaChartOutlined,
+  BellOutlined,
+  ContactsOutlined,
+  UserOutlined
+} from "@ant-design/icons";
+
+const { Header, Content, Footer, Sider } = Layout;
 
 const Dashboard = ({ setAuth }) => {
   const [name, setName] = useState("");
@@ -29,18 +41,64 @@ const Dashboard = ({ setAuth }) => {
     }
   };
 
+  const content = (
+    <div>
+      <p>{name}</p>
+      <p>henry@gmail.com</p>
+      <Divider />
+      <Row>
+        <Col offset={5}>
+          <Button danger onClick={e => logout(e)}>logout</Button>
+        </Col>
+      </Row>
+    </div>
+  );
+
   useEffect(() => {
     getProfile();
   }, []);
 
   return (
-    <div>
-      <h1 className="mt-5">Dashboard</h1>
-      <h2>Welcome {name}</h2>
-      <button onClick={e => logout(e)} className="btn btn-primary">
-        Logout
-      </button>
-    </div>
+    <Layout style={{ minHeight: "100vh" }}>
+        <Sider>
+          <div className="logo" />
+          <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
+            <Menu.Item key="1" icon={<AreaChartOutlined />}>
+              <Link to="/Dashboard">Dashboard</Link>
+            </Menu.Item>
+            <Menu.Item key="2" icon={<DesktopOutlined />}>
+              Tasks
+            </Menu.Item>
+            <Menu.Item key="3" icon={<BellOutlined />}>
+              <Link to="/Notifications">Notifications</Link>
+            </Menu.Item>
+            <Menu.Item key="4" icon={<ContactsOutlined />}>
+              <Link to="/Contacts">Contacts</Link>
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout className="site-layout">
+          <Header className="site-layout-background">
+            <Row>
+              <Col offset={23}>
+                <Popover content={content} title="Title" trigger="click">
+                  <Avatar size="large" icon={<UserOutlined />} />
+                </Popover>
+              </Col>
+            </Row>
+          </Header>
+          <Content style={{ margin: "0 16px" }}>
+            <Breadcrumb style={{ margin: "16px 0" }}>
+            </Breadcrumb>
+            <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
+              <Linechart />
+            </div>
+          </Content>
+          <Footer style={{ textAlign: "center" }}>
+            GOSH ©2020-2021 Created by COMP0016 Team6
+          </Footer>
+        </Layout>
+    </Layout>
   );
 };
 
