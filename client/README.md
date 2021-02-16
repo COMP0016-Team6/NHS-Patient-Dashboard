@@ -9,9 +9,9 @@ In the project directory, you can run:
 ### `npm install antd --save`
 
 This project contains Ant Design which includes a set of high quality components and demos for building rich, interactive user interfaces. \
-You have to install Ant Design to run this app. \
+You have to install Ant Design to run this app.
 
-See the section about [And Design](https://ant.design/) for more information.
+See the section about [And Design](https://ant.design/components/overview/) for more information.
 
 ### `npm start`
 
