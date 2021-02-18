@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
+import ClinicianDashboard from "./components/ClinicianDashboard";
 
 toast.configure();
 
@@ -26,9 +27,14 @@ function App() {
         headers: { jwt_token: localStorage.token }
       });
 
+      // user_id, user_name, user_email, user_role
       const parseRes = await res.json();
+      parseRes.auth === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+      
+      // { user_id: , user_name: , user_email: , user_role: }
+      // console.log(parseRes.user);
+      parseRes.user.user_role === "Clinician"? setIsClinician(true) : setIsClinician(false);
 
-      parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
     } catch (err) {
       console.error(err.message);
     }
@@ -39,10 +45,14 @@ function App() {
   }, []);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isClinician, setIsClinician] = useState(false);
 
-  const setAuth = boolean => {
-    setIsAuthenticated(boolean);
-  };
+  const logout = () => {
+    localStorage.removeItem("token");
+    toast.success("Logged out Successfully");
+    setIsAuthenticated(false);
+    setIsClinician(false);
+  } 
 
   return (
     <Fragment>
@@ -54,7 +64,7 @@ function App() {
               path="/login"
               render={props =>
                 !isAuthenticated ? (
-                  <Login {...props} setAuth={setAuth} />
+                  <Login {...props} setAuth={setIsAuthenticated} setIsClinician={setIsClinician} />
                 ) : (
                   <Redirect to="/dashboard" />
                 )
@@ -65,7 +75,7 @@ function App() {
               path="/register"
               render={props =>
                 !isAuthenticated ? (
-                  <Register {...props} setAuth={setAuth} />
+                  <Register {...props} setAuth={setIsAuthenticated} setIsClinician={setIsClinician} />
                 ) : (
                   <Redirect to="/dashboard" />
                 )
@@ -76,7 +86,7 @@ function App() {
               path="/dashboard"
               render={props =>
                 isAuthenticated ? (
-                  <Dashboard {...props} setAuth={setAuth} />
+                  !isClinician? (<Dashboard {...props} logout={logout} />) : (<ClinicianDashboard {...props} logout={logout} />)
                 ) : (
                   <Redirect to="/login" />
                 )

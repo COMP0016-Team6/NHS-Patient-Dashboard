@@ -9,7 +9,6 @@ app.use(cors())
 // ROUTES
 
 // register and login route
-
 app.use("/auth", require("./routes/jwtAuth"));
 
 // dashboard route

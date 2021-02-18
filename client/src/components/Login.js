@@ -3,7 +3,7 @@ import { Link, Redirect } from "react-router-dom";
 
 import { toast } from "react-toastify";
 
-const Login = ({ setAuth }) => {
+const Login = ({ setAuth, setIsClinician }) => {
   const [inputs, setInputs] = useState({
     email: "",
     password: ""
@@ -30,7 +30,9 @@ const Login = ({ setAuth }) => {
       );
 
       const parseRes = await response.json();
-
+      
+      // console.log(parseRes);
+    
       if (parseRes.jwtToken) {
         localStorage.setItem("token", parseRes.jwtToken);
         setAuth(true);
@@ -39,6 +41,9 @@ const Login = ({ setAuth }) => {
         setAuth(false);
         toast.error(parseRes);
       }
+
+      parseRes.user.user_role === "Clinician"? setIsClinician(true) : setIsClinician(false);
+      
     } catch (err) {
       console.error(err.message);
     }

@@ -2,14 +2,16 @@ import React, { Fragment, useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const Register = ({ setAuth }) => {
+const Register = ({ setAuth, setIsClinician }) => {
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
-    name: ""
+    name: "",
+    role: "Patient",
+    patient_list: ""
   });
-
-  const { email, password, name } = inputs;
+  // for now, no read/write. can do both by default.
+  const { email, password, name, role, patient_list } = inputs;
 
   const onChange = e =>
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -17,7 +19,7 @@ const Register = ({ setAuth }) => {
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const body = { email, password, name };
+      const body = { email, password, name, role, patient_list };
       const response = await fetch(
         "http://localhost:5000/auth/register",
         {
@@ -28,6 +30,7 @@ const Register = ({ setAuth }) => {
           body: JSON.stringify(body)
         }
       );
+      
       const parseRes = await response.json();
 
       if (parseRes.jwtToken) {
@@ -38,6 +41,9 @@ const Register = ({ setAuth }) => {
         setAuth(false);
         toast.error(parseRes);
       }
+
+      parseRes.user.user_role === "Clinician"? setIsClinician(true) : setIsClinician(false);
+
     } catch (err) {
       console.error(err.message);
     }
@@ -47,6 +53,7 @@ const Register = ({ setAuth }) => {
     <Fragment>
       <h1 className="mt-5 text-center">Register</h1>
       <form onSubmit={onSubmitForm}>
+        
         <input
           type="text"
           name="email"
@@ -55,6 +62,7 @@ const Register = ({ setAuth }) => {
           onChange={e => onChange(e)}
           className="form-control my-3"
         />
+        
         <input
           type="password"
           name="password"
@@ -63,6 +71,7 @@ const Register = ({ setAuth }) => {
           onChange={e => onChange(e)}
           className="form-control my-3"
         />
+        
         <input
           type="text"
           name="name"
@@ -71,7 +80,23 @@ const Register = ({ setAuth }) => {
           onChange={e => onChange(e)}
           className="form-control my-3"
         />
-        <button className="btn btn-success btn-block">Submit</button>
+        
+        <select name="role" value={role} onChange={e => onChange(e)}>
+          <option value="Patient">Patient</option>
+          <option value="Clinician">Clinician</option>
+        </select>
+
+        <input
+          type="text"
+          name="patient_list"
+          value={patient_list}
+          placeholder="patients emails (delimered by space)"
+          onChange={e => onChange(e)}
+          className="form-control my-3"
+        />
+      
+
+        <button className="btn btn-success btn-block mt-5">Submit</button>
       </form>
       <Link to="/login">login</Link>
     </Fragment>

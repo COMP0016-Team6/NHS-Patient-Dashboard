@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Linechart from "./LineChart";
 
-const Dashboard = ({ logout }) => {
+const ClinicianDashboard = ({ logout }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
@@ -29,7 +28,7 @@ const Dashboard = ({ logout }) => {
 
   return (
     <div>
-      <h1 className="mt-5">Dashboard</h1>
+      <h1 className="mt-5">CLINICIAN dashboard</h1>
       <h2 className="mt-5">{name}</h2>
       <h2>{email}</h2>
       {/*<Linechart />*/}
@@ -40,4 +39,4 @@ const Dashboard = ({ logout }) => {
   );
 };
 
-export default Dashboard;
+export default ClinicianDashboard;
