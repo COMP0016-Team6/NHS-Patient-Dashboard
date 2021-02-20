@@ -3,17 +3,13 @@ const authorize = require("../middleware/authorize");
 const pool = require("../db");
 
 router.post("/", authorize, async (req, res) => {
-  let id = req.query.id;
-  console.log(id);
-  // CHECK IF req.user.id CAN VIEW id (patient's) data!
-  id = (typeof(id) === "undefined")? req.user.id : id;
   try {
     const user = await pool.query(
-      "SELECT user_name, user_email FROM users WHERE user_id = $1",
-      [id] 
+      "SELECT users.user_id, user_name, user_email FROM user_perms INNER JOIN users ON user_perms.patients_scope=users.user_id WHERE user_perms.user_id = $1",
+      [req.user.id] 
     ); 
     
-    res.json(user.rows[0]);
+    res.json(user.rows);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

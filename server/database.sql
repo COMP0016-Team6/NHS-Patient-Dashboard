@@ -50,6 +50,7 @@ CREATE TABLE user_perms (
   user_id INT REFERENCES users(user_id) NOT NULL,
   read BOOLEAN NOT NULL,
   write BOOLEAN NOT NULL,
+  -- patients_scope: the id of the patient this clinician treats
   patients_scope INT REFERENCES users(user_id) NOT NULL,
   PRIMARY KEY(user_id, patients_scope)
 );
