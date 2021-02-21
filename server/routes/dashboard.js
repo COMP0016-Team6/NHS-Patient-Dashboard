@@ -4,7 +4,7 @@ const pool = require("../db");
 
 router.post("/", authorize, async (req, res) => {
   let id = req.query.id;
-  console.log(id);
+  //console.log(id);
   // CHECK IF req.user.id CAN VIEW id (patient's) data!
   id = (typeof(id) === "undefined")? req.user.id : id;
   try {

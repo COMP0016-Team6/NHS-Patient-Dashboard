@@ -5,10 +5,9 @@ const pool = require("../db");
 router.post("/", authorize, async (req, res) => {
   try {
     const user = await pool.query(
-      "SELECT users.user_id, user_name, user_email FROM user_perms INNER JOIN users ON user_perms.patients_scope=users.user_id WHERE user_perms.user_id = $1",
+      "SELECT users.user_id, user_name, user_email FROM user_perms INNER JOIN users ON user_perms.patients_scope=users.user_id WHERE user_perms.user_id = $1;",
       [req.user.id] 
     ); 
-    
     res.json(user.rows);
   } catch (err) {
     console.error(err.message);

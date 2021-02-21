@@ -58,8 +58,8 @@ const ClinicianDashboard = ({ logout }) => {
 
   return (
     <div>
-      <h1 className="mt-5">Hi Clinician {name}, </h1>
-      <h1 className="text-success">My Patients</h1>
+      <h5 className="mt-5 text-success">Clinician {name} </h5>
+      <h1 className="mb-5">My Patients</h1>
       {myPatients}
       {/*<Linechart />*/}
       <button onClick= {logout} className="btn btn-primary mt-5">

@@ -29,10 +29,8 @@ const PatientDashboard = ({ match }) => {
 
   return (
     <div>
-      <h1 className="mt-5">Dashboard</h1>
-      <h2 className="mt-5">{name}</h2>
-      <h2>{email}</h2>
-      {/*<Linechart />*/}
+      <h1 className="mt-5">{name}'s Dashboard</h1>
+      <Linechart patient_id = {match.params.id}/>
     </div>
   );
 };
