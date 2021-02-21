@@ -8,7 +8,6 @@ CREATE TABLE users (
   user_role VARCHAR(50) NOT NULL
 );
 
--- Patient Details
 
 CREATE TABLE patients (
   patient_id INT REFERENCES users(user_id) NOT NULL,
@@ -17,16 +16,6 @@ CREATE TABLE patients (
   diagnostic_conclusion VARCHAR(1000) NOT NULL,
   PRIMARY KEY(patient_id)
 );
-
-
--- Store all the feeds from the infusion pump for each patient
-
--- What are the alternatives? The feed data will be huge, I need to store it over the years and
--- new data is added every 30 min for EACH patient. 
-
--- Should I store an array for values and an array for corresponding date/time?
-
--- ANS: I think storing json would be perfect
 
 
 CREATE TABLE treatments (
@@ -40,7 +29,9 @@ CREATE TABLE treatments (
 -- think about moving the target rate from treatments to feed
 CREATE TABLE feed (
   id BIGSERIAL PRIMARY KEY,
-  patient_id INT REFERENCES patients(patient_id) NOT NULL,
+-- TODO! SHOULD BE THIS:  patient_id INT REFERENCES patients(patient_id) NOT NULL,
+-- IN THE MEANTIME WORK WITH THIS:
+  patient_id INT REFERENCES users(user_id) NOT NULL,
   volume float8 NOT NULL,
   rate float8 NOT NULL,
   feed_timestamp TIMESTAMP NOT NULL

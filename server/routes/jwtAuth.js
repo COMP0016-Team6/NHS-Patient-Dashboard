@@ -21,16 +21,19 @@ router.post("/register", validInfo, async (req, res) => {
 
     // should only check this for clinicians
     let patient_emails = patient_list.split(" ");
-    let patient;
-    for (var i = 0; i < patient_emails.length; i++) {
-      patient = await pool.query("SELECT * FROM users WHERE user_email = $1", [
-        patient_emails[i]
-      ]);
-      if (patient.rows.length == 0) {
-        return res.status(401).json(`Patient with ${patient_emails[i]} email address does not exist!`);
-      }
+ 
+    if (role == "Clinician") { // This is ugly - refactor
+      let patient;
+      for (var i = 0; i < patient_emails.length; i++) {
+        patient = await pool.query("SELECT * FROM users WHERE user_email = $1", [
+          patient_emails[i]
+        ]);
+        if (patient.rows.length == 0) {
+          return res.status(401).json(`Patient with ${patient_emails[i]} email address does not exist!`);
+        }
 
-      console.log(`${patient_emails[i]} Success`)
+        console.log(`${patient_emails[i]} Success`)
+      }
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -42,14 +45,17 @@ router.post("/register", validInfo, async (req, res) => {
     );
 
     const jwtToken = jwtGenerator(newUser.rows[0].user_id);
-    let currentUser;
-    for (var i = 0; i < patient_emails.length; i++) {
-      currentUser = await pool.query("SELECT * FROM users WHERE user_email = $1", [patient_emails[i]]);
 
-      patient = await pool.query(
-        "INSERT INTO user_perms (user_id, read, write, patients_scope) VALUES ($1, $2, $3, $4) RETURNING *",
-        [newUser.rows[0].user_id, true, true, currentUser.rows[0].user_id]
-      );
+    if (role == "Clinician") { // This is ugly - refactor
+      let currentUser;
+      for (var i = 0; i < patient_emails.length; i++) {
+        currentUser = await pool.query("SELECT * FROM users WHERE user_email = $1", [patient_emails[i]]);
+
+        patient = await pool.query(
+          "INSERT INTO user_perms (user_id, read, write, patients_scope) VALUES ($1, $2, $3, $4) RETURNING *",
+          [newUser.rows[0].user_id, true, true, currentUser.rows[0].user_id]
+        );
+      }
     }
     
     return res.json({ jwtToken, "user": { user_name: name, user_email: email, user_role: role } });
