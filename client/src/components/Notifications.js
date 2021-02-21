@@ -59,10 +59,20 @@ const Notifications = ({ setAuth }) => {
   }, []);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-        <Sider collapsible>
-          <div className="logo" />
-          <Menu theme="dark" defaultSelectedKeys={["3"]} mode="inline">
+    <Layout style={{ minHeight: '100vh' }}>
+      <Header className="header">
+        <div className="logo" />
+        <Row>
+          <Col offset={23}>
+            <Popover content={content} title="Title" trigger="click">
+              <Avatar size="large" icon={<UserOutlined />} />
+            </Popover>
+          </Col>
+        </Row>
+      </Header>
+      <Layout>
+        <Sider collapsible width={200} className="site-layout-background">
+          <Menu defaultSelectedKeys={["3"]} mode="inline" style={{height: '100%'}}>
             <Menu.Item key="1" icon={<AreaChartOutlined />}>
               <Link to="/Dashboard">Dashboard</Link>
             </Menu.Item>
@@ -77,38 +87,31 @@ const Notifications = ({ setAuth }) => {
             </Menu.Item>
           </Menu>
         </Sider>
-        <Layout className="site-layout">
-          <Header className="site-layout-background">
-            <Row>
-              <Col offset={23}>
-                <Popover content={content} title="Title" trigger="click">
-                  <Avatar size="large" icon={<UserOutlined />} />
-                </Popover>
-              </Col>
-            </Row>
-          </Header>
-          <Content style={{ margin: "0 16px" }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-            </Breadcrumb>
-            <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-              <div className="container">
-                  <Alert message="Success" description="This is a success notice." type="success" showIcon closable/> 
-                  <br/>
-                  <Alert message="Information" description="This is a information notice." type="info" showIcon closable/> 
-                  <br/>
-                  <Alert message="Warning" description="This is a warning notice." type="warning" showIcon closable/>
-                  <br/>
-                  <Alert message="Error" description="This is a error notice." type="error" showIcon closable/> 
-                  <br/>
-               </div>
-            </div>
+        <Layout style={{ padding: '0 24px 24px' }}>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+          </Breadcrumb>
+          <Content
+            className="site-layout-background"
+            style={{
+              padding: 24,
+              margin: 0,
+              minHeight: 280,
+            }}
+          >
+            <Alert message="Success" description="This is a success notice." type="success" showIcon closable/> 
+            <br/>
+            <Alert message="Information" description="This is a information notice." type="info" showIcon closable/> 
+            <br/>
+            <Alert message="Warning" description="This is a warning notice." type="warning" showIcon closable/>
+            <br/>
+            <Alert message="Error" description="This is a error notice." type="error" showIcon closable/> 
+            <br/>
           </Content>
-          <Footer style={{ textAlign: "center" }}>
-            GOSH ©2020-2021 Created by COMP0016 Team6
-          </Footer>
         </Layout>
+      </Layout>
     </Layout>
   );
 };
 
 export default Notifications;
+

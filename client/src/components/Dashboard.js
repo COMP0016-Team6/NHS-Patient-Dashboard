@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import Linechart from "./LineChart";
 import { toast } from "react-toastify";
 import { Link, Redirect } from "react-router-dom";
-import { Layout, Menu, Breadcrumb, Input, Row, Col, Space, Button, Avatar, Popover, Divider } from "antd";
+import { Layout, Menu, Breadcrumb, Row, Col, Button, Avatar, Popover, Divider } from "antd";
 import {
   DesktopOutlined,
   AreaChartOutlined,
   BellOutlined,
   ContactsOutlined,
-  UserOutlined
+  UserOutlined,
 } from "@ant-design/icons";
 
+const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider } = Layout;
 
 const Dashboard = ({ setAuth }) => {
@@ -59,10 +60,20 @@ const Dashboard = ({ setAuth }) => {
   }, []);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-        <Sider>
-          <div className="logo" />
-          <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
+    <Layout style={{ minHeight: '100vh' }}>
+      <Header className="header">
+        <div className="logo" />
+        <Row>
+          <Col offset={23}>
+            <Popover content={content} title="Title" trigger="click">
+              <Avatar size="large" icon={<UserOutlined />} />
+            </Popover>
+          </Col>
+        </Row>
+      </Header>
+      <Layout>
+        <Sider collapsible width={200} className="site-layout-background">
+          <Menu defaultSelectedKeys={["1"]} mode="inline" style={{height: '100%'}}>
             <Menu.Item key="1" icon={<AreaChartOutlined />}>
               <Link to="/Dashboard">Dashboard</Link>
             </Menu.Item>
@@ -77,27 +88,21 @@ const Dashboard = ({ setAuth }) => {
             </Menu.Item>
           </Menu>
         </Sider>
-        <Layout className="site-layout">
-          <Header className="site-layout-background">
-            <Row>
-              <Col offset={23}>
-                <Popover content={content} title="Title" trigger="click">
-                  <Avatar size="large" icon={<UserOutlined />} />
-                </Popover>
-              </Col>
-            </Row>
-          </Header>
-          <Content style={{ margin: "0 16px" }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-            </Breadcrumb>
-            <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-              <Linechart />
-            </div>
+        <Layout style={{ padding: '0 24px 24px' }}>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+          </Breadcrumb>
+          <Content
+            className="site-layout-background"
+            style={{
+              padding: 24,
+              margin: 0,
+              minHeight: 280,
+            }}
+          >
+            <Linechart />
           </Content>
-          <Footer style={{ textAlign: "center" }}>
-            GOSH ©2020-2021 Created by COMP0016 Team6
-          </Footer>
         </Layout>
+      </Layout>
     </Layout>
   );
 };

@@ -86,7 +86,7 @@ const Login = ({ setAuth }) => {
         </Row>
       </div>
     </Content>
-    <Footer style={{ textAlign: 'center' }}>GOSH ©2020-2021 Created by COMP0016 Team6</Footer>
+    <Footer style={{ textAlign: 'center' }}>UCL-GOSH Dashboard ©2020-2021 Created by COMP0016 Team6</Footer>
   </Layout>
   );
 };
