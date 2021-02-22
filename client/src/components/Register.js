@@ -8,10 +8,13 @@ const Register = ({ setAuth, setIsClinician }) => {
     password: "",
     name: "",
     role: "Patient",
-    patient_list: ""
+    patient_list: "",
+    age: "",
+    gender: "Male",
+    diagnosticConclusion: ""
   });
   // for now, no read/write. can do both by default.
-  const { email, password, name, role, patient_list } = inputs;
+  const { email, password, name, role, patient_list, age, gender, diagnosticConclusion } = inputs;
 
   const onChange = e =>
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -19,7 +22,8 @@ const Register = ({ setAuth, setIsClinician }) => {
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const body = { email, password, name, role, patient_list };
+      // pass in other data to fill in the patients table
+      const body = { email, password, name, role, patient_list, age, gender, diagnosticConclusion };
       const response = await fetch(
         "http://localhost:5000/auth/register",
         {
@@ -85,16 +89,44 @@ const Register = ({ setAuth, setIsClinician }) => {
           <option value="Patient">Patient</option>
           <option value="Clinician">Clinician</option>
         </select>
-
-        <input
+        
+        {inputs.role==="Clinician"? <input
           type="text"
           name="patient_list"
           value={patient_list}
           placeholder="patients emails (delimered by space)"
           onChange={e => onChange(e)}
           className="form-control my-3"
-        />
+          /> : (
+            // HANDLE THESE! Store those in the patients table, make sure the onchange works and Later verify the values of inputs
+            // make the diagnostic conclusion input a text box
+            <Fragment>
+              <input
+                type="text"
+                name="age"
+                value={age}
+                placeholder="age"
+                onChange={e => onChange(e)}
+                className="form-control my-3"
+              />
       
+              <select name="gender" value={gender} onChange={e => onChange(e)}>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+      
+              {/** Make this an extendable text box */}
+              <input
+                type="text"
+                name="diagnosticConclusion"
+                value={diagnosticConclusion}
+                placeholder="diagnosticConclusion"
+                onChange={e => onChange(e)}
+                className="form-control my-3"
+              />
+            </Fragment>
+            )
+        }   
 
         <button className="btn btn-success btn-block mt-5">Submit</button>
       </form>

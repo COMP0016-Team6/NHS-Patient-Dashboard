@@ -20,7 +20,7 @@ CREATE TABLE patients (
 
 CREATE TABLE treatments (
   id BIGSERIAL PRIMARY KEY,
-  patient_id INT REFERENCES patients(patient_id) NOT NULL,
+  patient_id INT REFERENCES users(user_id) NOT NULL,
   description VARCHAR(1000) NOT NULL,
   target_feed_volume float8 NOT NULL,
   target_feed_rate float8 NOT NULL

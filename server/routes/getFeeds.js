@@ -16,7 +16,7 @@ const pool = require("../db");
 
 // RENAME THE feed table to feeds
 router.post("/", authorize, async (req, res) => {
-  const {patient_id} = req.body;  
+  const {patient_id} = req.body;
   console.log(`HERE ${JSON.stringify(req.body)}`);
   try {
       const user = await pool.query(

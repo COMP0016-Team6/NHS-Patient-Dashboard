@@ -8,7 +8,7 @@ const authorize = require("../middleware/authorize");
 
 
 router.post("/register", validInfo, async (req, res) => {
-  const { email, name, password, role, patient_list } = req.body;
+  const { email, name, password, role, patient_list, age, gender, diagnosticConclusion } = req.body;
 
   try {
     const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [
@@ -22,7 +22,7 @@ router.post("/register", validInfo, async (req, res) => {
     // should only check this for clinicians
     let patient_emails = patient_list.split(" ");
  
-    if (role == "Clinician") { // This is ugly - refactor
+    if (role === "Clinician") { // This is ugly - refactor
       let patient;
       for (var i = 0; i < patient_emails.length; i++) {
         patient = await pool.query("SELECT * FROM users WHERE user_email = $1", [
@@ -32,7 +32,7 @@ router.post("/register", validInfo, async (req, res) => {
           return res.status(401).json(`Patient with ${patient_emails[i]} email address does not exist!`);
         }
 
-        console.log(`${patient_emails[i]} Success`)
+        // console.log(`${patient_emails[i]} Success`)
       }
     }
 
@@ -46,16 +46,23 @@ router.post("/register", validInfo, async (req, res) => {
 
     const jwtToken = jwtGenerator(newUser.rows[0].user_id);
 
-    if (role == "Clinician") { // This is ugly - refactor
+    let patient;
+    
+    if (role === "Clinician") { // This is ugly - refactor
       let currentUser;
       for (var i = 0; i < patient_emails.length; i++) {
         currentUser = await pool.query("SELECT * FROM users WHERE user_email = $1", [patient_emails[i]]);
-
+        // NOT  ALL THE PERMISSIONS WILL BE WRITE TRUE 
         patient = await pool.query(
           "INSERT INTO user_perms (user_id, read, write, patients_scope) VALUES ($1, $2, $3, $4) RETURNING *",
           [newUser.rows[0].user_id, true, true, currentUser.rows[0].user_id]
         );
       }
+    } else {
+      patient = await pool.query(
+        "INSERT INTO patients (patient_id, patient_gender, patient_age, diagnostic_conclusion) VALUES ($1, $2, $3, $4) RETURNING *",
+        [newUser.rows[0].user_id, gender, age, diagnosticConclusion]
+      );
     }
     
     return res.json({ jwtToken, "user": { user_name: name, user_email: email, user_role: role } });

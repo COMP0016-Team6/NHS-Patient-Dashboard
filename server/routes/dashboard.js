@@ -9,7 +9,7 @@ router.post("/", authorize, async (req, res) => {
   id = (typeof(id) === "undefined")? req.user.id : id;
   try {
     const user = await pool.query(
-      "SELECT user_name, user_email FROM users WHERE user_id = $1",
+      "SELECT user_id, user_name, user_email FROM users WHERE user_id = $1;",
       [id] 
     ); 
     

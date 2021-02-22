@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 
-const Linechart = ({patient_id}) => {
+const Linechart = ({patient_id, target_feed_rate, target_feed_volume}) => {
   const [feed, setFeed] = useState([]);
-  
   useEffect(() => {
     let cancelled = false;
     const getFeeds = async () => {
@@ -38,17 +37,28 @@ const Linechart = ({patient_id}) => {
     labels: feed.map(d=>d.feed_timestamp.toLocaleString()),
   
     datasets: [
-    {
-      lineTension: 0.4,
-      pointRadius: 3,
-      label: "Actual Feed",
-  
-      data: feed.map(d=>d.volume),
-      fill: true,
-      backgroundColor: "rgba(52, 191, 110, 0.2)",
-      borderColor: "#27AE60"
-    },
-      // {
+      {
+        lineTension: 0.4,
+        pointRadius: 3,
+        label: "Actual Feed",
+        hidden: false,
+        data: feed.map(d=>d.volume),
+        fill: true,
+        backgroundColor: "rgba(52, 191, 110, 0.2)",
+        borderColor: "#27AE60"
+      }
+
+    // {
+    //   lineTension: 0.4,
+    //   pointRadius: 3,
+    //   label: "Actual Feed",
+    //   //hidden: typeof(target_feed_volume) == "undefined",
+    //   data: 5,
+    //   fill: false,
+    //   borderColor: "#EB5757"
+    // },
+
+    // {
       // lineTension: 0.4,
       // pointRadius: 3,
       // label: "Prescribed Feed",
@@ -65,7 +75,7 @@ const Linechart = ({patient_id}) => {
       yAxes: [{
       scaleLabel: {
       display: true,
-      labelString: 'Feed (mL)'
+      labelString: 'Volume (mL^3)'
       }
       }],
 
@@ -75,7 +85,7 @@ const Linechart = ({patient_id}) => {
           labelString: 'Time'
         }
       }]
-    }     
+    }   
   };
 
   return (
