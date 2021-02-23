@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 
-const Linechart = ({patient_id, target_feed_rate, target_feed_volume}) => {
+const Linechart = ({patient_id, target_rate, target_volume}) => {
   const [feed, setFeed] = useState([]);
   useEffect(() => {
     let cancelled = false;
@@ -16,7 +16,6 @@ const Linechart = ({patient_id, target_feed_rate, target_feed_volume}) => {
           body: JSON.stringify({patient_id})
         });
         let parseData = await res.json();
-        // console.log(parseData);
         if (!cancelled) {
           for (var i = 0; i < parseData.length; i++) {
             parseData[i].feed_timestamp = new Date(parseData[i].feed_timestamp);
@@ -45,47 +44,82 @@ const Linechart = ({patient_id, target_feed_rate, target_feed_volume}) => {
         data: feed.map(d=>d.volume),
         fill: true,
         backgroundColor: "rgba(52, 191, 110, 0.2)",
-        borderColor: "#27AE60"
+        borderColor: "#27AE60",
+        fontSize: 20
+      },
+      {
+        lineTension: 0.4,
+        pointRadius: 0,
+        borderWidth: 2,
+        label: "Prescribed Feed",
+        data: feed.map(d=>target_volume),
+        borderColor: "#EB5757",
+        fill: false,
+        borderDash: [35,20]
       }
-
-    // {
-    //   lineTension: 0.4,
-    //   pointRadius: 3,
-    //   label: "Actual Feed",
-    //   //hidden: typeof(target_feed_volume) == "undefined",
-    //   data: 5,
-    //   fill: false,
-    //   borderColor: "#EB5757"
-    // },
-
-    // {
-      // lineTension: 0.4,
-      // pointRadius: 3,
-      // label: "Prescribed Feed",
-      // data: prescribedData.data.map(d=>d.value),
-      // fill: false,
-      // borderColor: "#EB5757"
-      // },
     ]
   };
+    
 
   const options = {
     responsive: true,
-    scales: {
+
+    annotation: {
+      annotations: [{
+        type: 'line',
+        mode: 'horizontal',
+        scaleID: 'y-axis-0',
+        value: 5,
+        borderColor: 'rgb(75, 192, 192)',
+        borderWidth: 4,
+        label: {
+          enabled: false,
+          content: 'Test label'
+        }
+      }]
+    },
+
+    tooltips: {
+      titleFontSize: 14,
+      bodyFontSize: 14,
+      borderWidth: 2,
+      displayColors: false,
+      borderColor: 'rgba(252, 214, 112, 1)',
+      callbacks: {
+        label: function(tooltipItem, data) {
+          let actual = data.datasets[0].data[tooltipItem.index];
+          let target = data.datasets[1].data[tooltipItem.index];
+          let percentageDiff = parseFloat((Math.abs(actual - target) / ((actual + target) / 2)) * 100).toFixed(1);
+        
+          return tooltipItem.index === 0? 
+            [`Received value: ${actual}`, `Percentage difference: ${percentageDiff}%`] 
+            : 
+            [`Target value: ${target}`, `Percentage difference: ${percentageDiff}%`];
+        }
+      }
+    },
+    
+    scales: {      
       yAxes: [{
       scaleLabel: {
       display: true,
-      labelString: 'Volume (mL^3)'
+      labelString: 'Volume (mL^3)',
+      fontSize: 18
       }
       }],
 
       xAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Time'
+          labelString: 'Time Stamp',
+          fontSize: 18
         }
       }]
-    }   
+    },
+
+    legend: {
+      display: false
+    }
   };
 
   return (

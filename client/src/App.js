@@ -17,6 +17,7 @@ import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 import ClinicianDashboard from "./components/ClinicianDashboard";
 import PatientDashboard from "./components/PatientDashboard";
+import PatientInfo from "./components/PatientInfo";
 
 toast.configure();
 
@@ -100,6 +101,16 @@ function App() {
                 // TODO: CHECK IF THE CLINICIAN SUPERVISES THE PATIENT AT ALL, IF NO, DONT LET IT ACCESS IT!
                 
                 isAuthenticated ? <PatientDashboard {...props} /> : <Redirect to="/login" />
+              }
+            />
+
+          {/* need patientInfo/:id! */}
+            <Route
+              path="/patientInfo/:id"
+              render={props => // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
+                // TODO: CHECK IF THE CLINICIAN SUPERVISES THE PATIENT AT ALL, IF NO, DONT LET IT ACCESS IT!
+                
+                isAuthenticated ? <PatientInfo {...props} /> : <Redirect to="/login" />
               }
             />
 
