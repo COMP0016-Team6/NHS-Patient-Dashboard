@@ -33,7 +33,7 @@ const ClinicianDashboard = ({ logout }) => {
 
     const getPatients = async () => {
       try {
-        const res = await fetch("http://localhost:5000/getPatients/", {
+        const res = await fetch("http://localhost:5000/myPatients", {
           method: "POST",
           headers: { jwt_token: localStorage.token }
         });
@@ -55,13 +55,14 @@ const ClinicianDashboard = ({ logout }) => {
     myPatients.push(<h3 key={i} className="text-info"><Link to={`/dashboard/${patients[i].user_id}`}>{patients[i].user_name}'s Dashboard</Link></h3>)
   }
   
-
   return (
     <div>
       <h5 className="mt-5 text-success">Clinician {name} </h5>
       <h1 className="mb-5">My Patients</h1>
       {myPatients}
-      {/*<Linechart />*/}
+      <Link to="/addPatients">
+        <button className="btn btn-primary mt-5 mr-5"> Add Patients </button>
+      </Link>
       <button onClick= {logout} className="btn btn-primary mt-5">
         Logout
       </button>

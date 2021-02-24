@@ -8,13 +8,12 @@ const Register = ({ setAuth, setIsClinician }) => {
     password: "",
     name: "",
     role: "Patient",
-    patient_list: "",
     age: "",
     gender: "Male",
     diagnosticConclusion: ""
   });
   // for now, no read/write. can do both by default.
-  const { email, password, name, role, patient_list, age, gender, diagnosticConclusion } = inputs;
+  const { email, password, name, role, age, gender, diagnosticConclusion } = inputs;
 
   const onChange = e =>
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -23,8 +22,8 @@ const Register = ({ setAuth, setIsClinician }) => {
     e.preventDefault();
     try {
       // pass in other data to fill in the patients table
-      const body = { email, password, name, role, patient_list, age, gender, diagnosticConclusion };
-      const response = await fetch(
+      const body = { email, password, name, role, age, gender, diagnosticConclusion };
+      const res = await fetch(
         "http://localhost:5000/auth/register",
         {
           method: "POST",
@@ -35,7 +34,7 @@ const Register = ({ setAuth, setIsClinician }) => {
         }
       );
       
-      const parseRes = await response.json();
+      const parseRes = await res.json();
 
       if (parseRes.jwtToken) {
         localStorage.setItem("token", parseRes.jwtToken);
@@ -90,14 +89,7 @@ const Register = ({ setAuth, setIsClinician }) => {
           <option value="Clinician">Clinician</option>
         </select>
         
-        {inputs.role==="Clinician"? <input
-          type="text"
-          name="patient_list"
-          value={patient_list}
-          placeholder="patients emails (delimered by space)"
-          onChange={e => onChange(e)}
-          className="form-control my-3"
-          /> : (
+        {inputs.role==="Clinician"? null : (
             // HANDLE THESE! Store those in the patients table, make sure the onchange works and Later verify the values of inputs
             // make the diagnostic conclusion input a text box
             <Fragment>

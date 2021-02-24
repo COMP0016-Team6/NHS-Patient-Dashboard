@@ -18,6 +18,8 @@ import Dashboard from "./components/Dashboard";
 import ClinicianDashboard from "./components/ClinicianDashboard";
 import PatientDashboard from "./components/PatientDashboard";
 import PatientInfo from "./components/PatientInfo";
+import AddPatients from "./components/AddPatients";
+
 
 toast.configure();
 
@@ -89,6 +91,18 @@ function App() {
               render={props =>
                 isAuthenticated ? (
                   !isClinician? (<Dashboard {...props} logout={logout} />) : (<ClinicianDashboard {...props} logout={logout} />)
+                ) : (
+                  <Redirect to="/login" />
+                )
+              }
+            />
+
+            <Route
+              exact
+              path="/addPatients"
+              render={props =>
+                isAuthenticated ? (
+                  !isClinician? (<Dashboard {...props} logout={logout} />) : (<AddPatients {...props} />)
                 ) : (
                   <Redirect to="/login" />
                 )

@@ -88,10 +88,11 @@ const Linechart = ({patient_id, target_rate, target_volume}) => {
       callbacks: {
         label: function(tooltipItem, data) {
           let actual = data.datasets[0].data[tooltipItem.index];
+          console.log(tooltipItem);
           let target = data.datasets[1].data[tooltipItem.index];
           let percentageDiff = parseFloat((Math.abs(actual - target) / ((actual + target) / 2)) * 100).toFixed(1);
         
-          return tooltipItem.index === 0? 
+          return tooltipItem.datasetIndex === 0? 
             [`Received value: ${actual}`, `Percentage difference: ${percentageDiff}%`] 
             : 
             [`Target value: ${target}`, `Percentage difference: ${percentageDiff}%`];

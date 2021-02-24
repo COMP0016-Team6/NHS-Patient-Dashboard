@@ -112,6 +112,9 @@ const PatientDashboard = ({ match }) => {
 
   return (
     <div>
+      <Link to="/dashboard">
+        <button className="btn btn-primary mt-5">Back</button>
+      </Link>
       <h1 className="mt-5"><Link to={`/patientInfo/${match.params.id}`}>{name}</Link>'s Dashboard</h1>
       
       {
