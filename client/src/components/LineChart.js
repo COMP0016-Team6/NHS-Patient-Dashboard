@@ -1,3 +1,6 @@
+// allow daily, monthly and yearly data filtering
+// also a bar chart
+
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 
@@ -21,7 +24,6 @@ const Linechart = ({patient_id, target_rate, target_volume}) => {
             parseData[i].feed_timestamp = new Date(parseData[i].feed_timestamp);
           }
           setFeed(parseData);
-          console.log(parseData);
         }      
       } catch (err) {
         console.error(err.message);
@@ -31,10 +33,10 @@ const Linechart = ({patient_id, target_rate, target_volume}) => {
     return () => cancelled = true;
   }, []);
 
-
+ 
   const data = {
     labels: feed.map(d=>d.feed_timestamp.toLocaleString()),
-  
+    // feed[i].feedtimestamp is in asc sorted order. simiilar to lc problem
     datasets: [
       {
         lineTension: 0.4,
