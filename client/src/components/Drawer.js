@@ -86,17 +86,6 @@ class DrawerForm extends React.Component {
               </Col>
             </Row>
             <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  name="address"
-                  label="Address"
-                  rules={[{ required: true, message: "Please enter patient's home address" }]}
-                >
-                  <Input placeholder="Please enter address" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
               <Col span={24}>
                 <Form.Item
                   name="background"

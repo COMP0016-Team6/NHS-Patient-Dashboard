@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
-import SearchableInfoTable from "./InfoTable";
-import { toast } from "react-toastify";
-import { Link, Redirect } from "react-router-dom";
-import { Layout, Menu, Breadcrumb, Avatar, Row, Col, Popover, Button, Divider } from "antd";
+import {Link} from "react-router-dom";
+import { Layout, Menu, Breadcrumb, Row, Col, Button, Avatar, Popover, Divider } from "antd";
 import {
-  DesktopOutlined,
   AreaChartOutlined,
   BellOutlined,
   ContactsOutlined,
-  UserOutlined
+  UserOutlined,
 } from "@ant-design/icons";
+import SearchableDashboardTable from "./DashboardTable";
 
 const { Header, Content, Sider } = Layout;
 
-const Contacts = ({ setAuth }) => {
+const ClinicianDashboard = ({ logout }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [patients, setPatients] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -40,21 +39,37 @@ const Contacts = ({ setAuth }) => {
     return () => cancelled = true; 
   }, []);
 
-  const logout = async e => {
-    e.preventDefault();
-    try {
-      localStorage.removeItem("token");
-      setAuth(false);
-      toast.success("Logged out Successfully");
-    } catch (err) {
-      console.error(err.message);
+  useEffect(() => {
+    let cancelled = false;
+
+    const getPatients = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/getPatients/", {
+          method: "POST",
+          headers: { jwt_token: localStorage.token }
+        });
+        const parseData = await res.json();
+        console.log(parseData);
+        if (!cancelled) {
+          setPatients(parseData);
+        }
+      } catch(err) {
+        console.error(err.message);
+      }
     }
-  };
+    getPatients();
+    return () => cancelled = true; 
+  }, []);
+
+  let myPatients = [];
+  for (var i = 0; i < patients.length; i++) {
+    myPatients.push(<h3 key={i} className="text-info"><Link to={`/dashboard/${patients[i].user_id}`}>{patients[i].user_name}</Link></h3>)
+  }
 
   const content = (
     <div>
-      <p>{name}</p>
-      <p>{email}</p>
+      <p>Name: {name}</p>
+      <p>Email：{email}</p>
       <Divider />
       <Row>
         <Col offset={5}>
@@ -78,8 +93,8 @@ const Contacts = ({ setAuth }) => {
       </Header>
       <Layout>
         <Sider collapsible width={200} className="site-layout-background">
-          <Menu defaultSelectedKeys={["3"]} mode="inline" style={{height: '100%'}}>
-            <Menu.Item key="1" icon={<AreaChartOutlined />}>
+          <Menu defaultSelectedKeys={["1"]} mode="inline" style={{height: '100%'}}>
+            <Menu.Item key="1" icon={<AreaChartOutlined o/>}>
               <Link to="/Dashboard">Dashboard</Link>
             </Menu.Item>
             <Menu.Item key="2" icon={<BellOutlined />}>
@@ -101,7 +116,17 @@ const Contacts = ({ setAuth }) => {
               minHeight: 280,
             }}
           >
-            <SearchableInfoTable />
+            <div>
+              <h5 className="mt-5 text-success">Clinician {name} </h5>
+              <h1 className="mb-5">My Patients</h1>
+              <Divider />
+              <SearchableDashboardTable />
+              <Divider />
+              <Link to="/addPatients">
+                <button className="btn btn-primary mt-5 mr-5"> Add Patients </button>
+              </Link>
+              {/*<Linechart />*/}
+            </div>
           </Content>
         </Layout>
       </Layout>
@@ -109,4 +134,5 @@ const Contacts = ({ setAuth }) => {
   );
 };
 
-export default Contacts;
+export default ClinicianDashboard;
+

@@ -5,7 +5,7 @@ import { Row, Col, Layout, Breadcrumb } from "antd";
 
 const { Header, Content, Footer } = Layout;
 
-const Login = ({ setAuth }) => {
+const Login = ({ setAuth, setIsClinician }) => {
   const [inputs, setInputs] = useState({
     email: "",
     password: ""
@@ -32,7 +32,9 @@ const Login = ({ setAuth }) => {
       );
 
       const parseRes = await response.json();
-
+      
+      // console.log(parseRes);
+    
       if (parseRes.jwtToken) {
         localStorage.setItem("token", parseRes.jwtToken);
         setAuth(true);
@@ -41,6 +43,9 @@ const Login = ({ setAuth }) => {
         setAuth(false);
         toast.error(parseRes);
       }
+
+      parseRes.user.user_role === "Clinician"? setIsClinician(true) : setIsClinician(false);
+      
     } catch (err) {
       console.error(err.message);
     }
@@ -58,7 +63,7 @@ const Login = ({ setAuth }) => {
         <br/><br/><br/><br/><br/><br/>
         <Row justify="space-around" align="middle">
           <Col span={10}>
-            <h1 className="mt-5 text-center">Login</h1>
+          <h1 className="mt-5 text-center">Login</h1>
             <form onSubmit={onSubmitForm}>
               <input
                 type="text"
@@ -76,7 +81,7 @@ const Login = ({ setAuth }) => {
                 onChange={e => onChange(e)}
                 className="form-control my-3"
               />
-              <button className="btn btn-primary btn-block">Submit</button>
+              <button className="btn btn-primary  btn-block">Submit</button>
             </form>
             <Link to="/register">register</Link>
           </Col>

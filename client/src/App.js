@@ -14,9 +14,12 @@ import { toast } from "react-toastify";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
+import ClinicianDashboard from "./components/ClinicianDashboard";
+import PatientDashboard from "./components/PatientDashboard";
 import Notifications from './components/Notifications'
 import Contacts from './components/Contacts';
-import Info from './components/Info';
+import PatientInfo from "./components/PatientInfo";
+import AddPatients from "./components/AddPatients";
 
 toast.configure();
 
@@ -28,9 +31,14 @@ function App() {
         headers: { jwt_token: localStorage.token }
       });
 
+      // user_id, user_name, user_email, user_role
       const parseRes = await res.json();
+      parseRes.auth === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+      
+      // { user_id: , user_name: , user_email: , user_role: }
+      // console.log(parseRes.user);
+      parseRes.user.user_role === "Clinician"? setIsClinician(true) : setIsClinician(false);
 
-      parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
     } catch (err) {
       console.error(err.message);
     }
@@ -41,10 +49,18 @@ function App() {
   }, []);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isClinician, setIsClinician] = useState(false);
 
   const setAuth = boolean => {
     setIsAuthenticated(boolean);
-  };
+  };  
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    toast.success("Logged out Successfully");
+    setIsAuthenticated(false);
+    setIsClinician(false);
+  } 
 
   return (
     <Fragment>
@@ -55,7 +71,7 @@ function App() {
             path="/login"
             render={props =>
               !isAuthenticated ? (
-                <Login {...props} setAuth={setAuth} />
+                <Login {...props} setAuth={setIsAuthenticated} setIsClinician={setIsClinician} />
               ) : (
                 <Redirect to="/dashboard" />
               )
@@ -66,7 +82,7 @@ function App() {
             path="/register"
             render={props =>
               !isAuthenticated ? (
-                <Register {...props} setAuth={setAuth} />
+                <Register {...props} setAuth={setIsAuthenticated} setIsClinician={setIsClinician} />
               ) : (
                 <Redirect to="/dashboard" />
               )
@@ -77,10 +93,38 @@ function App() {
             path="/dashboard"
             render={props =>
               isAuthenticated ? (
-                <Dashboard {...props} setAuth={setAuth} />
+                !isClinician? (<Dashboard {...props} logout={logout} />) : (<ClinicianDashboard {...props} logout={logout} />)
               ) : (
                 <Redirect to="/login" />
               )
+            }
+          />
+          <Route
+            exact
+            path="/addPatients"
+            render={props =>
+              isAuthenticated ? (
+                !isClinician? (<Dashboard {...props} logout={logout} />) : (<AddPatients {...props} />)
+              ) : (
+                <Redirect to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/dashboard/:id"
+            render={props => // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
+              // TODO: CHECK IF THE CLINICIAN SUPERVISES THE PATIENT AT ALL, IF NO, DONT LET IT ACCESS IT!
+                
+              isAuthenticated ? <PatientDashboard {...props} /> : <Redirect to="/login" />
+            }
+          />
+          {/* need patientInfo/:id! */}
+          <Route
+            path="/patientInfo/:id"
+            render={props => // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
+              // TODO: CHECK IF THE CLINICIAN SUPERVISES THE PATIENT AT ALL, IF NO, DONT LET IT ACCESS IT!
+                
+              isAuthenticated ? <PatientInfo {...props} /> : <Redirect to="/login" />
             }
           />
           <Route
@@ -100,17 +144,6 @@ function App() {
             render={props =>
               isAuthenticated ? (
                 <Contacts {...props} setAuth={setAuth} />
-              ) : (
-                <Redirect to="/login" />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/info"
-            render={props =>
-              isAuthenticated ? (
-                <Info {...props} setAuth={setAuth} />
               ) : (
                 <Redirect to="/login" />
               )

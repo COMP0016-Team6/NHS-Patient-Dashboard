@@ -15,20 +15,30 @@ const { Search } = Input;
 
 const Notifications = ({ setAuth }) => {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
-  const getProfile = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/notifications/", {
-        method: "POST",
-        headers: { jwt_token: localStorage.token }
-      });
+  useEffect(() => {
+    let cancelled = false;
 
-      const parseData = await res.json();
-      setName(parseData.user_name);
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
+    const getProfile = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/dashboard/", {
+          method: "POST",
+          headers: { jwt_token: localStorage.token }
+        });
+        const parseData = await res.json();
+        if (!cancelled) {
+          setName(parseData.user_name);
+          setEmail(parseData.user_email);
+        }
+        
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+    getProfile();
+    return () => cancelled = true; 
+  }, []);
 
   const logout = async e => {
     e.preventDefault();
@@ -44,7 +54,7 @@ const Notifications = ({ setAuth }) => {
   const content = (
     <div>
       <p>{name}</p>
-      <p>henry@gmail.com</p>
+      <p>{email}</p>
       <Divider />
       <Row>
         <Col offset={5}>
@@ -54,17 +64,13 @@ const Notifications = ({ setAuth }) => {
     </div>
   );
 
-  useEffect(() => {
-    getProfile();
-  }, []);
-
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Header className="header">
         <div className="logo" />
         <Row>
-          <Col offset={23}>
-            <Popover content={content} title="Title" trigger="click">
+          <Col offset={22}>
+            <Popover content={content} title="Your Proflie" trigger="click">
               <Avatar size="large" icon={<UserOutlined />} />
             </Popover>
           </Col>
@@ -72,17 +78,14 @@ const Notifications = ({ setAuth }) => {
       </Header>
       <Layout>
         <Sider collapsible width={200} className="site-layout-background">
-          <Menu defaultSelectedKeys={["3"]} mode="inline" style={{height: '100%'}}>
+          <Menu defaultSelectedKeys={["2"]} mode="inline" style={{height: '100%'}}>
             <Menu.Item key="1" icon={<AreaChartOutlined />}>
               <Link to="/Dashboard">Dashboard</Link>
             </Menu.Item>
-            <Menu.Item key="2" icon={<DesktopOutlined />}>
-              Tasks
-            </Menu.Item>
-            <Menu.Item key="3" icon={<BellOutlined />}>
+            <Menu.Item key="2" icon={<BellOutlined />}>
               <Link to="/Notifications">Notifications</Link>
             </Menu.Item>
-            <Menu.Item key="4" icon={<ContactsOutlined />}>
+            <Menu.Item key="3" icon={<ContactsOutlined />}>
               <Link to="/Contacts">Contacts</Link>
             </Menu.Item>
           </Menu>

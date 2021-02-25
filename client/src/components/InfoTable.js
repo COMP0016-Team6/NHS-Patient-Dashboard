@@ -4,91 +4,37 @@ import { Link, Redirect } from "react-router-dom";
 import DrawerForm from './Drawer';
 import { SearchOutlined } from '@ant-design/icons';
 
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    sorter: (a, b) => a.name.length - b.name.length,
-    sortDirections: ['descend', 'ascend'],
-    render: (text) => <Link to="/Info">{ text }</Link>
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    sorter: (a, b) => a.age - b.age,
-    sortDirections: ['descend', 'ascend'],
-  },
-  {
-    title: 'Gender',
-    dataIndex: 'gender',
-    filters: [
-      {
-        text: "Male",
-        value: "Male",
-      },
-      {
-        text: "Female",
-        value: "Female",
-      },
-    ]
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-  {
-    title: 'Action',
-    dataIndex: 'action',
-    render: () => (
-    <DrawerForm />
-    )
+class SearchableInfoTable extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      patients: [],
+      searchText: '',
+      searchedColumn: '',
+    };
   }
-];
 
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    gender: "Male",
-    email: "john.brown@gmail.com",
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42, 
-    gender: "Female",
-    email: "jim.green@gmail.com",
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    gender: "Male",
-    email: "joe.black@gmail.com",
-    address: 'Sidney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    gender: "Female",
-    email: "jim.red@gmail.com",
-    address: 'London No. 2 Lake Park',
-  },
-];
+  componentDidMount() {
+    let cancelled = false;
 
-class SearchableTable extends React.Component {
-  state = {
-    searchText: '',
-    searchedColumn: '',
-  };
+    const getPatients = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/getPatients/", {
+          method: "POST",
+          headers: { jwt_token: localStorage.token }
+        });
+        const parseData = await res.json();
+        console.log(parseData);
+        if (!cancelled) {
+          this.setState({patients: parseData});
+        }
+      } catch(err) {
+        console.error(err.message);
+      }
+    }
+    getPatients();
+    return () => cancelled = true; 
+  }
 
   getColumnSearchProps = dataIndex => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -169,7 +115,6 @@ class SearchableTable extends React.Component {
         sorter: (a, b) => a.name.length - b.name.length,
         sortDirections: ['descend', 'ascend'],
         ...this.getColumnSearchProps('name'),
-        render: (text) => <Link to="/Info">{ text }</Link>
       },
       {
         title: 'Age',
@@ -195,12 +140,6 @@ class SearchableTable extends React.Component {
         ...this.getColumnSearchProps('email'),
       },
       {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
-        ...this.getColumnSearchProps('address'),
-      },
-      {
         title: 'Action',
         dataIndex: 'action',
         render: () => (
@@ -208,8 +147,18 @@ class SearchableTable extends React.Component {
         )
       }
     ];
+    const data = [];
+      for (let i = 0; i < this.state.patients.length; i++) {
+        data.push({
+          key: i,
+          name: <Link to={`/patientInfo/${this.state.patients[i].user_id}`}>{this.state.patients[i].user_name}</Link>,
+          age: this.state.patients[i].patient_age,
+          gender: this.state.patients[i].patient_gender,
+          email: this.state.patients[i].user_email,
+        });
+    }
     return <Table columns={columns} dataSource={data} />;
   }
 }
 
-export default SearchableTable;
+export default SearchableInfoTable;

@@ -4,68 +4,62 @@ import { toast } from "react-toastify";
 import { Link, Redirect } from "react-router-dom";
 import { Layout, Menu, Breadcrumb, Row, Col, Button, Avatar, Popover, Divider } from "antd";
 import {
-  DesktopOutlined,
   AreaChartOutlined,
   BellOutlined,
   ContactsOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 
-const { SubMenu } = Menu;
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 
-const Dashboard = ({ setAuth }) => {
+const Dashboard = ({ logout }) => {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [user_id, setUserId] = useState(0);
 
-  const getProfile = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/dashboard/", {
-        method: "POST",
-        headers: { jwt_token: localStorage.token }
-      });
+  useEffect(() => {
+    let cancelled = false;
 
-      const parseData = await res.json();
-      setName(parseData.user_name);
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
-
-  const logout = async e => {
-    e.preventDefault();
-    try {
-      localStorage.removeItem("token");
-      setAuth(false);
-      toast.success("Logged out Successfully");
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
+    const getProfile = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/dashboard/", {
+          method: "POST",
+          headers: { jwt_token: localStorage.token }
+        });
+        const parseData = await res.json();
+        if (!cancelled) {
+          setName(parseData.user_name);
+          setEmail(parseData.user_email);
+          setUserId(parseData.user_id);
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+    getProfile();
+    return () => cancelled = true; 
+  }, []);
 
   const content = (
     <div>
-      <p>{name}</p>
-      <p>henry@gmail.com</p>
+      <p>Name: {name}</p>
+      <p>Email：{email}</p>
       <Divider />
       <Row>
-        <Col offset={5}>
+        <Col offset={7}>
           <Button danger onClick={e => logout(e)}>logout</Button>
         </Col>
       </Row>
     </div>
   );
 
-  useEffect(() => {
-    getProfile();
-  }, []);
-
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Header className="header">
         <div className="logo" />
         <Row>
-          <Col offset={23}>
-            <Popover content={content} title="Title" trigger="click">
+          <Col offset={22}>
+            <Popover content={content} title="Your Proflie" trigger="click">
               <Avatar size="large" icon={<UserOutlined />} />
             </Popover>
           </Col>
@@ -77,13 +71,10 @@ const Dashboard = ({ setAuth }) => {
             <Menu.Item key="1" icon={<AreaChartOutlined />}>
               <Link to="/Dashboard">Dashboard</Link>
             </Menu.Item>
-            <Menu.Item key="2" icon={<DesktopOutlined />}>
-              Tasks
-            </Menu.Item>
-            <Menu.Item key="3" icon={<BellOutlined />}>
+            <Menu.Item key="2" icon={<BellOutlined />}>
               <Link to="/Notifications">Notifications</Link>
             </Menu.Item>
-            <Menu.Item key="4" icon={<ContactsOutlined />}>
+            <Menu.Item key="3" icon={<ContactsOutlined />}>
               <Link to="/Contacts">Contacts</Link>
             </Menu.Item>
           </Menu>
@@ -99,7 +90,8 @@ const Dashboard = ({ setAuth }) => {
               minHeight: 280,
             }}
           >
-            <Linechart />
+            <h1 className="mt-5">My Dashboard {user_id}</h1>
+            {user_id === 0? null : <Linechart patient_id={user_id} />}
           </Content>
         </Layout>
       </Layout>
