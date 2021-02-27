@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {Link} from "react-router-dom";
 import Linechart from "./LineChart";
+import RainbowDatepicker from "./DatePicker";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 
@@ -12,6 +13,8 @@ const PatientDashboard = ({ match }) => {
   const [email, setEmail] = useState("");
   const [changePlan, setChangePlan] = useState(false);
   const [treatmentPlan, setTreatmentPlan] = useState({target_rate: "", target_volume: ""})
+  const [filter, setFilter] = useState("All Data")
+  const [dates, setDates] = useState(null);
   
   const inputsInitial = {
     description: "",
@@ -23,6 +26,10 @@ const PatientDashboard = ({ match }) => {
 
   const changeToggle = () => {
     setChangePlan(!changePlan);
+  }
+
+  const onChangeFilter = (e) => {
+    setFilter(e.target.value);
   }
 
   const onChange = e =>
@@ -59,6 +66,15 @@ const PatientDashboard = ({ match }) => {
     }
   };
 
+  const formatDates = (dates) => {
+    if (dates != null && dates[0] != null && dates[1] != null) {
+      for (var i = 0; i < dates.length; i++) {
+        let newDate = dates[i].toLocaleDateString().split("/");
+        dates[i] = new Date(parseInt(newDate[2]), parseInt(newDate[1])-1, parseInt(newDate[0]));
+      }
+    }
+    return dates;
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -109,7 +125,6 @@ const PatientDashboard = ({ match }) => {
     return () => cancelled = true; 
   }, []);
 
-
   return (
     <div>
       <Link to="/dashboard">
@@ -117,10 +132,26 @@ const PatientDashboard = ({ match }) => {
       </Link>
       <h1 className="mt-5"><Link to={`/patientInfo/${match.params.id}`}>{name}</Link>'s Dashboard</h1>
       
-      {
-      (treatmentPlan.target_volume === "" || treatmentPlan.target_rate === "")?  <Linechart patient_id = {match.params.id} /> : 
-      <Linechart patient_id = {match.params.id} target_rate = {treatmentPlan.target_rate} target_volume = {treatmentPlan.target_volume} />
-      }
+      <RainbowDatepicker dates={formatDates(dates)} setDates={setDates} />
+
+      <select name="filter" value={filter} onChange={e => onChangeFilter(e)}>
+        <option value="All Data">All Data</option>
+        <option value="By Day">By Day</option>
+        <option value="By Month">By Month</option>
+        <option value="By Year">By Year</option>
+      </select>
+      
+      <Linechart 
+        patient_id={match.params.id} 
+        target_rate={treatmentPlan.target_rate} 
+        target_volume={treatmentPlan.target_volume} 
+        filter={filter} 
+        dates={formatDates(dates)}
+      /> 
+
+  
+      
+      
       
       {!changePlan? 
         <button onClick={changeToggle} className="btn btn-primary mt-5 ">Change Treatment Plan</button> : 

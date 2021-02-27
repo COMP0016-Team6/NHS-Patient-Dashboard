@@ -14,15 +14,17 @@ def genData(cur):
     patients = getPatients(cur)
     dateTimeObj = datetime.now()
     # YYYY-MM-DD hh:mm::ss - postgreSQL timestamp type
-    timestamp = dateTimeObj.strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = dateTimeObj.strftime("%m-%d %H:%M:%S")
     for patient_id in patients:
-        rate = round(random.random(), 4)
-        volume = round(random.random(), 4)
-    
-        cur.execute("""
-        INSERT INTO feed (patient_id, volume, rate, feed_timestamp)
-        VALUES (%s, %s, %s, %s);
-        """, (patient_id, volume, rate, timestamp))
+        for year in range(2010, 2021):
+            rate = round(random.random(), 4)
+            volume = round(random.random(), 4)
+        
+            cur.execute("""
+            INSERT INTO feed (patient_id, volume, rate, feed_timestamp)
+            VALUES (%s, %s, %s, %s);
+            """, (patient_id, volume, rate, f"{str(year)+'-'+timestamp}"))
+        
 
 if __name__ == "__main__":
     # TODO Later move this information into database.ini file and add that
@@ -30,8 +32,8 @@ if __name__ == "__main__":
     connection = psycopg2.connect(
         host="localhost",
         database="application",
-        user="",
-        password="",
+        user="daulet",
+        password="Barcateam1",
         port=5432)
 
     cur = connection.cursor()

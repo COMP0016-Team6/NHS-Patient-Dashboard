@@ -4,8 +4,9 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 
-const Linechart = ({patient_id, target_rate, target_volume}) => {
+const Linechart = ({patient_id, target_rate, target_volume, filter, dates}) => {
   const [feed, setFeed] = useState([]);
+
   useEffect(() => {
     let cancelled = false;
     const getFeeds = async () => {
@@ -24,7 +25,7 @@ const Linechart = ({patient_id, target_rate, target_volume}) => {
             parseData[i].feed_timestamp = new Date(parseData[i].feed_timestamp);
           }
           setFeed(parseData);
-        }      
+        }
       } catch (err) {
         console.error(err.message);
       }
@@ -33,17 +34,83 @@ const Linechart = ({patient_id, target_rate, target_volume}) => {
     return () => cancelled = true;
   }, []);
 
+  // const formatDate = (date) => {
+  //   let newDate = date.toLocaleDateString().split("/");
+  //   date = new Date(parseInt(newDate[2]), parseInt(newDate[1])-1, parseInt(newDate[0]));
+  //   return date;
+  // }
+
+  const compareByMonth = (date_range, date) => {
+    let lower = [parseInt(date_range[0].getFullYear()), parseInt(date_range[0].getMonth())];
+    let upper = [parseInt(date_range[1].getFullYear()), parseInt(date_range[1].getMonth())];
+
+    let cur_date = [parseInt(date.getFullYear()), parseInt(date.getMonth())];
+
+    if (lower[0] < cur_date[0] && cur_date[0] < upper[0]) {
+      return true;
+    }
+    if ((lower[0] == cur_date[0] && cur_date[1] >= lower[1]) || (upper[0] == cur_date[0] && cur_date[0] <= upper[1])) {
+      return true;
+    }
+
+    return false;
+  }
+
+  const filterFeed = (filter, feed, dates) => {
+    let newFeed = [];
+    // let formattedDate;
+    if (filter === "All Data") {
+      for (var i = 0; i < feed.length; i++) {
+        // formattedDate = formatDate(feed[i].feed_timestamp);
+        if (dates === null || (dates[0] <= feed[i].feed_timestamp && feed[i].feed_timestamp <= dates[1])) {
+          newFeed.push({volume: feed[i].volume, "feed_timestamp": feed[i].feed_timestamp.toLocaleString()});
+        }
+      }
+      return newFeed;
+    }
+
+    let options;
+
+    if (filter === "By Day") options = { day: 'numeric', month: 'numeric', year: 'numeric' };
+    else if (filter === "By Month") options = { month: 'numeric', year: 'numeric' };
+    else if (filter === "By Year") options = { year: 'numeric' };
+
+    var i = 0;
+    while (i < feed.length) {
+      let byDay = dates === null || (filter === "By Day" && (dates[0] <= feed[i].feed_timestamp && feed[i].feed_timestamp <= dates[1]));
+      let byMonth = dates === null || (filter === "By Month" && compareByMonth(dates, feed[i].feed_timestamp));
+      let byYear = dates === null || (filter === "By Year" && (dates[0].getFullYear() <= feed[i].feed_timestamp.getFullYear() && feed[i].feed_timestamp.getFullYear() <= dates[1].getFullYear()));  
+
+      if (byDay || byMonth || byYear) { 
+        let start = i;
+        let sum = feed[i].volume;
+        let cur_date = feed[i].feed_timestamp.toLocaleDateString(undefined, options);
+        i++;
+        
+        while (i < feed.length && cur_date == feed[i].feed_timestamp.toLocaleDateString(undefined, options)) {
+          sum += feed[i].volume;
+          i++;
+        }
+        newFeed.push({"volume": (parseFloat(sum/(i - start)).toFixed(2)), "feed_timestamp": cur_date});
+      }
+      else i++;
+    }
+    return newFeed;
+
+  } 
  
   const data = {
-    labels: feed.map(d=>d.feed_timestamp.toLocaleString()),
-    // feed[i].feedtimestamp is in asc sorted order. simiilar to lc problem
+    labels: filterFeed(filter, feed, dates).map(d=>d.feed_timestamp),
+    
+    // labels: feed.map(d=>d.feed_timestamp.toLocaleString()),
     datasets: [
       {
         lineTension: 0.4,
         pointRadius: 3,
         label: "Actual Feed",
         hidden: false,
-        data: feed.map(d=>d.volume),
+        data: filterFeed(filter, feed, dates).map(d=>d.volume),
+        //data: feed.map(d=>d.volume),
         fill: true,
         backgroundColor: "rgba(52, 191, 110, 0.2)",
         borderColor: "#27AE60",
@@ -62,9 +129,13 @@ const Linechart = ({patient_id, target_rate, target_volume}) => {
     ]
   };
     
-
   const options = {
     responsive: true,
+
+    animation: {
+      easing: 'easeOutSine', 
+      duration: 700
+    },
 
     annotation: {
       annotations: [{
@@ -89,9 +160,8 @@ const Linechart = ({patient_id, target_rate, target_volume}) => {
       borderColor: 'rgba(252, 214, 112, 1)',
       callbacks: {
         label: function(tooltipItem, data) {
-          let actual = data.datasets[0].data[tooltipItem.index];
-          console.log(tooltipItem);
-          let target = data.datasets[1].data[tooltipItem.index];
+          let actual = parseFloat(data.datasets[0].data[tooltipItem.index]);
+          let target = parseFloat(data.datasets[1].data[tooltipItem.index]);
           let percentageDiff = parseFloat((Math.abs(actual - target) / ((actual + target) / 2)) * 100).toFixed(1);
         
           return tooltipItem.datasetIndex === 0? 
@@ -127,6 +197,8 @@ const Linechart = ({patient_id, target_rate, target_volume}) => {
 
   return (
     <div>
+      {/* pass this from the dashboard! and pass the filter as a prop
+      <button onClick={filterToggle} className="btn btn-primary">By day</button>*/}
       <Line data={data} options={options} />
     </div>
   )
