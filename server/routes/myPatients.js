@@ -35,7 +35,7 @@ router.post("/add", authorize, async (req, res) => {
     }
 });
 
-router.post("/get", authorize, async (req, res) => {
+router.post("/getAll", authorize, async (req, res) => {
   try {
     const user = await pool.query(
       "SELECT user_id, user_name, user_email FROM users WHERE user_role=$1;",

@@ -16,13 +16,13 @@ def genData(cur):
     # YYYY-MM-DD hh:mm::ss - postgreSQL timestamp type
     timestamp = dateTimeObj.strftime("%Y-%m-%d %H:%M:%S")
     for patient_id in patients:
-        rate = round(random.random(), 4)
+        energy = round(random.random(), 4)
         volume = round(random.random(), 4)
     
         cur.execute("""
-        INSERT INTO feed (patient_id, volume, rate, feed_timestamp)
+        INSERT INTO feed (patient_id, volume, energy, feed_timestamp)
         VALUES (%s, %s, %s, %s);
-        """, (patient_id, volume, rate, timestamp))
+        """, (patient_id, volume, energy, timestamp))
 
 if __name__ == "__main__":
     # TODO Later move this information into database.ini file and add that

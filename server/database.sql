@@ -23,17 +23,17 @@ CREATE TABLE treatments (
   patient_id INT REFERENCES users(user_id) NOT NULL,
   description VARCHAR(1000) NOT NULL,
   target_feed_volume float8 NOT NULL,
-  target_feed_rate float8 NOT NULL
+  target_feed_energy float8 NOT NULL
 );
 
--- think about moving the target rate from treatments to feed
+-- think about moving the target energy from treatments to feed
 CREATE TABLE feed (
   id BIGSERIAL PRIMARY KEY,
 -- TODO! SHOULD BE THIS:  patient_id INT REFERENCES patients(patient_id) NOT NULL,
 -- IN THE MEANTIME WORK WITH THIS:
   patient_id INT REFERENCES users(user_id) NOT NULL,
   volume float8 NOT NULL,
-  rate float8 NOT NULL,
+  energy float8 NOT NULL,
   feed_timestamp TIMESTAMP NOT NULL
 );
 

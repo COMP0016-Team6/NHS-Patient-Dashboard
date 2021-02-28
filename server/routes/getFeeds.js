@@ -8,7 +8,7 @@ const pool = require("../db");
   
   {
     volume: ,
-    rate: ,
+    energy: ,
     timestamp:  
   }
 
@@ -20,7 +20,7 @@ router.post("/", authorize, async (req, res) => {
   console.log(`HERE ${JSON.stringify(req.body)}`);
   try {
       const user = await pool.query(
-        "SELECT volume, rate, feed_timestamp FROM feed WHERE patient_id = $1 ORDER BY feed_timestamp ASC;",
+        "SELECT volume, energy, feed_timestamp FROM feed WHERE patient_id = $1 ORDER BY feed_timestamp ASC;",
         [patient_id] 
       ); 
       res.json(user.rows);

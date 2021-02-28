@@ -21,11 +21,11 @@ router.post("/", authorize, async (req, res) => {
     
 
 router.post("/changeTreatmentPlan", authorize, async (req, res) => {
-  const { patient_id, description, target_feed_volume, target_feed_rate } = req.body;
+  const { patient_id, description, target_feed_volume, target_feed_energy } = req.body;
   try {
     const newTreatment = await pool.query(
-      "INSERT INTO treatments(patient_id, description, target_feed_volume, target_feed_rate) values ($1, $2, $3, $4) RETURNING description, target_feed_volume, target_feed_rate;",
-      [patient_id, description, target_feed_volume, target_feed_rate]
+      "INSERT INTO treatments(patient_id, description, target_feed_volume, target_feed_energy) values ($1, $2, $3, $4) RETURNING description, target_feed_volume, target_feed_energy;",
+      [patient_id, description, target_feed_volume, target_feed_energy]
     );
    res.json(newTreatment.rows[0]); 
   } catch (err) {
@@ -39,7 +39,7 @@ router.post("/treatmentPlan", authorize, async (req, res) => {
   let patient_id = req.query.id;
   try {
     const treatment = await pool.query(
-      "SELECT description, target_feed_volume, target_feed_rate FROM treatments WHERE patient_id = $1;",
+      "SELECT description, target_feed_volume, target_feed_energy FROM treatments WHERE patient_id = $1;",
       [patient_id]
     );
    res.json(treatment.rows); 

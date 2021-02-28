@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 
-const Linechart = ({patient_id, target_rate, target_volume, filter, dates}) => {
+const Linechart = ({patient_id, type, target_energy, target_volume, filter, dates}) => {
   const [feed, setFeed] = useState([]);
 
   useEffect(() => {
@@ -42,12 +42,18 @@ const Linechart = ({patient_id, target_rate, target_volume, filter, dates}) => {
 
   const compareByMonth = (date_range, date) => {
     let lower = [parseInt(date_range[0].getFullYear()), parseInt(date_range[0].getMonth())];
+    let cur_date = [parseInt(date.getFullYear()), parseInt(date.getMonth())];
+    
+    if (typeof(date_range[1]) === "undefined") return (lower[0] < cur_date[0]) || (lower[0] == cur_date[0] && cur_date[1] >= lower[1])
     let upper = [parseInt(date_range[1].getFullYear()), parseInt(date_range[1].getMonth())];
 
-    let cur_date = [parseInt(date.getFullYear()), parseInt(date.getMonth())];
 
     if (lower[0] < cur_date[0] && cur_date[0] < upper[0]) {
       return true;
+    }
+    if (lower[0] == cur_date[0] && cur_date[0] == upper[0]) {
+      if (cur_date[1] >= lower[1] && cur_date[1] <= upper[1]) return true;
+      return false;
     }
     if ((lower[0] == cur_date[0] && cur_date[1] >= lower[1]) || (upper[0] == cur_date[0] && cur_date[0] <= upper[1])) {
       return true;
@@ -63,7 +69,7 @@ const Linechart = ({patient_id, target_rate, target_volume, filter, dates}) => {
       for (var i = 0; i < feed.length; i++) {
         // formattedDate = formatDate(feed[i].feed_timestamp);
         if (dates === null || (dates[0] <= feed[i].feed_timestamp && feed[i].feed_timestamp <= dates[1])) {
-          newFeed.push({volume: feed[i].volume, "feed_timestamp": feed[i].feed_timestamp.toLocaleString()});
+          newFeed.push({"volume": feed[i].volume, "energy": feed[i].energy, "feed_timestamp": feed[i].feed_timestamp.toLocaleString()});
         }
       }
       return newFeed;
@@ -77,21 +83,23 @@ const Linechart = ({patient_id, target_rate, target_volume, filter, dates}) => {
 
     var i = 0;
     while (i < feed.length) {
-      let byDay = dates === null || (filter === "By Day" && (dates[0] <= feed[i].feed_timestamp && feed[i].feed_timestamp <= dates[1]));
-      let byMonth = dates === null || (filter === "By Month" && compareByMonth(dates, feed[i].feed_timestamp));
-      let byYear = dates === null || (filter === "By Year" && (dates[0].getFullYear() <= feed[i].feed_timestamp.getFullYear() && feed[i].feed_timestamp.getFullYear() <= dates[1].getFullYear()));  
+      let byDay = (dates===null || dates.length != 2) || (filter === "By Day" && (dates[0] <= feed[i].feed_timestamp && feed[i].feed_timestamp <= dates[1]));
+      let byMonth = (dates===null || dates.length != 2) || (filter === "By Month" && compareByMonth(dates, feed[i].feed_timestamp));
+      let byYear = (dates===null || dates.length != 2) || (filter === "By Year" && (dates[0].getFullYear() <= feed[i].feed_timestamp.getFullYear() && feed[i].feed_timestamp.getFullYear() <= dates[1].getFullYear()));  
 
       if (byDay || byMonth || byYear) { 
         let start = i;
-        let sum = feed[i].volume;
+        let sumVolume = feed[i].volume;
+        let sumEnergy = feed[i].energy;
         let cur_date = feed[i].feed_timestamp.toLocaleDateString(undefined, options);
         i++;
         
         while (i < feed.length && cur_date == feed[i].feed_timestamp.toLocaleDateString(undefined, options)) {
-          sum += feed[i].volume;
+          sumVolume += feed[i].volume;
+          sumEnergy += feed[i].energy;
           i++;
         }
-        newFeed.push({"volume": (parseFloat(sum/(i - start)).toFixed(2)), "feed_timestamp": cur_date});
+        newFeed.push({"volume": (parseFloat(sumVolume/(i - start)).toFixed(2)), "energy": (parseFloat(sumEnergy/(i - start)).toFixed(2)), "feed_timestamp": cur_date});
       }
       else i++;
     }
@@ -109,7 +117,7 @@ const Linechart = ({patient_id, target_rate, target_volume, filter, dates}) => {
         pointRadius: 3,
         label: "Actual Feed",
         hidden: false,
-        data: filterFeed(filter, feed, dates).map(d=>d.volume),
+        data: type==="volume"? filterFeed(filter, feed, dates).map(d=>d.volume) : filterFeed(filter, feed, dates).map(d=>d.energy),
         //data: feed.map(d=>d.volume),
         fill: true,
         backgroundColor: "rgba(52, 191, 110, 0.2)",
@@ -117,11 +125,12 @@ const Linechart = ({patient_id, target_rate, target_volume, filter, dates}) => {
         fontSize: 20
       },
       {
+        hidden: ((type === "volume" && target_volume === 0) ||  (type === "energy" && target_energy === 0))? true : false,
         lineTension: 0.4,
         pointRadius: 0,
         borderWidth: 2,
         label: "Prescribed Feed",
-        data: feed.map(d=>target_volume),
+        data: type==="volume"? feed.map(d=>target_volume) : feed.map(d=>target_energy),
         borderColor: "#EB5757",
         fill: false,
         borderDash: [35,20]
@@ -164,10 +173,12 @@ const Linechart = ({patient_id, target_rate, target_volume, filter, dates}) => {
           let target = parseFloat(data.datasets[1].data[tooltipItem.index]);
           let percentageDiff = parseFloat((Math.abs(actual - target) / ((actual + target) / 2)) * 100).toFixed(1);
         
-          return tooltipItem.datasetIndex === 0? 
+          return ((type === "volume" && target_volume === 0) ||  (type === "energy" && target_energy === 0))? 
+            [`Received value: ${actual}`] 
+          : (tooltipItem.datasetIndex === 0? 
             [`Received value: ${actual}`, `Percentage difference: ${percentageDiff}%`] 
             : 
-            [`Target value: ${target}`, `Percentage difference: ${percentageDiff}%`];
+            [`Target value: ${target}`, `Percentage difference: ${percentageDiff}%`]);
         }
       }
     },
@@ -176,7 +187,7 @@ const Linechart = ({patient_id, target_rate, target_volume, filter, dates}) => {
       yAxes: [{
       scaleLabel: {
       display: true,
-      labelString: 'Volume (mL^3)',
+      labelString: type==="volume"? "Volume (mL^3)" : "Energy Intake (kcal)",
       fontSize: 18
       }
       }],
@@ -184,7 +195,7 @@ const Linechart = ({patient_id, target_rate, target_volume, filter, dates}) => {
       xAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Time Stamp',
+          labelString: "Time Stamp",
           fontSize: 18
         }
       }]

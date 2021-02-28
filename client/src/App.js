@@ -14,7 +14,6 @@ import { toast } from "react-toastify";
 
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Dashboard from "./components/Dashboard";
 import ClinicianDashboard from "./components/ClinicianDashboard";
 import PatientDashboard from "./components/PatientDashboard";
 import PatientInfo from "./components/PatientInfo";
@@ -22,6 +21,20 @@ import AddPatients from "./components/AddPatients";
 
 
 toast.configure();
+
+// async function getMyPatients(user_id) {
+//   try {
+//     const res = await fetch("http://localhost:5000/myPatients", {
+//       method: "POST",
+//       headers: { jwt_token: localStorage.token }
+//     });
+//     const parseData = await res.json();
+    
+//     return parseData;
+//   } catch(err) {
+//     console.error(err.message);
+//   }
+// }
 
 function App() {
   const checkAuthenticated = async () => {
@@ -38,7 +51,7 @@ function App() {
       // { user_id: , user_name: , user_email: , user_role: }
       // console.log(parseRes.user);
       parseRes.user.user_role === "Clinician"? setIsClinician(true) : setIsClinician(false);
-
+      setUserId(parseRes.user.user_id)
     } catch (err) {
       console.error(err.message);
     }
@@ -50,6 +63,9 @@ function App() {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isClinician, setIsClinician] = useState(false);
+  const [user_id, setUserId] = useState(0);
+//  const [allPatients, setPatients] = useState([]);
+//  const [myPatients, setMyPatients] = useState([]);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -90,7 +106,7 @@ function App() {
               path="/dashboard"
               render={props =>
                 isAuthenticated ? (
-                  !isClinician? (<Dashboard {...props} logout={logout} />) : (<ClinicianDashboard {...props} logout={logout} />)
+                  !isClinician? (<PatientDashboard {...props} isClinician={false} patientID={user_id} logout={logout} />) : (<ClinicianDashboard {...props} logout={logout} />)
                 ) : (
                   <Redirect to="/login" />
                 )
@@ -102,7 +118,7 @@ function App() {
               path="/addPatients"
               render={props =>
                 isAuthenticated ? (
-                  !isClinician? (<Dashboard {...props} logout={logout} />) : (<AddPatients {...props} />)
+                  !isClinician? (<PatientDashboard {...props} isClinician={false} patientID={user_id} logout={logout} />) : (<AddPatients {...props} />)
                 ) : (
                   <Redirect to="/login" />
                 )
@@ -114,7 +130,7 @@ function App() {
               render={props => // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
                 // TODO: CHECK IF THE CLINICIAN SUPERVISES THE PATIENT AT ALL, IF NO, DONT LET IT ACCESS IT!
                 
-                isAuthenticated ? <PatientDashboard {...props} /> : <Redirect to="/login" />
+                isAuthenticated ? <PatientDashboard isClinician={true} {...props} /> : <Redirect to="/login" />
               }
             />
 

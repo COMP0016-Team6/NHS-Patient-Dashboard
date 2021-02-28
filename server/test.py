@@ -17,13 +17,13 @@ def genData(cur):
     timestamp = dateTimeObj.strftime("%m-%d %H:%M:%S")
     for patient_id in patients:
         for year in range(2010, 2021):
-            rate = round(random.random(), 4)
+            energy = round(random.random(), 4)
             volume = round(random.random(), 4)
         
             cur.execute("""
-            INSERT INTO feed (patient_id, volume, rate, feed_timestamp)
+            INSERT INTO feed (patient_id, volume, energy, feed_timestamp)
             VALUES (%s, %s, %s, %s);
-            """, (patient_id, volume, rate, f"{str(year)+'-'+timestamp}"))
+            """, (patient_id, volume, energy, f"{str(year)+'-'+timestamp}"))
         
 
 if __name__ == "__main__":
@@ -32,8 +32,8 @@ if __name__ == "__main__":
     connection = psycopg2.connect(
         host="localhost",
         database="application",
-        user="daulet",
-        password="Barcateam1",
+        user="",
+        password="",
         port=5432)
 
     cur = connection.cursor()

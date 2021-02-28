@@ -8,18 +8,20 @@ import { toast } from "react-toastify";
 toast.configure();
 
 
-const PatientDashboard = ({ match }) => {
+const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [changePlan, setChangePlan] = useState(false);
-  const [treatmentPlan, setTreatmentPlan] = useState({target_rate: "", target_volume: ""})
+  const [treatmentPlan, setTreatmentPlan] = useState({target_energy: "", target_volume: ""})
   const [filter, setFilter] = useState("All Data")
   const [dates, setDates] = useState(null);
-  
+  const patient_id = patientID | match.params.id;
+  const [dataType, setDataType] = useState("volume");
+
   const inputsInitial = {
     description: "",
     target_feed_volume: "",
-    target_feed_rate: ""
+    target_feed_energy: ""
   }
 
   const [inputs, setInputs] = useState(inputsInitial);
@@ -28,8 +30,12 @@ const PatientDashboard = ({ match }) => {
     setChangePlan(!changePlan);
   }
 
-  const onChangeFilter = (e) => {
+  const onChangeFilter = e => {
     setFilter(e.target.value);
+  }
+
+  const onChangeType = e => {
+    setDataType(e.target.value);
   }
 
   const onChange = e =>
@@ -39,7 +45,7 @@ const PatientDashboard = ({ match }) => {
     e.preventDefault();
     try {
       // pass in other data to fill in the patients table
-      const body = { patient_id: match.params.id, description: inputs.description, target_feed_volume: inputs.target_feed_volume, target_feed_rate: inputs.target_feed_rate };
+      const body = { patient_id: patient_id, description: inputs.description, target_feed_volume: inputs.target_feed_volume, target_feed_energy: inputs.target_feed_energy };
       const response = await fetch(
         "http://localhost:5000/patientInfo/changeTreatmentPlan",
         {
@@ -55,7 +61,7 @@ const PatientDashboard = ({ match }) => {
       const parseRes = await response.json(); // do something with the parseRes
       toast.success("Treatment Plan Change Successful!");
       setTreatmentPlan({
-        target_rate: parseRes.target_feed_rate, 
+        target_energy: parseRes.target_feed_energy, 
         target_volume: parseRes.target_feed_volume
       });
       setInputs(inputsInitial); // reset the state
@@ -81,7 +87,7 @@ const PatientDashboard = ({ match }) => {
 
     const getProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/dashboard/?id=${match.params.id}`, {
+        const res = await fetch(`http://localhost:5000/dashboard/?id=${patient_id}`, {
           method: "POST",
           headers: { jwt_token: localStorage.token }
         });
@@ -96,7 +102,7 @@ const PatientDashboard = ({ match }) => {
     };
     getProfile();
     return () => cancelled = true; 
-  }, []);
+  }, [patient_id]);
 
 
   // useEffect for getting the latest target treatment plan of the patient. Store that in the state
@@ -105,7 +111,7 @@ const PatientDashboard = ({ match }) => {
 
     const getTreatmentPlan = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/patientInfo/treatmentPlan?id=${match.params.id}`, {
+        const res = await fetch(`http://localhost:5000/patientInfo/treatmentPlan?id=${patient_id}`, {
           method: "POST",
           headers: { jwt_token: localStorage.token }
         });
@@ -113,7 +119,7 @@ const PatientDashboard = ({ match }) => {
         if (!cancelled) {
           const last = parseData.length - 1;
           setTreatmentPlan({
-            target_rate: parseData[last].target_feed_rate, 
+            target_energy: parseData[last].target_feed_energy, 
             target_volume: parseData[last].target_feed_volume
           });
         }
@@ -123,14 +129,13 @@ const PatientDashboard = ({ match }) => {
     };
     getTreatmentPlan();
     return () => cancelled = true; 
-  }, []);
+  }, [patient_id]);
 
   return (
     <div>
-      <Link to="/dashboard">
-        <button className="btn btn-primary mt-5">Back</button>
-      </Link>
-      <h1 className="mt-5"><Link to={`/patientInfo/${match.params.id}`}>{name}</Link>'s Dashboard</h1>
+      {isClinician? (<Link to="/dashboard"> <button className="btn btn-primary mt-5">Back</button> </Link>) : null}
+
+      <h1 className="mt-5"><Link to={`/patientInfo/${patient_id}`}>{name}</Link>'s Dashboard</h1>
       
       <RainbowDatepicker dates={formatDates(dates)} setDates={setDates} />
 
@@ -140,53 +145,60 @@ const PatientDashboard = ({ match }) => {
         <option value="By Month">By Month</option>
         <option value="By Year">By Year</option>
       </select>
+
+      <select name="dataType" value={dataType} onChange={e => onChangeType(e)}>
+        <option value="volume">Volume Over Time</option>
+        <option value="energy">Energy Intake Over Time</option>
+      </select>
       
+      {patient_id === 0? null:
       <Linechart 
-        patient_id={match.params.id} 
-        target_rate={treatmentPlan.target_rate} 
+        patient_id={patient_id} 
+        type={dataType}
+        target_energy={treatmentPlan.target_energy} 
         target_volume={treatmentPlan.target_volume} 
         filter={filter} 
         dates={formatDates(dates)}
-      /> 
+      />}
 
-  
-      
-      
-      
-      {!changePlan? 
-        <button onClick={changeToggle} className="btn btn-primary mt-5 ">Change Treatment Plan</button> : 
-        <form onSubmit={onSubmitForm}>
+      { isClinician ? (
+        !changePlan? 
+          <button onClick={changeToggle} className="btn btn-primary mt-5 ">Change Treatment Plan</button> : 
+          <form onSubmit={onSubmitForm}>
+            <input
+              type="text"
+              name="description"
+              value={inputs.description}
+              placeholder="Treatment plan description"
+              onChange={e => onChange(e)}
+              className="form-control my-3"
+            />
+
+            <input
+              type="text"
+              name="target_feed_volume"
+              value={inputs.target_feed_volume}
+              placeholder="Target Feed Volume "
+              onChange={e => onChange(e)}
+              className="form-control my-3"
+            />
+
           <input
-            type="text"
-            name="description"
-            value={inputs.description}
-            placeholder="Treatment plan description"
-            onChange={e => onChange(e)}
-            className="form-control my-3"
-          />
+              type="text"
+              name="target_feed_energy"
+              value={inputs.target_feed_energy}
+              placeholder="Target Energy Intake (kcal/day)"
+              onChange={e => onChange(e)}
+              className="form-control my-3"
+            />
+          
+          <button className="btn btn-success btn-block mt-5">Submit</button>
+          <button onClick={changeToggle} className="btn btn-danger btn-block mb-5">Cancel</button>
 
-          <input
-            type="text"
-            name="target_feed_volume"
-            value={inputs.target_feed_volume}
-            placeholder="Target Feed Volume "
-            onChange={e => onChange(e)}
-            className="form-control my-3"
-          />
-
-        <input
-            type="text"
-            name="target_feed_rate"
-            value={inputs.target_feed_rate}
-            placeholder="Target Feed Rate "
-            onChange={e => onChange(e)}
-            className="form-control my-3"
-          />
-        
-        <button className="btn btn-success btn-block mt-5">Submit</button>
-        <button onClick={changeToggle} className="btn btn-danger btn-block mb-5">Cancel</button>
-
-        </form>        
+          </form>
+        ) : (
+          <button onClick={logout} className="btn btn-primary mt-5"> Logout </button>
+        )
       }
     </div>
   );
