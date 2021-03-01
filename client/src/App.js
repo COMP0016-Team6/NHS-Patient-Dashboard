@@ -64,8 +64,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isClinician, setIsClinician] = useState(false);
   const [user_id, setUserId] = useState(0);
-//  const [allPatients, setPatients] = useState([]);
-//  const [myPatients, setMyPatients] = useState([]);
+  const [myPatients, setMyPatients] = useState([]);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -106,7 +105,7 @@ function App() {
               path="/dashboard"
               render={props =>
                 isAuthenticated ? (
-                  !isClinician? (<PatientDashboard {...props} isClinician={false} patientID={user_id} logout={logout} />) : (<ClinicianDashboard {...props} logout={logout} />)
+                  !isClinician? (<PatientDashboard {...props} isClinician={false} patientID={user_id} logout={logout} />) : (<ClinicianDashboard {...props} patients={myPatients} setPatients={setMyPatients} logout={logout} />)
                 ) : (
                   <Redirect to="/login" />
                 )
@@ -118,7 +117,7 @@ function App() {
               path="/addPatients"
               render={props =>
                 isAuthenticated ? (
-                  !isClinician? (<PatientDashboard {...props} isClinician={false} patientID={user_id} logout={logout} />) : (<AddPatients {...props} />)
+                  !isClinician? (<PatientDashboard {...props} isClinician={false} patientID={user_id} logout={logout} />) : (<AddPatients myPatients={myPatients} setMyPatients={setMyPatients} {...props} />)
                 ) : (
                   <Redirect to="/login" />
                 )

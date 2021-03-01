@@ -3,12 +3,11 @@ import { Link, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import SearchBar from "./SearchBar";
 
-const AddPatients = () => {
-  const [patient_list, setPatientList] = useState([]);
-  const [patients, setPatients] = useState([]);
+// I need both the list of all patients and the patients I am currently supervising
+// as well as a method for updating my list of supervised patients
 
-  const onChange = e =>
-    setPatientList(e.target.value);
+const AddPatients = ({ myPatients, setMyPatients }) => {
+  const [allPatients, setAllPatients] = useState([]); // all patients
 
   const onSubmitForm = async e => {
     e.preventDefault();
@@ -21,7 +20,7 @@ const AddPatients = () => {
             jwt_token: localStorage.token, 
             "Content-type": "application/json"
           },
-          body: JSON.stringify({patient_list})
+          body: JSON.stringify(myPatients)
         }
       );
       const parseData = await res.json();
@@ -46,7 +45,7 @@ const AddPatients = () => {
         });
         const parseData = await res.json();
         if (!cancelled) {
-          setPatients(parseData);
+          setAllPatients(parseData);
         }
         
       } catch (err) {
@@ -62,19 +61,9 @@ const AddPatients = () => {
     <Link to="/dashboard">
       <button className="btn btn-primary mt-5">Back</button>
     </Link>
-      <form className="mt-5" onSubmit={onSubmitForm}>
-      <SearchBar patients={patients} select={true} setSelectedPatients={setPatientList} />
-
-        {/*<input
-          type="text"
-          name="patient_list"
-          value={patient_list}
-          placeholder="patients emails (delimered by space)"
-          onChange={e => onChange(e)}
-          className="form-control my-3"
-        />*/}
-
-        <button className="btn btn-success btn-block">Submit</button>
+    <form className="mt-5" onSubmit={onSubmitForm}>
+      <SearchBar patients={allPatients} select={true} myPatients={myPatients} setMyPatients={setMyPatients} />
+        <button className="btn btn-success btn-block mt-5">Submit</button>
       </form>
     </>
   )

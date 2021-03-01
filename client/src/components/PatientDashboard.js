@@ -135,22 +135,29 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
     <div>
       {isClinician? (<Link to="/dashboard"> <button className="btn btn-primary mt-5">Back</button> </Link>) : null}
 
-      <h1 className="mt-5"><Link to={`/patientInfo/${patient_id}`}>{name}</Link>'s Dashboard</h1>
-      
-      <RainbowDatepicker dates={formatDates(dates)} setDates={setDates} />
+      <h1 className="mt-5 mb-5"><Link to={`/patientInfo/${patient_id}`}>{name}</Link>'s Dashboard</h1>
+      <div>
+        <div className="mb-3" style={{display: 'flex'}}>
+          <RainbowDatepicker dates={formatDates(dates)} setDates={setDates} />
+        </div>
 
-      <select name="filter" value={filter} onChange={e => onChangeFilter(e)}>
-        <option value="All Data">All Data</option>
-        <option value="By Day">By Day</option>
-        <option value="By Month">By Month</option>
-        <option value="By Year">By Year</option>
-      </select>
+        <div className="mr-3" style={{display: 'inline-block'}}>
+          <select className="form-control" name="filter" value={filter} onChange={e => onChangeFilter(e)} style={{maxWidth: 150}}>
+            <option value="All Data">All Data</option>
+            <option value="By Day">By Day</option>
+            <option value="By Month">By Month</option>
+            <option value="By Year">By Year</option>
+          </select>
+        </div>
+        
+        <div style={{display: 'inline-block'}}>
+          <select className="form-control" name="dataType" value={dataType} onChange={e => onChangeType(e)} style={{maxWidth: 250}}>
+            <option value="volume">Volume Over Time</option>
+            <option value="energy">Energy Intake Over Time</option>
+          </select>
+        </div>
 
-      <select name="dataType" value={dataType} onChange={e => onChangeType(e)}>
-        <option value="volume">Volume Over Time</option>
-        <option value="energy">Energy Intake Over Time</option>
-      </select>
-      
+      </div>
       {patient_id === 0? null:
       <Linechart 
         patient_id={patient_id} 
@@ -163,7 +170,7 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
 
       { isClinician ? (
         !changePlan? 
-          <button onClick={changeToggle} className="btn btn-primary mt-5 ">Change Treatment Plan</button> : 
+          <button onClick={changeToggle} className="btn btn-primary mt-5 mb-5">Change Treatment Plan</button> : 
           <form onSubmit={onSubmitForm}>
             <input
               type="text"

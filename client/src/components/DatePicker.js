@@ -3,6 +3,11 @@ import { DatePicker } from "react-rainbow-components";
 
 export default function RainbowDatepicker({dates, setDates}) {
 
+  function maxMinYears(dt,n) 
+  {
+    return new Date(dt.setFullYear(dt.getFullYear() + n));      
+  }
+
   function onChange(dates) {
     setDates(dates);
   }
@@ -18,9 +23,10 @@ export default function RainbowDatepicker({dates, setDates}) {
         placeholder="Select range of dates"
         variant="single"
         formatStyle="medium"
+        maxDate={new Date()}
+        minDate={maxMinYears(new Date(), -40)}
         value={dates}
         onChange={onChange}
-        label="DatePicker Label"
       />
     </div>
   );

@@ -4,27 +4,17 @@ const pool = require("../db");
 const authorize = require("../middleware/authorize");
 
 router.post("/add", authorize, async (req, res) => {
-    const { patient_list } = req.body;
-  
+    const  patient_list  = req.body;
     try {
-      let patient_emails = patient_list.split(" ");
-      let patient_ids = [];
-      let patient;
-      for (var i = 0; i < patient_emails.length; i++) {
-          patient = await pool.query("SELECT * FROM users WHERE user_email = $1", [
-          patient_emails[i]
-          ]);
-          patient_ids.push(patient.rows[0].user_id);
-          if (patient.rows.length == 0) {
-            return res.status(401).json(`Patient with ${patient_emails[i]} email address does not exist!`);
-          }
-      }
 
-      for (var i = 0; i < patient_emails.length; i++) {
+      let del = await pool.query("DELETE FROM user_perms WHERE user_id = $1;", [req.user.id]); 
+      let patient;
+      console.log(patient_list);
+      for (var i = 0; i < patient_list.length; i++) {
         // NOT  ALL THE PERMISSIONS WILL BE WRITE TRUE - pass these in the request body
         patient = await pool.query(
           "INSERT INTO user_perms (user_id, read, write, patients_scope) VALUES ($1, $2, $3, $4) RETURNING *",
-          [req.user.id, true, true, patient_ids[i]]
+          [req.user.id, true, true, patient_list[i].user_id]
         );
       }
       
