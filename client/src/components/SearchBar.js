@@ -43,15 +43,15 @@ const SearchBar = ({ patients, select, myPatients, setMyPatients }) => {
       <div>
         {searchTerm === ""?
           patients.map(patient => (
-            <h3 key={patient.user_id} className="text-info">
-            {typeof(select)==="undefined"? null : <input type="checkbox" defaultChecked={inMyPatients(patient.user_id)} onClick={() => handleClick(patient)} />}
-            <Link to={`/dashboard/${patient.user_id}`}>{patient.user_name}</Link>
+            <h3 key={patient.user_id}>
+            {typeof(select)==="undefined"? null : <input type="checkbox" className="mr-2" defaultChecked={inMyPatients(patient.user_id)} onClick={() => handleClick(patient)} />}
+            {typeof(select)==="undefined"? <Link to={`/dashboard/${patient.user_id}`}>{patient.user_name}</Link> : patient.user_name}
             </h3>
           )):
           searchResults.map(patient => (
-            <h3 key={patient.user_id} className="text-info">
-              {typeof(select)==="undefined"? null : <input type="checkbox" defaultChecked={inMyPatients(patient.user_id)} onClick={() => handleClick(patient)} />}
-              <Link to={`/dashboard/${patient.user_id}`}>{patient.user_name}</Link>
+            <h3 key={patient.user_id}>
+              {typeof(select)==="undefined"? null : <input type="checkbox" className="mr-2" defaultChecked={inMyPatients(patient.user_id)} onClick={() => handleClick(patient)} />}
+              {typeof(select)==="undefined"? <Link to={`/dashboard/${patient.user_id}`}>{patient.user_name}</Link> : patient.user_name}            
             </h3>
           ))
         }

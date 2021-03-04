@@ -23,7 +23,8 @@ CREATE TABLE treatments (
   patient_id INT REFERENCES users(user_id) NOT NULL,
   description VARCHAR(1000) NOT NULL,
   target_feed_volume float8 NOT NULL,
-  target_feed_energy float8 NOT NULL
+  target_feed_energy float8 NOT NULL,
+  modified_time TIMESTAMP NOT NULL
 );
 
 -- think about moving the target energy from treatments to feed
@@ -34,7 +35,7 @@ CREATE TABLE feed (
   patient_id INT REFERENCES users(user_id) NOT NULL,
   volume float8 NOT NULL,
   energy float8 NOT NULL,
-  feed_timestamp TIMESTAMP NOT NULL
+  timestamp TIMESTAMP NOT NULL
 );
 
 CREATE TABLE user_perms (
@@ -46,5 +47,10 @@ CREATE TABLE user_perms (
   PRIMARY KEY(user_id, patients_scope)
 );
 
+CREATE TABLE weights (
+  user_id INT REFERENCES users(user_id) NOT NULL,
+  weight float8 NOT NULL,
+  timestamp TIMESTAMP NOT NULL
+);
 
 -- think about each patient having a "main" clinician who will be able to grant access to view/edit to other clinicians

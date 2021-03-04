@@ -20,7 +20,7 @@ def genData(cur):
         volume = round(random.random(), 4)
     
         cur.execute("""
-        INSERT INTO feed (patient_id, volume, energy, feed_timestamp)
+        INSERT INTO feed (patient_id, volume, energy, timestamp)
         VALUES (%s, %s, %s, %s);
         """, (patient_id, volume, energy, timestamp))
 

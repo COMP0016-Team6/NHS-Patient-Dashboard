@@ -20,10 +20,16 @@ router.post("/", authorize, async (req, res) => {
   console.log(`HERE ${JSON.stringify(req.body)}`);
   try {
       const user = await pool.query(
-        "SELECT volume, energy, feed_timestamp FROM feed WHERE patient_id = $1 ORDER BY feed_timestamp ASC;",
+        "SELECT volume, energy, timestamp FROM feed WHERE patient_id = $1 ORDER BY timestamp ASC;",
         [patient_id] 
-      ); 
-      res.json(user.rows);
+      );
+
+      const weight = await pool.query(
+        "SELECT weight, timestamp FROM weights WHERE patient_id = $1 ORDER BY timestamp ASC;",
+        [patient_id]
+      );
+
+      res.json({ feeds: user.rows, weights: weight.rows });
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server error");

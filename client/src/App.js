@@ -22,20 +22,6 @@ import AddPatients from "./components/AddPatients";
 
 toast.configure();
 
-// async function getMyPatients(user_id) {
-//   try {
-//     const res = await fetch("http://localhost:5000/myPatients", {
-//       method: "POST",
-//       headers: { jwt_token: localStorage.token }
-//     });
-//     const parseData = await res.json();
-    
-//     return parseData;
-//   } catch(err) {
-//     console.error(err.message);
-//   }
-// }
-
 function App() {
   const checkAuthenticated = async () => {
     try {

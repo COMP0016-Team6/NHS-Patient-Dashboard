@@ -28,9 +28,7 @@ router.post("/add", authorize, async (req, res) => {
 router.post("/getAll", authorize, async (req, res) => {
   try {
     const user = await pool.query(
-      "SELECT user_id, user_name, user_email FROM users WHERE user_role=$1;",
-      ["Patient"]
-    ); 
+      "SELECT user_id, user_name, user_email FROM users WHERE user_role='Patient';"); 
     res.json(user.rows);
   } catch (err) {
     console.error(err.message);

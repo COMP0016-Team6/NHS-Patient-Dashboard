@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 
 import { toast } from "react-toastify";
@@ -50,7 +50,7 @@ const Login = ({ setAuth, setIsClinician }) => {
   };
 
   return (
-    <Fragment>
+    <>
       <h1 className="mt-5 text-center">Login</h1>
       <form onSubmit={onSubmitForm}>
         <input
@@ -69,10 +69,10 @@ const Login = ({ setAuth, setIsClinician }) => {
           onChange={e => onChange(e)}
           className="form-control my-3"
         />
-        <button className="btn btn-success btn-block">Submit</button>
+        <button type="submit" className="btn btn-success btn-block">Submit</button>
       </form>
       <Link to="/register">register</Link>
-    </Fragment>
+    </>
   );
 };
 

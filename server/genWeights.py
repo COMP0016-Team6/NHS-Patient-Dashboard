@@ -14,19 +14,15 @@ def genData(cur):
     patients = getPatients(cur)
     dateTimeObj = datetime.now()
     # YYYY-MM-DD hh:mm::ss - postgreSQL timestamp type
-    timestamp = dateTimeObj.strftime("%H:%M:%S")
+    timestamp = dateTimeObj.strftime("%m-%d %H:%M:%S")
     for patient_id in patients:
         for year in range(2010, 2022):
-            for month in range(1, 6):
-                for day in range(1, 6):
-                    energy = round(random.random(), 4)
-                    volume = round(random.random(), 4)
-
-                    cur.execute("""
-                    INSERT INTO feed (patient_id, volume, energy, timestamp)
-                    VALUES (%s, %s, %s, %s);
-                    """, (patient_id, volume, energy, f"{str(year)+'-'+str(month)+'-'+str(day) +'- '+timestamp}"))
+            weight = random.randrange(60, 70)
         
+            cur.execute("""
+            INSERT INTO weights (patient_id, weight, timestamp)
+            VALUES (%s, %s, %s);
+            """, (patient_id, weight, f"{str(year) +'-'+ timestamp}"))
 
 if __name__ == "__main__":
     # TODO Later move this information into database.ini file and add that

@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Register = ({ setAuth, setIsClinician }) => {
@@ -10,10 +10,11 @@ const Register = ({ setAuth, setIsClinician }) => {
     role: "Patient",
     age: "",
     gender: "Male",
-    diagnosticConclusion: ""
+    diagnosticConclusion: "",
+    weight: ""
   });
   // for now, no read/write. can do both by default.
-  const { email, password, name, role, age, gender, diagnosticConclusion } = inputs;
+  const { email, password, name, role, age, gender, diagnosticConclusion, weight } = inputs;
 
   const onChange = e =>
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -22,7 +23,7 @@ const Register = ({ setAuth, setIsClinician }) => {
     e.preventDefault();
     try {
       // pass in other data to fill in the patients table
-      const body = { email, password, name, role, age, gender, diagnosticConclusion };
+      const body = { email, password, name, role, age, gender, diagnosticConclusion, weight };
       const res = await fetch(
         "http://localhost:5000/auth/register",
         {
@@ -53,7 +54,7 @@ const Register = ({ setAuth, setIsClinician }) => {
   };
 
   return (
-    <Fragment>
+    <>
       <h1 className="mt-5 text-center">Register</h1>
       <form onSubmit={onSubmitForm}>
         
@@ -92,7 +93,7 @@ const Register = ({ setAuth, setIsClinician }) => {
         {inputs.role==="Clinician"? null : (
             // HANDLE THESE! Store those in the patients table, make sure the onchange works and Later verify the values of inputs
             // make the diagnostic conclusion input a text box
-            <Fragment>
+            <>
               <input
                 type="text"
                 name="age"
@@ -101,12 +102,21 @@ const Register = ({ setAuth, setIsClinician }) => {
                 onChange={e => onChange(e)}
                 className="form-control my-3"
               />
-      
+
+              <input
+                type="text"
+                name="weight"
+                value={weight}
+                placeholder="weight"
+                onChange={e => onChange(e)}
+                className="form-control my-3"
+              />
+
               <select name="gender" value={gender} onChange={e => onChange(e)}>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
-      
+
               {/** Make this an extendable text box */}
               <input
                 type="text"
@@ -116,14 +126,14 @@ const Register = ({ setAuth, setIsClinician }) => {
                 onChange={e => onChange(e)}
                 className="form-control my-3"
               />
-            </Fragment>
+            </>
             )
         }   
 
-        <button className="btn btn-success btn-block mt-5">Submit</button>
+        <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
       </form>
       <Link to="/login">login</Link>
-    </Fragment>
+    </>
   );
 };
 

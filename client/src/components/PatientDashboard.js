@@ -12,7 +12,7 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [changePlan, setChangePlan] = useState(false);
-  const [treatmentPlan, setTreatmentPlan] = useState({target_energy: "", target_volume: ""})
+  const [treatmentPlan, setTreatmentPlan] = useState([])
   const [filter, setFilter] = useState("All Data")
   const [dates, setDates] = useState(null);
   const patient_id = patientID | match.params.id;
@@ -30,6 +30,7 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
     setChangePlan(!changePlan);
   }
 
+  // potentially inline
   const onChangeFilter = e => {
     setFilter(e.target.value);
   }
@@ -45,7 +46,7 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
     e.preventDefault();
     try {
       // pass in other data to fill in the patients table
-      const body = { patient_id: patient_id, description: inputs.description, target_feed_volume: inputs.target_feed_volume, target_feed_energy: inputs.target_feed_energy };
+      const body = { patient_id: patient_id, description: inputs.description, target_feed_volume: inputs.target_feed_volume, target_feed_energy: inputs.target_feed_energy, modified_time: new Date().toLocaleString() };
       const response = await fetch(
         "http://localhost:5000/patientInfo/changeTreatmentPlan",
         {
@@ -60,10 +61,11 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
       
       const parseRes = await response.json(); // do something with the parseRes
       toast.success("Treatment Plan Change Successful!");
-      setTreatmentPlan({
-        target_energy: parseRes.target_feed_energy, 
-        target_volume: parseRes.target_feed_volume
-      });
+      // setTreatmentPlan([...treatmentPlan, {
+      //   modified_time: new Date(parseRes.modified_time),
+      //   target_energy: parseRes.target_feed_energy, 
+      //   target_volume: parseRes.target_feed_volume
+      // }]);
       setInputs(inputsInitial); // reset the state
       setChangePlan(false);
     } catch (err) {
@@ -117,19 +119,29 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
         });
         const parseData = await res.json();
         if (!cancelled) {
-          const last = parseData.length - 1;
-          setTreatmentPlan({
-            target_energy: parseData[last].target_feed_energy, 
-            target_volume: parseData[last].target_feed_volume
-          });
+          let allTreatmentPlans = [];
+
+          for (var i = 0; i < parseData.length; i++) {
+            allTreatmentPlans.push({
+              modified_time: new Date(parseData[i].modified_time),
+              target_energy: parseData[i].target_feed_energy, 
+              target_volume: parseData[i].target_feed_volume,
+              description: parseData[i].description
+            })
+          }
+          if (parseData.length == 0) setTreatmentPlan([{modified_time: "", target_energy: "", target_volume: ""}])
+          else setTreatmentPlan(allTreatmentPlans);
         }
       } catch (err) {
         console.error(err.message);
       }
     };
-    getTreatmentPlan();
+    if (!cancelled) {
+      getTreatmentPlan();
+    }
     return () => cancelled = true; 
   }, [patient_id]);
+
 
   return (
     <div>
@@ -158,13 +170,14 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
         </div>
 
       </div>
-      {patient_id === 0? null:
+      {patient_id === 0 || treatmentPlan.length === 0 ? null:
       <Linechart 
         patient_id={patient_id} 
         type={dataType}
         target_energy={treatmentPlan.target_energy} 
         target_volume={treatmentPlan.target_volume} 
         filter={filter} 
+        treatmentPlan={treatmentPlan}
         dates={formatDates(dates)}
       />}
 
@@ -199,7 +212,7 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
               className="form-control my-3"
             />
           
-          <button className="btn btn-success btn-block mt-5">Submit</button>
+          <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
           <button onClick={changeToggle} className="btn btn-danger btn-block mb-5">Cancel</button>
 
           </form>

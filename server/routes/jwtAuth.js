@@ -8,7 +8,7 @@ const authorize = require("../middleware/authorize");
 
 
 router.post("/register", validInfo, async (req, res) => {
-  const { email, name, password, role, age, gender, diagnosticConclusion } = req.body;
+  const { email, name, password, role, age, gender, diagnosticConclusion, weight } = req.body;
 
   try {
     const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [
@@ -31,8 +31,13 @@ router.post("/register", validInfo, async (req, res) => {
 
     if (role === "Patient") {
       patient = await pool.query(
-        "INSERT INTO patients (patient_id, patient_gender, patient_age, diagnostic_conclusion) VALUES ($1, $2, $3, $4) RETURNING *",
+        "INSERT INTO patients (patient_id, patient_gender, patient_age, diagnostic_conclusion) VALUES ($1, $2, $3, $4);",
         [newUser.rows[0].user_id, gender, age, diagnosticConclusion]
+      );
+
+      new_weight = await pool.query(
+        "INSERT INTO weights (patient_id, weight, timestamp) VALUES ($1, $2, $3);",
+        [newUser.rows[0].user_id, weight, new Date()]
       );
     }
 
