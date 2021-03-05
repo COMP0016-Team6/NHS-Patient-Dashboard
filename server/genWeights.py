@@ -16,7 +16,7 @@ def genData(cur):
     # YYYY-MM-DD hh:mm::ss - postgreSQL timestamp type
     timestamp = dateTimeObj.strftime("%m-%d %H:%M:%S")
     for patient_id in patients:
-        for year in range(2010, 2022):
+        for year in range(2009, 2022):
             weight = random.randrange(60, 70)
         
             cur.execute("""

@@ -17,6 +17,7 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
   const [dates, setDates] = useState(null);
   const patient_id = patientID | match.params.id;
   const [dataType, setDataType] = useState("volume");
+  const [showWeight, setShowWeight] = useState(false);
 
   const inputsInitial = {
     description: "",
@@ -162,13 +163,17 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
           </select>
         </div>
         
-        <div style={{display: 'inline-block'}}>
+        <div className="mr-3" style={{display: 'inline-block'}}>
           <select className="form-control" name="dataType" value={dataType} onChange={e => onChangeType(e)} style={{maxWidth: 250}}>
             <option value="volume">Volume Over Time</option>
             <option value="energy">Energy Intake Over Time</option>
           </select>
         </div>
-
+        
+        <div style={{display: 'inline-block'}}>
+          <input type="checkbox" defaultChecked={showWeight} onClick={() => setShowWeight(!showWeight)} />
+          Show Weight
+        </div>
       </div>
       {patient_id === 0 || treatmentPlan.length === 0 ? null:
       <Linechart 
@@ -179,6 +184,7 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
         filter={filter} 
         treatmentPlan={treatmentPlan}
         dates={formatDates(dates)}
+        showWeight={showWeight}
       />}
 
       { isClinician ? (

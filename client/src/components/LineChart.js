@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 
-const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPlan, filter, dates}) => {
+const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPlan, filter, dates, showWeight}) => {
   const [feed, setFeed] = useState([]);
   const [weights, setWeights] = useState([]);
 
@@ -179,14 +179,16 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
         steppedLine: "middle",
       },
       {
-        lineTension: 0.4,
-        pointRadius: 2,
+        lineTension: 0,
+        pointRadius: 0,
+        borderWidth: 2,
         label: "Weight (kg)",
-        hidden: false,
-        data: filterFeed(filter, feed, dates).map(d=>(findWeights(d.timestamp_date).weight / 100)),
+        hidden: showWeight? false : true,
+        fill: false,
+        data: showWeight? filterFeed(filter, feed, dates).map(d=>(findWeights(d.timestamp_date).weight / 100 - 0.1)) : null,
         //data: feed.map(d=>d.volume),
         backgroundColor: "rgba(52, 191, 110, 0.2)",
-        borderColor: "#0000FF",
+        borderColor: "#07A1FF",
         fontSize: 20
       },
     ]
@@ -225,14 +227,17 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
         label: function(tooltipItem, data) {
           let actual = parseFloat(data.datasets[0].data[tooltipItem.index]);
           let target = parseFloat(data.datasets[1].data[tooltipItem.index]);
+          let weight = parseFloat(data.datasets[2].data[tooltipItem.index]);
+
           let percentageDiff = parseFloat((Math.abs(actual - target) / ((actual + target) / 2)) * 100).toFixed(1);
         
           return ((type === "volume" && target_volume === 0) ||  (type === "energy" && target_energy === 0))? 
             [`Received value: ${actual}`] 
           : (tooltipItem.datasetIndex === 0? 
             [`Received value: ${actual}`, `Percentage difference: ${percentageDiff}%`] 
-            : 
-            [`Target value: ${target}`, `Percentage difference: ${percentageDiff}%`]);
+            : (tooltipItem.datasetIndex === 1?
+            [`Target value: ${target}`, `Percentage difference: ${percentageDiff}%`] :
+            [`Weight: ${(weight+0.1) * 100} kg`]));
         }
       }
     },
