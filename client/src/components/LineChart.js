@@ -1,8 +1,8 @@
-// allow daily, monthly and yearly data filtering
-// also a bar chart
+// potentially allow for a bar chart
 
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { getPatientFeeds } from "../api/fetches";
 
 const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPlan, filter, dates, showWeight}) => {
   const [feed, setFeed] = useState([]);
@@ -12,26 +12,17 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
     let cancelled = false;
     const getFeeds = async () => {
       try {
-        const res = await fetch("http://localhost:5000/getFeeds", {
-          method: "POST",
-          headers: {
-            jwt_token: localStorage.token,
-            "Content-type": "application/json"
-          },
-          body: JSON.stringify({patient_id})
-        });
-        let parseRes = await res.json();
+        let parseRes = await getPatientFeeds(patient_id);
         let parseData = parseRes.feeds;
         let parseWeights = parseRes.weights;
 
         if (!cancelled) {
-          for (var i = 0; i < parseData.length; i++) {
+          for (var i = 0; i < parseData.length; i++)
             parseData[i].timestamp = new Date(parseData[i].timestamp);
-          }
 
-          for (var i = 0; i < parseWeights.length; i++) {
+          for (var i = 0; i < parseWeights.length; i++) 
             parseWeights[i].timestamp = new Date(parseWeights[i].timestamp);
-          }
+          
           setFeed(parseData);
           setWeights(parseWeights);
         }
@@ -44,12 +35,6 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
     }
     return () => cancelled = true;
   }, []);
-
-  // const formatDate = (date) => {
-  //   let newDate = date.toLocaleDateString().split("/");
-  //   date = new Date(parseInt(newDate[2]), parseInt(newDate[1])-1, parseInt(newDate[0]));
-  //   return date;
-  // }
 
   const compareByMonth = (date_range, date) => {
     let lower = [parseInt(date_range[0].getFullYear()), parseInt(date_range[0].getMonth())];
@@ -186,7 +171,6 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
         hidden: showWeight? false : true,
         fill: false,
         data: showWeight? filterFeed(filter, feed, dates).map(d=>(findWeights(d.timestamp_date).weight / 100 - 0.1)) : null,
-        //data: feed.map(d=>d.volume),
         backgroundColor: "rgba(52, 191, 110, 0.2)",
         borderColor: "#07A1FF",
         fontSize: 20
@@ -267,8 +251,6 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
 
   return (
     <div>
-      {/* pass this from the dashboard! and pass the filter as a prop
-      <button onClick={filterToggle} className="btn btn-primary">By day</button>*/}
       <Line data={data} options={options} />
     </div>
   )

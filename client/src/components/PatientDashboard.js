@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import { submitTreatmentPlan, patientProfile } from "../api/fetches";
+import { useInput } from "../useInput";
 import Linechart from "./LineChart";
 import RainbowDatepicker from "./DatePicker";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 
 toast.configure();
-
 
 const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
   const [name, setName] = useState("");
@@ -18,56 +19,23 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
   const patient_id = patientID | match.params.id;
   const [dataType, setDataType] = useState("volume");
   const [showWeight, setShowWeight] = useState(false);
-
-  const inputsInitial = {
-    description: "",
-    target_feed_volume: "",
-    target_feed_energy: ""
-  }
-
-  const [inputs, setInputs] = useState(inputsInitial);
-
-  const changeToggle = () => {
-    setChangePlan(!changePlan);
-  }
-
-  // potentially inline
-  const onChangeFilter = e => {
-    setFilter(e.target.value);
-  }
-
-  const onChangeType = e => {
-    setDataType(e.target.value);
-  }
-
-  const onChange = e =>
-  setInputs({ ...inputs, [e.target.name]: e.target.value });
+  const [description, descriptionField] = useInput({placeholder: "Treatment plan description"});
+  const [target_feed_volume, targetVolField] = useInput({placeholder: "Target Feed Volume"});
+  const [target_feed_energy, targetEnergyField] = useInput({placeholder: "Target Energy Intake (kcal/day)"});
 
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
       // pass in other data to fill in the patients table
-      const body = { patient_id: patient_id, description: inputs.description, target_feed_volume: inputs.target_feed_volume, target_feed_energy: inputs.target_feed_energy, modified_time: new Date().toLocaleString() };
-      const response = await fetch(
-        "http://localhost:5000/patientInfo/changeTreatmentPlan",
-        {
-          method: "POST",
-          headers: {
-            jwt_token: localStorage.token, 
-            "Content-type": "application/json"
-          },
-          body: JSON.stringify(body)
-        }
-      );
-      
-      const parseRes = await response.json(); // do something with the parseRes
+      const parseRes = await submitTreatmentPlan({description, target_feed_volume, target_feed_energy}, patient_id) // do something with the parseRes
+
       toast.success("Treatment Plan Change Successful!");
       // setTreatmentPlan([...treatmentPlan, {
       //   modified_time: new Date(parseRes.modified_time),
       //   target_energy: parseRes.target_feed_energy, 
       //   target_volume: parseRes.target_feed_volume
       // }]);
-      setInputs(inputsInitial); // reset the state
+      // setInputs(inputsInitial); // reset the state
       setChangePlan(false);
     } catch (err) {
       console.error(err.message);
@@ -90,56 +58,33 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
 
     const getProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/dashboard/?id=${patient_id}`, {
-          method: "POST",
-          headers: { jwt_token: localStorage.token }
-        });
-        const parseData = await res.json();
+        const parseRes = await patientProfile(patient_id);
+        const {info, plan} = parseRes;
+
         if (!cancelled) {
-          setName(parseData.user_name);
-          setEmail(parseData.user_email);
-        }
-      } catch (err) {
-        console.error(err.message);
-      }
-    };
-    getProfile();
-    return () => cancelled = true; 
-  }, [patient_id]);
-
-
-  // useEffect for getting the latest target treatment plan of the patient. Store that in the state
-  useEffect(() => {
-    let cancelled = false;
-
-    const getTreatmentPlan = async () => {
-      try {
-        const res = await fetch(`http://localhost:5000/patientInfo/treatmentPlan?id=${patient_id}`, {
-          method: "POST",
-          headers: { jwt_token: localStorage.token }
-        });
-        const parseData = await res.json();
-        if (!cancelled) {
+          setName(info.user_name);
+          setEmail(info.user_email);
+          
+          // for getting the latest target treatment plan of the patient. Store that in the state
           let allTreatmentPlans = [];
-
-          for (var i = 0; i < parseData.length; i++) {
+          
+          // Make this cleaner and better
+          for (var i = 0; i < plan.length; i++) {
             allTreatmentPlans.push({
-              modified_time: new Date(parseData[i].modified_time),
-              target_energy: parseData[i].target_feed_energy, 
-              target_volume: parseData[i].target_feed_volume,
-              description: parseData[i].description
+              modified_time: new Date(plan[i].modified_time),
+              target_energy: plan[i].target_feed_energy, 
+              target_volume: plan[i].target_feed_volume,
+              description: plan[i].description
             })
           }
-          if (parseData.length == 0) setTreatmentPlan([{modified_time: "", target_energy: "", target_volume: ""}])
+          if (plan.length == 0) setTreatmentPlan([{modified_time: "", target_energy: "", target_volume: ""}])
           else setTreatmentPlan(allTreatmentPlans);
         }
       } catch (err) {
         console.error(err.message);
       }
     };
-    if (!cancelled) {
-      getTreatmentPlan();
-    }
+    getProfile();
     return () => cancelled = true; 
   }, [patient_id]);
 
@@ -155,7 +100,7 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
         </div>
 
         <div className="mr-3" style={{display: 'inline-block'}}>
-          <select className="form-control" name="filter" value={filter} onChange={e => onChangeFilter(e)} style={{maxWidth: 150}}>
+          <select className="form-control" name="filter" value={filter} onChange={e => setFilter(e.target.value)} style={{maxWidth: 150}}>
             <option value="All Data">All Data</option>
             <option value="By Day">By Day</option>
             <option value="By Month">By Month</option>
@@ -164,7 +109,7 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
         </div>
         
         <div className="mr-3" style={{display: 'inline-block'}}>
-          <select className="form-control" name="dataType" value={dataType} onChange={e => onChangeType(e)} style={{maxWidth: 250}}>
+          <select className="form-control" name="dataType" value={dataType} onChange={e => setDataType(e.target.value)} style={{maxWidth: 250}}>
             <option value="volume">Volume Over Time</option>
             <option value="energy">Energy Intake Over Time</option>
           </select>
@@ -189,42 +134,15 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
 
       { isClinician ? (
         !changePlan? 
-          <button onClick={changeToggle} className="btn btn-primary mt-5 mb-5">Change Treatment Plan</button> : 
+        <button onClick={() => setChangePlan(!changePlan)} className="btn btn-primary mt-5 mb-5">Change Treatment Plan</button> : 
           <form onSubmit={onSubmitForm}>
-            <input
-              type="text"
-              name="description"
-              value={inputs.description}
-              placeholder="Treatment plan description"
-              onChange={e => onChange(e)}
-              className="form-control my-3"
-            />
-
-            <input
-              type="text"
-              name="target_feed_volume"
-              value={inputs.target_feed_volume}
-              placeholder="Target Feed Volume "
-              onChange={e => onChange(e)}
-              className="form-control my-3"
-            />
-
-          <input
-              type="text"
-              name="target_feed_energy"
-              value={inputs.target_feed_energy}
-              placeholder="Target Energy Intake (kcal/day)"
-              onChange={e => onChange(e)}
-              className="form-control my-3"
-            />
-          
-          <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
-          <button onClick={changeToggle} className="btn btn-danger btn-block mb-5">Cancel</button>
-
+            {descriptionField}
+            {targetVolField}
+            {targetEnergyField}
+            <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
+            <button onClick={() => setChangePlan(!changePlan)} className="btn btn-danger btn-block mb-5">Cancel</button>
           </form>
-        ) : (
-          <button onClick={logout} className="btn btn-primary mt-5"> Logout </button>
-        )
+        ) : ( <button onClick={logout} className="btn btn-primary mt-5"> Logout </button> )
       }
     </div>
   );

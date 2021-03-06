@@ -1,33 +1,20 @@
-import React, { Fragment, useState, useEffect } from "react";
-import { Link, Redirect } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { allPatients, submitAddPatients } from "../api/fetches";
 import { toast } from "react-toastify";
 import SearchBar from "./SearchBar";
 
-// I need both the list of all patients and the patients I am currently supervising
-// as well as a method for updating my list of supervised patients
-
 const AddPatients = ({ myPatients, setMyPatients }) => {
-  const [allPatients, setAllPatients] = useState([]); // all patients
+  const [allPatients, setAllPatients] = useState([]);
 
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const res = await fetch(
-        "http://localhost:5000/myPatients/add",
-        {
-          method: "POST",
-          headers: { 
-            jwt_token: localStorage.token, 
-            "Content-type": "application/json"
-          },
-          body: JSON.stringify(myPatients)
-        }
-      );
-      const parseData = await res.json();
-      if (parseData.result === "success") {
+      const parseRes = await submitAddPatients(myPatients);
+      if (parseRes.result === "success") {
         toast.success("Patients are successfully added!");
       } else {
-        toast.success(parseData);
+        toast.success(parseRes);
       }
     } catch (err) {
         console.error(err.message);
@@ -36,16 +23,11 @@ const AddPatients = ({ myPatients, setMyPatients }) => {
 
   useEffect(() => {
     let cancelled = false;
-
     const getAllPatients = async () => {
       try {
-        const res = await fetch("http://localhost:5000/myPatients/getAll", {
-          method: "POST",
-          headers: { jwt_token: localStorage.token }
-        });
-        const parseData = await res.json();
+        const parseRes =  await allPatients();
         if (!cancelled) {
-          setAllPatients(parseData);
+          setAllPatients(parseRes);
         }
         
       } catch (err) {

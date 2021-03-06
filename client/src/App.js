@@ -43,8 +43,10 @@ function App() {
     }
   };
 
+  // do I need a nested async await function here since checkAuthenticated is async?
   useEffect(() => {
-    checkAuthenticated();
+    const auth = async() => await checkAuthenticated();
+    auth();
   }, []);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);

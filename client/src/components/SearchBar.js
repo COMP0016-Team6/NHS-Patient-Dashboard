@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from "react";
+import { useInput } from "../useInput";
 import {Link} from "react-router-dom";
 
 const SearchBar = ({ patients, select, myPatients, setMyPatients }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, searchTermField] = useInput({placeholder:"Search By Name"});
   const [searchResults, setSearchResults] = useState([]);
-  const onChange = e => {
-    setSearchTerm(e.target.value);
-  }
 
   const containerStyles = {
     maxWidth: 400,
@@ -32,14 +30,7 @@ const SearchBar = ({ patients, select, myPatients, setMyPatients }) => {
 
   return (
     <>
-      <input
-        type="text"
-        placeholder="Search By Name"
-        value={searchTerm}
-        className="form-control my-3"
-        style={containerStyles}
-        onChange={onChange}      
-      />
+      {searchTermField}
       <div>
         {searchTerm === ""?
           patients.map(patient => (

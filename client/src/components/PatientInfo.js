@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { patientInfo } from "../api/fetches";
 import TreatmentHistory from "./TreatmentHistory";
 
 const PatientInfo = ({ match }) => {
@@ -20,15 +21,10 @@ const PatientInfo = ({ match }) => {
     let cancelled = false;
     const getPatientInfo = async() => {
       try {
-        const res = await fetch(`http://localhost:5000/patientInfo/?id=${patient_id}`, {
-            method: "POST",
-            headers: { jwt_token: localStorage.token,
-              "Content-type": "application/json"
-            }
-        });
-        const parseRes = await res.json();
-        const parseData = parseRes.info;
-        const parseWeight = parseRes.weight;
+        const parseRes = await patientInfo(patient_id);
+        const parseData = parseRes.info.info;
+        const parseWeight = parseRes.info.weight;
+        const parsePlan = parseRes.plan; // treatment plan
 
         if (!cancelled) {
           setInfo({
@@ -39,45 +35,29 @@ const PatientInfo = ({ match }) => {
             diagnostic_conclusion: parseData.diagnostic_conclusion
           });
           if (parseWeight) setWeight(parseWeight);
+
+          let allTreatmentPlans = [];
+
+          for (var i = 0; i < parsePlan.length; i++) {
+            allTreatmentPlans.push({
+              modified_time: new Date(parsePlan[i].modified_time),
+              target_energy: parsePlan[i].target_feed_energy, 
+              target_volume: parsePlan[i].target_feed_volume,
+              description: parsePlan[i].description
+            })
+          }
+          // if (parseData.length == 0) setTreatmentPlan([{modified_time: "", target_energy: "", target_volume: ""}])
+          if (parsePlan.length != 0) setTreatmentPlan(allTreatmentPlans);
         }
-        console.log(parseData);
       } catch(err) {
           console.error(err.message);
       }
     };
-
-    const getTreatmentPlan = async () => {
-      try {
-        const res = await fetch(`http://localhost:5000/patientInfo/treatmentPlan?id=${patient_id}`, {
-          method: "POST",
-          headers: { jwt_token: localStorage.token }
-        });
-        const parseData = await res.json();
-        if (!cancelled) {
-          let allTreatmentPlans = [];
-
-          for (var i = 0; i < parseData.length; i++) {
-            allTreatmentPlans.push({
-              modified_time: new Date(parseData[i].modified_time),
-              target_energy: parseData[i].target_feed_energy, 
-              target_volume: parseData[i].target_feed_volume,
-              description: parseData[i].description
-            })
-          }
-        // if (parseData.length == 0) setTreatmentPlan([{modified_time: "", target_energy: "", target_volume: ""}])
-          if (parseData.length != 0) setTreatmentPlan(allTreatmentPlans);
-        }
-      } catch (err) {
-        console.error(err.message);
-      }
-    };
     getPatientInfo();
-    getTreatmentPlan();
     return () => cancelled = true; 
   }, []);
   
   const onChange = e => setWeight(e.target.value);
-
 
   const changeWeight = async () => {
     try {
@@ -95,7 +75,6 @@ const PatientInfo = ({ match }) => {
       console.error(err.message);
     }
   }
-
 
   // edit the returning jsx
   return (
@@ -124,7 +103,6 @@ const PatientInfo = ({ match }) => {
           <TreatmentHistory treatmentPlan={treatmentPlan} />
           }
           </div>
-          
         </div>
       ) 
       }

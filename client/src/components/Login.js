@@ -1,38 +1,20 @@
-import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
+import { useInput } from "../useInput";
+import { loginUser } from "../api/fetches";
 
 import { toast } from "react-toastify";
 
 const Login = ({ setAuth, setIsClinician }) => {
-  const [inputs, setInputs] = useState({
-    email: "",
-    password: ""
-  });
 
-  const { email, password } = inputs;
-
-  const onChange = e =>
-    setInputs({ ...inputs, [e.target.name]: e.target.value });
+  const [email, emailField] = useInput({placeholder: "email"});
+  const [password, passwordField] = useInput({type:"password", placeholder:"password"});
 
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const body = { email, password };
-      const response = await fetch(
-        "http://localhost:5000/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json"
-          },
-          body: JSON.stringify(body)
-        }
-      );
+      const parseRes = await loginUser({email, password});
 
-      const parseRes = await response.json();
-      
-      // console.log(parseRes);
-    
       if (parseRes.jwtToken) {
         localStorage.setItem("token", parseRes.jwtToken);
         setAuth(true);
@@ -41,9 +23,7 @@ const Login = ({ setAuth, setIsClinician }) => {
         setAuth(false);
         toast.error(parseRes);
       }
-
-      parseRes.user.user_role === "Clinician"? setIsClinician(true) : setIsClinician(false);
-      
+      setIsClinician(parseRes.user.user_role === "Clinician");
     } catch (err) {
       console.error(err.message);
     }
@@ -53,22 +33,8 @@ const Login = ({ setAuth, setIsClinician }) => {
     <>
       <h1 className="mt-5 text-center">Login</h1>
       <form onSubmit={onSubmitForm}>
-        <input
-          type="text"
-          name="email"
-          placeholder="email"
-          value={email}
-          onChange={e => onChange(e)}
-          className="form-control my-3"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="password"
-          value={password}
-          onChange={e => onChange(e)}
-          className="form-control my-3"
-        />
+        {emailField}
+        {passwordField}
         <button type="submit" className="btn btn-success btn-block">Submit</button>
       </form>
       <Link to="/register">register</Link>

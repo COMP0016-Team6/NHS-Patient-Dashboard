@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { DatePicker } from "react-rainbow-components";
 
 export default function RainbowDatepicker({dates, setDates}) {
