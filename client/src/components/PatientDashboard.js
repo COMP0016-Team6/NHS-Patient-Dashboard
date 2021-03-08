@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { submitTreatmentPlan, patientProfile } from "../api/fetches";
+import { submitTreatmentPlan, patientAllInfo } from "../api/fetches";
 import { useInput } from "../useInput";
 import Linechart from "./LineChart";
 import RainbowDatepicker from "./DatePicker";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
+import { patientProfile } from "../state/action";
 
 toast.configure();
 
-const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+const PatientDashboard = ({ match, logout }) => {
+  const dispatch = useDispatch();
+  const user_id = useSelector(state => state.user_id);
+  const name = useSelector(state => state.patientInfo.user_name);
+  const patientID = useSelector(state => state.patientInfo.user_id);
+  const isClinician = useSelector(state => state.isClinician);
+  const patient_id = !isClinician? user_id : patientID | match.params.id;
+
   const [changePlan, setChangePlan] = useState(false);
-  const [treatmentPlan, setTreatmentPlan] = useState([])
   const [filter, setFilter] = useState("All Data")
   const [dates, setDates] = useState(null);
-  const patient_id = patientID | match.params.id;
   const [dataType, setDataType] = useState("volume");
   const [showWeight, setShowWeight] = useState(false);
   const [description, descriptionField] = useInput({placeholder: "Treatment plan description"});
@@ -27,15 +32,8 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
     e.preventDefault();
     try {
       // pass in other data to fill in the patients table
-      const parseRes = await submitTreatmentPlan({description, target_feed_volume, target_feed_energy}, patient_id) // do something with the parseRes
-
+      const parseRes = await submitTreatmentPlan({description, target_feed_volume, target_feed_energy}, patient_id); // do something with the parseRes
       toast.success("Treatment Plan Change Successful!");
-      // setTreatmentPlan([...treatmentPlan, {
-      //   modified_time: new Date(parseRes.modified_time),
-      //   target_energy: parseRes.target_feed_energy, 
-      //   target_volume: parseRes.target_feed_volume
-      // }]);
-      // setInputs(inputsInitial); // reset the state
       setChangePlan(false);
     } catch (err) {
       console.error(err.message);
@@ -58,28 +56,9 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
 
     const getProfile = async () => {
       try {
-        const parseRes = await patientProfile(patient_id);
-        const {info, plan} = parseRes;
-
-        if (!cancelled) {
-          setName(info.user_name);
-          setEmail(info.user_email);
-          
-          // for getting the latest target treatment plan of the patient. Store that in the state
-          let allTreatmentPlans = [];
-          
-          // Make this cleaner and better
-          for (var i = 0; i < plan.length; i++) {
-            allTreatmentPlans.push({
-              modified_time: new Date(plan[i].modified_time),
-              target_energy: plan[i].target_feed_energy, 
-              target_volume: plan[i].target_feed_volume,
-              description: plan[i].description
-            })
-          }
-          if (plan.length == 0) setTreatmentPlan([{modified_time: "", target_energy: "", target_volume: ""}])
-          else setTreatmentPlan(allTreatmentPlans);
-        }
+        const parseRes = await patientAllInfo(patient_id);
+        if (!cancelled)
+          dispatch(patientProfile(parseRes));
       } catch (err) {
         console.error(err.message);
       }
@@ -120,14 +99,11 @@ const PatientDashboard = ({ match,  isClinician, patientID, logout }) => {
           Show Weight
         </div>
       </div>
-      {patient_id === 0 || treatmentPlan.length === 0 ? null:
+      {patient_id === 0? null :
       <Linechart 
         patient_id={patient_id} 
         type={dataType}
-        target_energy={treatmentPlan.target_energy} 
-        target_volume={treatmentPlan.target_volume} 
-        filter={filter} 
-        treatmentPlan={treatmentPlan}
+        filter={filter}
         dates={formatDates(dates)}
         showWeight={showWeight}
       />}

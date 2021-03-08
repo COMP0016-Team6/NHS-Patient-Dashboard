@@ -8,7 +8,7 @@ router.post("/", authorize, async (req, res) => {
 
   try {
     const user = await pool.query(
-      "SELECT user_name, user_email, patient_gender, patient_age, diagnostic_conclusion FROM patients INNER JOIN users ON patient_id=user_id WHERE patient_id = $1",
+      "SELECT user_id, user_name, user_email, patient_gender, patient_age, diagnostic_conclusion FROM patients INNER JOIN users ON patient_id=user_id WHERE patient_id = $1",
       [patient_id] 
     );
     const weight = await pool.query(

@@ -1,4 +1,6 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { loggedIn, loggedOut } from "./state/action";
 
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -19,10 +21,14 @@ import PatientDashboard from "./components/PatientDashboard";
 import PatientInfo from "./components/PatientInfo";
 import AddPatients from "./components/AddPatients";
 
-
 toast.configure();
 
 function App() {
+
+  const isAuth = useSelector(state => state.isAuth);
+  const isClinician = useSelector(state => state.isClinician);  
+  const dispatch = useDispatch();
+
   const checkAuthenticated = async () => {
     try {
       const res = await fetch("http://localhost:5000/auth/verify", {
@@ -30,111 +36,74 @@ function App() {
         headers: { jwt_token: localStorage.token }
       });
 
-      // user_id, user_name, user_email, user_role
-      const parseRes = await res.json();
-      parseRes.auth === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-      
-      // { user_id: , user_name: , user_email: , user_role: }
-      // console.log(parseRes.user);
-      parseRes.user.user_role === "Clinician"? setIsClinician(true) : setIsClinician(false);
-      setUserId(parseRes.user.user_id)
+      const parseRes = await res.json(); // user_id, user_name, user_email, user_role
+      const user = parseRes.user;
+      parseRes.auth === true ? dispatch(loggedIn(user.user_role, user.user_id, user.user_name, user.user_email)) : dispatch(loggedOut());
     } catch (err) {
       console.error(err.message);
     }
   };
 
-  // do I need a nested async await function here since checkAuthenticated is async?
   useEffect(() => {
     const auth = async() => await checkAuthenticated();
     auth();
   }, []);
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isClinician, setIsClinician] = useState(false);
-  const [user_id, setUserId] = useState(0);
-  const [myPatients, setMyPatients] = useState([]);
-
+  // should I still keep passing this as a prop?
+  // or is there a nice way around it?
   const logout = () => {
     localStorage.removeItem("token");
     toast.success("Logged out Successfully");
-    setIsAuthenticated(false);
-    setIsClinician(false);
+    dispatch(loggedOut());
   } 
 
   return (
-    <Fragment>
+    <>
       <Router>
         <div className="container">
           <Switch>
             <Route
               exact
               path="/login"
-              render={props =>
-                !isAuthenticated ? (
-                  <Login {...props} setAuth={setIsAuthenticated} setIsClinician={setIsClinician} />
-                ) : (
-                  <Redirect to="/dashboard" />
-                )
-              }
+              render={ props => !isAuth? <Login {...props} /> : <Redirect to="/dashboard" /> }
             />
             <Route
               exact
               path="/register"
-              render={props =>
-                !isAuthenticated ? (
-                  <Register {...props} setAuth={setIsAuthenticated} setIsClinician={setIsClinician} />
-                ) : (
-                  <Redirect to="/dashboard" />
-                )
-              }
+              render={ props => !isAuth? <Register {...props} /> : <Redirect to="/dashboard" /> }
             />
             <Route
               exact
               path="/dashboard"
-              render={props =>
-                isAuthenticated ? (
-                  !isClinician? (<PatientDashboard {...props} isClinician={false} patientID={user_id} logout={logout} />) : (<ClinicianDashboard {...props} patients={myPatients} setPatients={setMyPatients} logout={logout} />)
-                ) : (
-                  <Redirect to="/login" />
-                )
+              render={ props =>
+                isAuth? (
+                  !isClinician? <PatientDashboard {...props} logout={logout} /> : <ClinicianDashboard {...props} logout={logout} />
+                ) : <Redirect to="/login" />
               }
             />
-
             <Route
               exact
               path="/addPatients"
-              render={props =>
-                isAuthenticated ? (
-                  !isClinician? (<PatientDashboard {...props} isClinician={false} patientID={user_id} logout={logout} />) : (<AddPatients myPatients={myPatients} setMyPatients={setMyPatients} {...props} />)
-                ) : (
-                  <Redirect to="/login" />
-                )
+              render={ props =>
+                isAuth? (
+                  !isClinician? <PatientDashboard {...props} logout={logout} /> : <AddPatients {...props} />
+                ) : <Redirect to="/login" />
               }
             />
-
             <Route
               path="/dashboard/:id"
-              render={props => // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
-                // TODO: CHECK IF THE CLINICIAN SUPERVISES THE PATIENT AT ALL, IF NO, DONT LET IT ACCESS IT!
-                
-                isAuthenticated ? <PatientDashboard isClinician={true} {...props} /> : <Redirect to="/login" />
-              }
+              // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
+              render={ props => isAuth? <PatientDashboard {...props} /> : <Redirect to="/login" /> }
             />
-
-          {/* need patientInfo/:id! */}
             <Route
               path="/patientInfo/:id"
-              render={props => // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
-                // TODO: CHECK IF THE CLINICIAN SUPERVISES THE PATIENT AT ALL, IF NO, DONT LET IT ACCESS IT!
-                
-                isAuthenticated ? <PatientInfo {...props} /> : <Redirect to="/login" />
-              }
+              // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
+              render={ props => isAuth? <PatientInfo {...props} /> : <Redirect to="/login" /> }
             />
-
           </Switch>
         </div>
       </Router>
-    </Fragment>
+    </>
   );
 }
 

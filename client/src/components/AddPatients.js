@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { allPatients, submitAddPatients } from "../api/fetches";
+import { submitAddPatients } from "../api/fetches";
 import { toast } from "react-toastify";
 import SearchBar from "./SearchBar";
 
@@ -44,7 +44,7 @@ const AddPatients = ({ myPatients, setMyPatients }) => {
       <button className="btn btn-primary mt-5">Back</button>
     </Link>
     <form className="mt-5" onSubmit={onSubmitForm}>
-      <SearchBar patients={allPatients} select={true} myPatients={myPatients} setMyPatients={setMyPatients} />
+      <SearchBar select={true} />
         <button className="btn btn-success btn-block mt-5">Submit</button>
       </form>
     </>

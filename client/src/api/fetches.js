@@ -34,22 +34,15 @@ export async function loginUser(inputs) {
   return parseRes;
 }
 
-export async function clinicianProfile() {
-  let res = await fetch("http://localhost:5000/dashboard/", {
-    method: "POST",
-    headers: { jwt_token: localStorage.token }
-  });
-  
-  const clinicianInfo = await res.json();
-  
-  res = await fetch("http://localhost:5000/myPatients", {
+export async function cliniciansProfile() {
+  const res = await fetch("http://localhost:5000/myPatients", {
     method: "POST",
     headers: { jwt_token: localStorage.token }
   });
 
-  const myPatients = await res.json();
-
-  return {clinician: clinicianInfo, patients: myPatients};
+  const parseRes = await res.json();
+  
+  return parseRes
 }
 
 export async function submitTreatmentPlan(inputs, patient_id) {
@@ -72,6 +65,7 @@ export async function submitTreatmentPlan(inputs, patient_id) {
   return parseRes;
 }
 
+// ---
 export async function patientPlan(patient_id) {
   const res = await fetch(`http://localhost:5000/patientInfo/treatmentPlan?id=${patient_id}`, {
     method: "POST",
@@ -82,18 +76,18 @@ export async function patientPlan(patient_id) {
   return parseRes;
 }
 
-export async function patientProfile(patient_id) {
-  const res = await fetch(`http://localhost:5000/dashboard/?id=${patient_id}`, {
-    method: "POST",
-    headers: { jwt_token: localStorage.token }
-  });
-  // why dont I just get the "full info"?
-  const patientBaseInfo = await res.json();
+// export async function patientProfile(patient_id) {
+//   const res = await fetch(`http://localhost:5000/dashboard/?id=${patient_id}`, {
+//     method: "POST",
+//     headers: { jwt_token: localStorage.token }
+//   });
+//   // why dont I just get the "full info"?
+//   const patientBaseInfo = await res.json();
 
-  const patientTreatmentPlan = await patientPlan(patient_id);
+//   const patientTreatmentPlan = await patientPlan(patient_id);
 
-  return { info: patientBaseInfo, plan: patientTreatmentPlan };
-}
+//   return { info: patientBaseInfo, plan: patientTreatmentPlan };
+// }
 
 export async function allPatients() {
   const res = await fetch("http://localhost:5000/myPatients/getAll", {
@@ -122,6 +116,7 @@ export async function submitAddPatients(myPatients) {
   return parseRes;
 }
 
+// ---
 export async function getPatientFeeds(patient_id) {
   const res = await fetch("http://localhost:5000/getFeeds", {
     method: "POST",
@@ -136,15 +131,29 @@ export async function getPatientFeeds(patient_id) {
   return parseRes;
 }
 
-export async function patientInfo(patient_id) {
+export async function patientAllInfo(patient_id) {
   const res = await fetch(`http://localhost:5000/patientInfo/?id=${patient_id}`, {
     method: "POST",
     headers: { jwt_token: localStorage.token,
       "Content-type": "application/json"
     }
   });
-  const patientFullInfo = await res.json();
+  const patientInfo = await res.json();
   const patientTreatmentPlan = await patientPlan(patient_id);
+  const patientFeeds = await getPatientFeeds(patient_id);
   
-  return { info: patientFullInfo, plan: patientTreatmentPlan };
-} 
+  return { info: patientInfo.info, cur_weight: patientInfo.weight, plan: patientTreatmentPlan, feed: patientFeeds };
+}
+
+// export async function patientInfo(patient_id) {
+//   const res = await fetch(`http://localhost:5000/patientInfo/?id=${patient_id}`, {
+//     method: "POST",
+//     headers: { jwt_token: localStorage.token,
+//       "Content-type": "application/json"
+//     }
+//   });
+//   const patientFullInfo = await res.json();
+//   const patientTreatmentPlan = await patientPlan(patient_id);
+  
+//   return { info: patientFullInfo, plan: patientTreatmentPlan };
+// } 

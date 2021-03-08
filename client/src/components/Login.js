@@ -1,12 +1,14 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { loggedIn, loggedOut } from "../state/action";
 import { Link } from "react-router-dom";
 import { useInput } from "../useInput";
 import { loginUser } from "../api/fetches";
 
 import { toast } from "react-toastify";
 
-const Login = ({ setAuth, setIsClinician }) => {
-
+const Login = () => {
+  const dispatch = useDispatch();
   const [email, emailField] = useInput({placeholder: "email"});
   const [password, passwordField] = useInput({type:"password", placeholder:"password"});
 
@@ -14,16 +16,15 @@ const Login = ({ setAuth, setIsClinician }) => {
     e.preventDefault();
     try {
       const parseRes = await loginUser({email, password});
-
+      const user = parseRes.user;
       if (parseRes.jwtToken) {
         localStorage.setItem("token", parseRes.jwtToken);
-        setAuth(true);
+        dispatch(loggedIn(user.user_role, user.user_id, user.user_name, user.user_email));
         toast.success("Logged in Successfully");
       } else {
-        setAuth(false);
+        dispatch(loggedOut());
         toast.error(parseRes);
       }
-      setIsClinician(parseRes.user.user_role === "Clinician");
     } catch (err) {
       console.error(err.message);
     }

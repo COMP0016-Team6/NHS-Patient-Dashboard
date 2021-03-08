@@ -1,40 +1,28 @@
 // potentially allow for a bar chart
-
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import { getPatientFeeds } from "../api/fetches";
+import { useSelector, useDispatch } from "react-redux";
 
-const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPlan, filter, dates, showWeight}) => {
-  const [feed, setFeed] = useState([]);
-  const [weights, setWeights] = useState([]);
+const Linechart = ({ type, filter, dates, showWeight }) => {
+  const patientFeed = useSelector(state => state.patientFeed);
+  console.log(patientFeed);
+  const treatmentPlan = useSelector(state => state.patientPlan);
+  const { feeds, weights } = patientFeed;
 
-  useEffect(() => {
-    let cancelled = false;
-    const getFeeds = async () => {
-      try {
-        let parseRes = await getPatientFeeds(patient_id);
-        let parseData = parseRes.feeds;
-        let parseWeights = parseRes.weights;
+        // let parseRes = await getPatientFeeds(patient_id);
+        // let parseData = parseRes.feeds;
+        // let parseWeights = parseRes.weights;
 
-        if (!cancelled) {
-          for (var i = 0; i < parseData.length; i++)
-            parseData[i].timestamp = new Date(parseData[i].timestamp);
+        // if (!cancelled) {
+        //   for (var i = 0; i < parseData.length; i++)
+        //     parseData[i].timestamp = new Date(parseData[i].timestamp);
 
-          for (var i = 0; i < parseWeights.length; i++) 
-            parseWeights[i].timestamp = new Date(parseWeights[i].timestamp);
+        //   for (var i = 0; i < parseWeights.length; i++) 
+        //     parseWeights[i].timestamp = new Date(parseWeights[i].timestamp);
           
-          setFeed(parseData);
-          setWeights(parseWeights);
-        }
-      } catch (err) {
-        console.error(err.message);
-      }
-    };
-    if (!cancelled) {
-      getFeeds();
-    }
-    return () => cancelled = true;
-  }, []);
+        //   setFeed(parseData);
+        //   setWeights(parseWeights);
+
 
   const compareByMonth = (date_range, date) => {
     let lower = [parseInt(date_range[0].getFullYear()), parseInt(date_range[0].getMonth())];
@@ -58,14 +46,14 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
     return false;
   }
 
-  const filterFeed = (filter, feed, dates) => {
+  const filterFeed = (filter, dates) => {
     let newFeed = [];
     // let formattedDate;
     if (filter === "All Data") {
-      for (var i = 0; i < feed.length; i++) {
-        // formattedDate = formatDate(feed[i].timestamp);
-        if (dates === null || (dates[0] <= feed[i].timestamp && feed[i].timestamp <= dates[1])) {
-          newFeed.push({"volume": feed[i].volume, "energy": feed[i].energy, "timestamp": feed[i].timestamp.toLocaleString(), "timestamp_date": feed[i].timestamp});
+      for (var i = 0; i < feeds.length; i++) {
+        // formattedDate = formatDate(feeds[i].timestamp);
+        if (dates === null || (dates[0] <= feeds[i].timestamp && feeds[i].timestamp <= dates[1])) {
+          newFeed.push({"volume": feeds[i].volume, "energy": feeds[i].energy, "timestamp": feeds[i].timestamp.toLocaleString(), "timestamp_date": feeds[i].timestamp});
         }
       }
       return newFeed;
@@ -78,22 +66,22 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
     else if (filter === "By Year") options = { year: 'numeric' };
 
     var i = 0;
-    while (i < feed.length) {
-      let byDay = (dates===null || dates.length != 2) || (filter === "By Day" && (dates[0] <= feed[i].timestamp && feed[i].timestamp <= dates[1]));
-      let byMonth = (dates===null || dates.length != 2) || (filter === "By Month" && compareByMonth(dates, feed[i].timestamp));
-      let byYear = (dates===null || dates.length != 2) || (filter === "By Year" && (dates[0].getFullYear() <= feed[i].timestamp.getFullYear() && feed[i].timestamp.getFullYear() <= dates[1].getFullYear()));  
+    while (i < feeds.length) {
+      let byDay = (dates===null || dates.length != 2) || (filter === "By Day" && (dates[0] <= feeds[i].timestamp && feeds[i].timestamp <= dates[1]));
+      let byMonth = (dates===null || dates.length != 2) || (filter === "By Month" && compareByMonth(dates, feeds[i].timestamp));
+      let byYear = (dates===null || dates.length != 2) || (filter === "By Year" && (dates[0].getFullYear() <= feeds[i].timestamp.getFullYear() && feeds[i].timestamp.getFullYear() <= dates[1].getFullYear()));  
 
       if (byDay || byMonth || byYear) { 
         let start = i;
-        let sumVolume = feed[i].volume;
-        let sumEnergy = feed[i].energy;
-        let cur_date = feed[i].timestamp;
-        let cur_date_format = feed[i].timestamp.toLocaleDateString(undefined, options);
+        let sumVolume = feeds[i].volume;
+        let sumEnergy = feeds[i].energy;
+        let cur_date = feeds[i].timestamp;
+        let cur_date_format = feeds[i].timestamp.toLocaleDateString(undefined, options);
         i++;
         
-        while (i < feed.length && cur_date_format == feed[i].timestamp.toLocaleDateString(undefined, options)) {
-          sumVolume += feed[i].volume;
-          sumEnergy += feed[i].energy;
+        while (i < feeds.length && cur_date_format == feeds[i].timestamp.toLocaleDateString(undefined, options)) {
+          sumVolume += feeds[i].volume;
+          sumEnergy += feeds[i].energy;
           i++;
         }
         newFeed.push({"volume": (parseFloat(sumVolume/(i - start)).toFixed(2)), "energy": (parseFloat(sumEnergy/(i - start)).toFixed(2)), "timestamp": cur_date_format, "timestamp_date": cur_date});
@@ -136,17 +124,17 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
   }
  
   const data = {
-    labels: filterFeed(filter, feed, dates).map(d=>d.timestamp),
+    labels: filterFeed(filter, dates).map(d=>d.timestamp),
     
-    // labels: feed.map(d=>d.timestamp.toLocaleString()),
+    // labels: feeds.map(d=>d.timestamp.toLocaleString()),
     datasets: [
       {
         lineTension: 0.4,
         pointRadius: 3,
         label: "Actual Feed",
         hidden: false,
-        data: type==="volume"? filterFeed(filter, feed, dates).map(d=>d.volume) : filterFeed(filter, feed, dates).map(d=>d.energy),
-        //data: feed.map(d=>d.volume),
+        data: type==="volume"? filterFeed(filter, dates).map(d=>d.volume) : filterFeed(filter, dates).map(d=>d.energy),
+        //data: feeds.map(d=>d.volume),
         fill: true,
         backgroundColor: "rgba(52, 191, 110, 0.2)",
         borderColor: "#27AE60",
@@ -157,7 +145,7 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
         pointRadius: 0,
         borderWidth: 2,
         label: "Prescribed Feed",
-        data: type==="volume"? filterFeed(filter, feed, dates).map(d => (findTargetVals(d.timestamp_date).target_volume)) : filterFeed(filter, feed, dates).map(d => (findTargetVals(d.timestamp_date).target_energy)),
+        data: type==="volume"? filterFeed(filter, dates).map(d => (findTargetVals(d.timestamp_date).target_volume)) : filterFeed(filter, dates).map(d => (findTargetVals(d.timestamp_date).target_energy)),
         borderColor: "#EB5757",
         fill: false,
         borderDash: [35,20],
@@ -170,7 +158,7 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
         label: "Weight (kg)",
         hidden: showWeight? false : true,
         fill: false,
-        data: showWeight? filterFeed(filter, feed, dates).map(d=>(findWeights(d.timestamp_date).weight / 100 - 0.1)) : null,
+        data: showWeight? filterFeed(filter, dates).map(d=>(findWeights(d.timestamp_date).weight / 100 - 0.1)) : null,
         backgroundColor: "rgba(52, 191, 110, 0.2)",
         borderColor: "#07A1FF",
         fontSize: 20
@@ -215,7 +203,7 @@ const Linechart = ({patient_id, type, target_energy, target_volume, treatmentPla
 
           let percentageDiff = parseFloat((Math.abs(actual - target) / ((actual + target) / 2)) * 100).toFixed(1);
         
-          return ((type === "volume" && target_volume === 0) ||  (type === "energy" && target_energy === 0))? 
+          return ((type === "volume" && treatmentPlan.target_volume === 0) ||  (type === "energy" && treatmentPlan.target_energy === 0))? 
             [`Received value: ${actual}`] 
           : (tooltipItem.datasetIndex === 0? 
             [`Received value: ${actual}`, `Percentage difference: ${percentageDiff}%`] 

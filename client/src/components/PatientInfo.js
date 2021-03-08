@@ -1,63 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { patientInfo } from "../api/fetches";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import TreatmentHistory from "./TreatmentHistory";
 
-const PatientInfo = ({ match }) => {
-  const initialInfo = {
-    patient_name: "",
-    patient_email: "",
-    patient_gender: "",
-    patient_age: "", // change to DOB
-    diagnostic_conclusion: ""
-  };
+const PatientInfo = () => {
+  const treatmentPlan = useSelector(state => state.patientPlan);
+  const patientInfo = useSelector(state => state.patientInfo);
+  const { patient_id, patient_name, patient_email, patient_gender, patient_age, diagnosis, patient_weight } = patientInfo;
 
-  const [treatmentPlan, setTreatmentPlan] = useState([])
-  const patient_id = match.params.id;
-  const [weight, setWeight] = useState(0);
-  const [info, setInfo] = useState(initialInfo);
+  // after updating you can say "The weight will soon be changed..."
   const [isChangeWeight, setChangeWeight] = useState(false);
-
-  useEffect (() => {
-    let cancelled = false;
-    const getPatientInfo = async() => {
-      try {
-        const parseRes = await patientInfo(patient_id);
-        const parseData = parseRes.info.info;
-        const parseWeight = parseRes.info.weight;
-        const parsePlan = parseRes.plan; // treatment plan
-
-        if (!cancelled) {
-          setInfo({
-            patient_name: parseData.user_name,
-            patient_email: parseData.user_email,
-            patient_gender: parseData.patient_gender,
-            patient_age: parseData.patient_age,
-            diagnostic_conclusion: parseData.diagnostic_conclusion
-          });
-          if (parseWeight) setWeight(parseWeight);
-
-          let allTreatmentPlans = [];
-
-          for (var i = 0; i < parsePlan.length; i++) {
-            allTreatmentPlans.push({
-              modified_time: new Date(parsePlan[i].modified_time),
-              target_energy: parsePlan[i].target_feed_energy, 
-              target_volume: parsePlan[i].target_feed_volume,
-              description: parsePlan[i].description
-            })
-          }
-          // if (parseData.length == 0) setTreatmentPlan([{modified_time: "", target_energy: "", target_volume: ""}])
-          if (parsePlan.length != 0) setTreatmentPlan(allTreatmentPlans);
-        }
-      } catch(err) {
-          console.error(err.message);
-      }
-    };
-    getPatientInfo();
-    return () => cancelled = true; 
-  }, []);
-  
-  const onChange = e => setWeight(e.target.value);
+  const [weight, setWeight] = useState(patient_weight);
 
   const changeWeight = async () => {
     try {
@@ -69,7 +21,7 @@ const PatientInfo = ({ match }) => {
         },
         body: JSON.stringify({ patient_id, weight })
       });
-
+      // new redux action to?
       setChangeWeight(false);
     } catch (err) {
       console.error(err.message);
@@ -80,19 +32,19 @@ const PatientInfo = ({ match }) => {
   return (
     <>
       {
-      info == initialInfo? null :
-      (
+      // info == initialInfo? null :
+      // (
         <div className="mt-5">
-          <h2 className="text-info mt-5">Patient Name: {info.patient_name}</h2>
-          <h2>Email Address: {info.patient_email} </h2>
-          <h2>Age: {info.patient_age}</h2>
-          <h2>Gender: {info.patient_gender}</h2>
-          <h4>Diagnostic Conclusion: {info.diagnostic_conclusion}</h4>
+          <h2 className="text-info mt-5">Patient Name: {patient_name}</h2>
+          <h2>Email Address: {patient_email} </h2>
+          <h2>Age: {patient_age}</h2>
+          <h2>Gender: {patient_gender}</h2>
+          <h4>Diagnostic Conclusion: {diagnosis}</h4>
           {!isChangeWeight? 
           <div><h4>Weight: {weight}</h4> <button type="submit" className="btn btn-info" onClick={()=>setChangeWeight(true)}>Change Weight</button></div>
           : <div>
               <h4> Weight:</h4>
-              <input type="text" name="weight" value={weight} placeholder="weight" onChange={e => onChange(e)} className="form-control my-3"/>
+              <input type="text" name="weight" value={weight} placeholder="weight" onChange={e => setWeight(e.target.value)} className="form-control my-3"/>
               <button type="submit" className="btn btn-success" onClick={changeWeight} >Change Weight</button>
               <button type="submit" className="btn btn-danger ml-2" onClick={()=>setChangeWeight(false)}>Cancel</button>
             </div>
@@ -104,7 +56,7 @@ const PatientInfo = ({ match }) => {
           }
           </div>
         </div>
-      ) 
+      // ) 
       }
     </>
   )

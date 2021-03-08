@@ -1,11 +1,14 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { registerUser } from "../api/fetches";
+import { loggedIn, loggedOut } from "../state/action";
 import { useInput } from "../useInput";
 
-const Register = ({ setAuth, setIsClinician }) => {
-
+const Register = () => {
+  const dispatch = useDispatch();
   const [email, emailField] = useInput({placeholder: "email"});
   const [password, passwordField] = useInput({type:"password", placeholder:"password"});
   const [name, nameField] = useInput({placeholder:"name"});
@@ -19,16 +22,16 @@ const Register = ({ setAuth, setIsClinician }) => {
     e.preventDefault();
     try {
       const parseRes = await registerUser({email, password, name, role, age, gender, diagnosticConclusion, weight});
-
+      
       if (parseRes.jwtToken) {
+        const user = parseRes.user;
         localStorage.setItem("token", parseRes.jwtToken);
-        setAuth(true);
+        dispatch(loggedIn(user.user_role, user.user_id, user.user_name, user.user_email));
         toast.success("Registered Successfully");
       } else {
-        setAuth(false);
+        dispatch(loggedOut());
         toast.error(parseRes);
       }
-      setIsClinician(role === "Clinician");
     } catch (err) {
       console.error(err.message);
     }
@@ -63,7 +66,7 @@ const Register = ({ setAuth, setIsClinician }) => {
               {diagnosisField}
             </>
           )
-}   
+        }   
         <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
       </form>
       <Link to="/login">login</Link>

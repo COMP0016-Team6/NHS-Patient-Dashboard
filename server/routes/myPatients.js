@@ -6,7 +6,6 @@ const authorize = require("../middleware/authorize");
 router.post("/add", authorize, async (req, res) => {
     const  patient_list  = req.body;
     try {
-
       let del = await pool.query("DELETE FROM user_perms WHERE user_id = $1;", [req.user.id]); 
       let patient;
       console.log(patient_list);

@@ -1,18 +1,43 @@
 import React, {useState, useEffect} from "react";
 import { useInput } from "../useInput";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const SearchBar = ({ patients, select, myPatients, setMyPatients }) => {
+import { useSelector, useDispatch } from "react-redux";
+import { cliniciansProfile, allPatients } from "../api/fetches";
+import { clinicianProfile, setClinicianPatients } from "../state/action";
+
+const SearchBar = ({ select }) => {
+  const dispatch = useDispatch();
   const [searchTerm, searchTermField] = useInput({placeholder:"Search By Name"});
   const [searchResults, setSearchResults] = useState([]);
+  const myPatients = useSelector(state => state.patients);
+  const patients = useSelector(state => state.allPatients);
 
   const containerStyles = {
     maxWidth: 400,
   };
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const getProfile = async () => {
+      try {
+        const parseRes = await cliniciansProfile();
+        const parseResAllPatients =  await allPatients();
+
+        if (!cancelled) 
+          dispatch(clinicianProfile(parseRes, parseResAllPatients));
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+    getProfile();
+    return () => cancelled = true; 
+  }, []);
+
   const handleClick = (patient) => {
-    if (!inMyPatients(patient.user_id)) setMyPatients([...myPatients, patient]);
-    else setMyPatients(myPatients.filter(p => p.user_id !== patient.user_id));
+    if (!inMyPatients(patient.user_id)) dispatch(setClinicianPatients([...myPatients, patient]));
+    else dispatch(setClinicianPatients(myPatients.filter(p => p.user_id !== patient.user_id)));
     console.log(myPatients)
   }
 

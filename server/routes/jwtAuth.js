@@ -41,7 +41,7 @@ router.post("/register", validInfo, async (req, res) => {
       );
     }
 
-    return res.json({ jwtToken, "user": { user_name: name, user_email: email, user_role: role } });
+    return res.json({ jwtToken, "user": { user_id: newUser.rows[0].user_id, user_name: name, user_email: email, user_role: role } });
 
   } catch (err) {
     console.error(err.message);
@@ -70,7 +70,7 @@ router.post("/login", validInfo, async (req, res) => {
       return res.status(401).json("Invalid Credentials!");
     }
     const jwtToken = jwtGenerator(user.rows[0].user_id);
-    return res.json({ jwtToken, "user": user.rows[0] });
+    return res.json({ jwtToken, user: user.rows[0] });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

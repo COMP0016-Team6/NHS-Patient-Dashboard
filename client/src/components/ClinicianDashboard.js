@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
-import {Link} from "react-router-dom";
-import { clinicianProfile } from "../api/fetches";
+import { Link } from "react-router-dom";
+import { clinicianProfile } from "../state/action";
+import { useSelector, useDispatch } from "react-redux";
+import { cliniciansProfile, allPatients } from "../api/fetches";
 import SearchBar from "../components/SearchBar";
 
-const ClinicianDashboard = ({ logout, patients, setPatients }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-
+const ClinicianDashboard = ({ logout }) => {
+  const dispatch = useDispatch();
+  const name = useSelector(state => state.user_name);
+  const email = useSelector(state => state.user_email);
+  
   useEffect(() => {
     let cancelled = false;
 
     const getProfile = async () => {
       try {
-        const parseRes = await clinicianProfile();
-        if (!cancelled) {
-          setName(parseRes.clinician.user_name);
-          setEmail(parseRes.clinician.user_email);
-          setPatients(parseRes.patients);
-        }
+        const parseRes = await cliniciansProfile();
+        const parseResAllPatients =  await allPatients();
+
+        if (!cancelled) 
+          dispatch(clinicianProfile(parseRes, parseResAllPatients));
       } catch (err) {
         console.error(err.message);
       }
@@ -31,7 +33,7 @@ const ClinicianDashboard = ({ logout, patients, setPatients }) => {
       <h5 className="mt-5 text-success">Clinician {name}</h5>
       <h1 className="mb-5">My Patients</h1>
       
-      <SearchBar patients={patients} />
+      <SearchBar />
       
       <Link to="/addPatients">
         <button className="btn btn-primary mt-5 mr-5">Add Patients</button>
