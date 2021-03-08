@@ -5,24 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 
 const Linechart = ({ type, filter, dates, showWeight }) => {
   const patientFeed = useSelector(state => state.patientFeed);
-  console.log(patientFeed);
   const treatmentPlan = useSelector(state => state.patientPlan);
   const { feeds, weights } = patientFeed;
-
-        // let parseRes = await getPatientFeeds(patient_id);
-        // let parseData = parseRes.feeds;
-        // let parseWeights = parseRes.weights;
-
-        // if (!cancelled) {
-        //   for (var i = 0; i < parseData.length; i++)
-        //     parseData[i].timestamp = new Date(parseData[i].timestamp);
-
-        //   for (var i = 0; i < parseWeights.length; i++) 
-        //     parseWeights[i].timestamp = new Date(parseWeights[i].timestamp);
-          
-        //   setFeed(parseData);
-        //   setWeights(parseWeights);
-
 
   const compareByMonth = (date_range, date) => {
     let lower = [parseInt(date_range[0].getFullYear()), parseInt(date_range[0].getMonth())];
@@ -145,7 +129,7 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
         pointRadius: 0,
         borderWidth: 2,
         label: "Prescribed Feed",
-        data: type==="volume"? filterFeed(filter, dates).map(d => (findTargetVals(d.timestamp_date).target_volume)) : filterFeed(filter, dates).map(d => (findTargetVals(d.timestamp_date).target_energy)),
+        data: type==="volume"? filterFeed(filter, dates).map(d => (findTargetVals(d.timestamp_date).target_feed_volume)) : filterFeed(filter, dates).map(d => (findTargetVals(d.timestamp_date).target_feed_energy)),
         borderColor: "#EB5757",
         fill: false,
         borderDash: [35,20],

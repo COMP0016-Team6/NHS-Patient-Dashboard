@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { submitAddPatients } from "../api/fetches";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import SearchBar from "./SearchBar";
 
-const AddPatients = ({ myPatients, setMyPatients }) => {
-  const [allPatients, setAllPatients] = useState([]);
+const AddPatients = () => {
+  const allPatients = useSelector(state => state.allPatients);
+  const myPatients = useSelector(state => state.patients);
 
   const onSubmitForm = async e => {
     e.preventDefault();
@@ -21,23 +23,6 @@ const AddPatients = ({ myPatients, setMyPatients }) => {
     }
   };
 
-  useEffect(() => {
-    let cancelled = false;
-    const getAllPatients = async () => {
-      try {
-        const parseRes =  await allPatients();
-        if (!cancelled) {
-          setAllPatients(parseRes);
-        }
-        
-      } catch (err) {
-        console.error(err.message);
-      }
-    };
-    getAllPatients();
-    return () => cancelled = true; 
-  }, []);
-
   return (
     <>
     <Link to="/dashboard">
@@ -46,7 +31,7 @@ const AddPatients = ({ myPatients, setMyPatients }) => {
     <form className="mt-5" onSubmit={onSubmitForm}>
       <SearchBar select={true} />
         <button className="btn btn-success btn-block mt-5">Submit</button>
-      </form>
+    </form>
     </>
   )
 }

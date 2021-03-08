@@ -9,7 +9,8 @@ const ClinicianDashboard = ({ logout }) => {
   const dispatch = useDispatch();
   const name = useSelector(state => state.user_name);
   const email = useSelector(state => state.user_email);
-  
+  const patients = useSelector(state => state.patients);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -28,6 +29,8 @@ const ClinicianDashboard = ({ logout }) => {
     return () => cancelled = true; 
   }, []);
 
+  if (patients===undefined) return null;
+  
   return (
     <div>
       <h5 className="mt-5 text-success">Clinician {name}</h5>

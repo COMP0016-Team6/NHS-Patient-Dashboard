@@ -76,19 +76,6 @@ export async function patientPlan(patient_id) {
   return parseRes;
 }
 
-// export async function patientProfile(patient_id) {
-//   const res = await fetch(`http://localhost:5000/dashboard/?id=${patient_id}`, {
-//     method: "POST",
-//     headers: { jwt_token: localStorage.token }
-//   });
-//   // why dont I just get the "full info"?
-//   const patientBaseInfo = await res.json();
-
-//   const patientTreatmentPlan = await patientPlan(patient_id);
-
-//   return { info: patientBaseInfo, plan: patientTreatmentPlan };
-// }
-
 export async function allPatients() {
   const res = await fetch("http://localhost:5000/myPatients/getAll", {
     method: "POST",
@@ -139,21 +126,16 @@ export async function patientAllInfo(patient_id) {
     }
   });
   const patientInfo = await res.json();
-  const patientTreatmentPlan = await patientPlan(patient_id);
-  const patientFeeds = await getPatientFeeds(patient_id);
-  
-  return { info: patientInfo.info, cur_weight: patientInfo.weight, plan: patientTreatmentPlan, feed: patientFeeds };
-}
+  let patientTreatmentPlan = await patientPlan(patient_id);
+  for (var i = 0; i < patientTreatmentPlan.length; i++)
+    patientTreatmentPlan[i].modified_time = new Date(patientTreatmentPlan[i].modified_time);
 
-// export async function patientInfo(patient_id) {
-//   const res = await fetch(`http://localhost:5000/patientInfo/?id=${patient_id}`, {
-//     method: "POST",
-//     headers: { jwt_token: localStorage.token,
-//       "Content-type": "application/json"
-//     }
-//   });
-//   const patientFullInfo = await res.json();
-//   const patientTreatmentPlan = await patientPlan(patient_id);
-  
-//   return { info: patientFullInfo, plan: patientTreatmentPlan };
-// } 
+  let patientFeeds = await getPatientFeeds(patient_id);
+  for (var i = 0; i < patientFeeds.feeds.length; i++)
+    patientFeeds.feeds[i].timestamp = new Date(patientFeeds.feeds[i].timestamp);
+
+  for (var i = 0; i < patientFeeds.weights.length; i++) 
+    patientFeeds.weights[i].timestamp = new Date(patientFeeds.weights[i].timestamp);
+ 
+  return { info: {... patientInfo.info, weight: patientInfo.weight}, plan: patientTreatmentPlan, feed: patientFeeds };
+}

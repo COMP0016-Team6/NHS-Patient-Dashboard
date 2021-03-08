@@ -14,10 +14,13 @@ toast.configure();
 const PatientDashboard = ({ match, logout }) => {
   const dispatch = useDispatch();
   const user_id = useSelector(state => state.user_id);
-  const name = useSelector(state => state.patientInfo.user_name);
-  const patientID = useSelector(state => state.patientInfo.user_id);
+  const patientInfo = useSelector(state => state.patientInfo);
+  const patientFeed = useSelector(state => state.patientFeed);
+  const patientPlan = useSelector(state => state.patientPlan);
+
   const isClinician = useSelector(state => state.isClinician);
-  const patient_id = !isClinician? user_id : patientID | match.params.id;
+  const patient_id = !isClinician? user_id : patientInfo.user_id | match.params.id;
+
 
   const [changePlan, setChangePlan] = useState(false);
   const [filter, setFilter] = useState("All Data")
@@ -68,11 +71,13 @@ const PatientDashboard = ({ match, logout }) => {
   }, [patient_id]);
 
 
+  if (patientInfo === undefined || patientFeed === undefined || patientPlan.length === 0) return null;
+
   return (
     <div>
       {isClinician? (<Link to="/dashboard"> <button className="btn btn-primary mt-5">Back</button> </Link>) : null}
 
-      <h1 className="mt-5 mb-5"><Link to={`/patientInfo/${patient_id}`}>{name}</Link>'s Dashboard</h1>
+      <h1 className="mt-5 mb-5"><Link to={`/patientInfo/${patient_id}`}>{patientInfo.user_name}</Link>'s Dashboard</h1>
       <div>
         <div className="mb-3" style={{display: 'flex'}}>
           <RainbowDatepicker dates={formatDates(dates)} setDates={setDates} />

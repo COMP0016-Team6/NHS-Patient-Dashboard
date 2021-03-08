@@ -56,14 +56,13 @@ router.post("/treatmentPlan", authorize, async (req, res) => {
 });
 
 router.post("/changeWeight", authorize, async (req, res) => {
-  const { patient_id, weight } = req.body;
-  console.log(patient_id)
+  const { user_id, newWeight } = req.body;
   try {
     new_weight = await pool.query(
       "INSERT INTO weights (patient_id, weight, timestamp) VALUES ($1, $2, $3);",
-      [patient_id, weight, new Date()]
+      [user_id, newWeight, new Date()]
     );
-    res.json(weight);
+    res.json(newWeight);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

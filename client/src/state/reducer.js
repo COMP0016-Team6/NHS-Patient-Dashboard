@@ -21,19 +21,26 @@ export function mainReducer(state = {}, action) {
     case "CLINICIAN_PROFILE":
       newState.patients = action.patients; // [patient_ids] that clinician supervises
       newState.allPatients = action.allPatients; // the list of all patients in the system 
+      newState.patientInfo = {};
+      newState.patientPlan = [];
+      newState.patientFeed = {};
       return newState;
     
     case "PATIENT_PROFILE":
-      const { patientInfo, curWeight, patientPlan, patientFeed } = action.allInfo;
-      newState.patientInfo = {...patientInfo.info, weight: curWeight};
-      newState.patientPlan = patientPlan;
-      newState.patientFeed = patientFeed;
+      const { info, plan, feed } = action.allInfo;
+      newState.patientInfo = info;
+      newState.patientPlan = plan;
+      newState.patientFeed = feed;
       return newState;
     
     case "SET_CLINICIAN_PATIENTS":
       newState.patients = action.patients;
       return newState;
-      
+    
+    case "CHANGED_WEIGHT":
+      newState.patientInfo.weight = action.weight;
+      return newState;
+    
     default:
       return state;
   }

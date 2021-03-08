@@ -17,3 +17,7 @@ export function patientProfile(allInfo) {
 export function setClinicianPatients(patients) {
   return { type: "SET_CLINICIAN_PATIENTS", patients };
 }
+
+export function changedWeight(weight) {
+  return { type: "CHANGED_WEIGHT", weight};
+}

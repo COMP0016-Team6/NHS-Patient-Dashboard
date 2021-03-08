@@ -36,8 +36,8 @@ const TreatmentHistory = () => {
       {treatmentPlan.map(plan => (
       <TableRow>
         <TableCell style={{ width: 350 }} align="center">{plan.description}</TableCell>
-        <TableCell style={{ width: 160 }} align="center">{plan.target_volume}</TableCell>
-        <TableCell style={{ width: 160 }} align="center">{plan.target_energy}</TableCell>
+        <TableCell style={{ width: 160 }} align="center">{plan.target_feed_volume}</TableCell>
+        <TableCell style={{ width: 160 }} align="center">{plan.target_feed_energy}</TableCell>
         <TableCell style={{ width: 200 }} align="center">{plan.modified_time.toLocaleString()}</TableCell>
       </TableRow>
      ))}

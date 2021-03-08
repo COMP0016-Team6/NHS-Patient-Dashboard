@@ -3,7 +3,6 @@ import { useInput } from "../useInput";
 import { Link } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
-import { cliniciansProfile, allPatients } from "../api/fetches";
 import { clinicianProfile, setClinicianPatients } from "../state/action";
 
 const SearchBar = ({ select }) => {
@@ -11,29 +10,12 @@ const SearchBar = ({ select }) => {
   const [searchTerm, searchTermField] = useInput({placeholder:"Search By Name"});
   const [searchResults, setSearchResults] = useState([]);
   const myPatients = useSelector(state => state.patients);
-  const patients = useSelector(state => state.allPatients);
+  const allPatients = useSelector(state => state.allPatients);
+  const patients = select? allPatients : myPatients;
 
   const containerStyles = {
     maxWidth: 400,
   };
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const getProfile = async () => {
-      try {
-        const parseRes = await cliniciansProfile();
-        const parseResAllPatients =  await allPatients();
-
-        if (!cancelled) 
-          dispatch(clinicianProfile(parseRes, parseResAllPatients));
-      } catch (err) {
-        console.error(err.message);
-      }
-    };
-    getProfile();
-    return () => cancelled = true; 
-  }, []);
 
   const handleClick = (patient) => {
     if (!inMyPatients(patient.user_id)) dispatch(setClinicianPatients([...myPatients, patient]));
@@ -42,7 +24,7 @@ const SearchBar = ({ select }) => {
   }
 
   useEffect(() => {
-    const results = patients.filter(patient => patient.user_name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const results = myPatients.filter(patient => patient.user_name.toLowerCase().includes(searchTerm.toLowerCase()));
     setSearchResults(results);
   }, [searchTerm]);
 
@@ -53,6 +35,10 @@ const SearchBar = ({ select }) => {
     return false;
   }
 
+  if (patients === undefined) return null;
+
+  console.log(patients);
+
   return (
     <>
       {searchTermField}
@@ -60,14 +46,14 @@ const SearchBar = ({ select }) => {
         {searchTerm === ""?
           patients.map(patient => (
             <h3 key={patient.user_id}>
-            {typeof(select)==="undefined"? null : <input type="checkbox" className="mr-2" defaultChecked={inMyPatients(patient.user_id)} onClick={() => handleClick(patient)} />}
-            {typeof(select)==="undefined"? <Link to={`/dashboard/${patient.user_id}`}>{patient.user_name}</Link> : patient.user_name}
+            {!select? null : <input type="checkbox" className="mr-2" defaultChecked={inMyPatients(patient.user_id)} onClick={() => handleClick(patient)} />}
+            {!select? <Link to={`/dashboard/${patient.user_id}`}>{patient.user_name}</Link> : patient.user_name}
             </h3>
           )):
           searchResults.map(patient => (
             <h3 key={patient.user_id}>
-              {typeof(select)==="undefined"? null : <input type="checkbox" className="mr-2" defaultChecked={inMyPatients(patient.user_id)} onClick={() => handleClick(patient)} />}
-              {typeof(select)==="undefined"? <Link to={`/dashboard/${patient.user_id}`}>{patient.user_name}</Link> : patient.user_name}            
+              {!select? null : <input type="checkbox" className="mr-2" defaultChecked={inMyPatients(patient.user_id)} onClick={() => handleClick(patient)} />}
+              {!select? <Link to={`/dashboard/${patient.user_id}`}>{patient.user_name}</Link> : patient.user_name}            
             </h3>
           ))
         }
