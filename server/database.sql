@@ -35,7 +35,8 @@ CREATE TABLE feed (
   patient_id INT REFERENCES users(user_id) NOT NULL,
   volume float8 NOT NULL,
   energy float8 NOT NULL,
-  timestamp TIMESTAMP NOT NULL
+  timestamp TIMESTAMP NOT NULL,
+  patient_feedback VARCHAR(255)
 );
 
 CREATE TABLE user_perms (
@@ -48,7 +49,7 @@ CREATE TABLE user_perms (
 );
 
 CREATE TABLE weights (
-  user_id INT REFERENCES users(user_id) NOT NULL,
+  patient_id INT REFERENCES users(user_id) NOT NULL,
   weight float8 NOT NULL,
   timestamp TIMESTAMP NOT NULL
 );

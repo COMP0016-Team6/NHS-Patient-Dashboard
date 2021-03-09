@@ -16,11 +16,10 @@ const pool = require("../db");
 
 // RENAME THE feed table to feeds
 router.post("/", authorize, async (req, res) => {
-  const {patient_id} = req.body;
-  console.log(`HERE ${JSON.stringify(req.body)}`);
+  const { patient_id } = req.body;
   try {
       const user = await pool.query(
-        "SELECT volume, energy, timestamp FROM feed WHERE patient_id = $1 ORDER BY timestamp ASC;",
+        "SELECT id, volume, energy, timestamp, patient_feedback FROM feed WHERE patient_id = $1 ORDER BY timestamp ASC;",
         [patient_id] 
       );
 
@@ -34,6 +33,22 @@ router.post("/", authorize, async (req, res) => {
       console.error(err.message);
       res.status(500).send("Server error");
     }
-  });
+});
   
-  module.exports = router;
+
+router.post("/feedback", authorize, async (req, res) => {
+  const { id, feedback } = req.body;
+
+  try {
+    const feed = await pool.query(
+      "UPDATE feed SET patient_feedback = $1 WHERE id = $2 RETURNING *;",
+      [feedback, id] 
+    );
+    res.json(feed.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+module.exports = router;

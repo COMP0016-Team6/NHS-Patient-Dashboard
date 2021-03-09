@@ -2,11 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useSelector, useDispatch } from "react-redux";
+import Modal from "./Modal";
 
 const Linechart = ({ type, filter, dates, showWeight }) => {
   const patientFeed = useSelector(state => state.patientFeed);
   const treatmentPlan = useSelector(state => state.patientPlan);
   const { feeds, weights } = patientFeed;
+  const [open, setOpen] = useState(false);
+  const [feed_id, setFeedId] = useState(0);
 
   const compareByMonth = (date_range, date) => {
     let lower = [parseInt(date_range[0].getFullYear()), parseInt(date_range[0].getMonth())];
@@ -37,7 +40,7 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
       for (var i = 0; i < feeds.length; i++) {
         // formattedDate = formatDate(feeds[i].timestamp);
         if (dates === null || (dates[0] <= feeds[i].timestamp && feeds[i].timestamp <= dates[1])) {
-          newFeed.push({"volume": feeds[i].volume, "energy": feeds[i].energy, "timestamp": feeds[i].timestamp.toLocaleString(), "timestamp_date": feeds[i].timestamp});
+          newFeed.push({"id": feeds[i].id, "volume": feeds[i].volume, "energy": feeds[i].energy, "timestamp": feeds[i].timestamp.toLocaleString(), "timestamp_date": feeds[i].timestamp, "patient_feedback": feeds[i].patient_feedback});
         }
       }
       return newFeed;
@@ -57,10 +60,12 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
 
       if (byDay || byMonth || byYear) { 
         let start = i;
+        let feed_id = feeds[i].id;
         let sumVolume = feeds[i].volume;
         let sumEnergy = feeds[i].energy;
         let cur_date = feeds[i].timestamp;
         let cur_date_format = feeds[i].timestamp.toLocaleDateString(undefined, options);
+        let patient_feedback = feeds[i].patient_feedback;
         i++;
         
         while (i < feeds.length && cur_date_format == feeds[i].timestamp.toLocaleDateString(undefined, options)) {
@@ -68,7 +73,7 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
           sumEnergy += feeds[i].energy;
           i++;
         }
-        newFeed.push({"volume": (parseFloat(sumVolume/(i - start)).toFixed(2)), "energy": (parseFloat(sumEnergy/(i - start)).toFixed(2)), "timestamp": cur_date_format, "timestamp_date": cur_date});
+        newFeed.push({"id": feed_id, "volume": (parseFloat(sumVolume/(i - start)).toFixed(2)), "energy": (parseFloat(sumEnergy/(i - start)).toFixed(2)), "timestamp": cur_date_format, "timestamp_date": cur_date, "patient_feedback": patient_feedback });
       }
       else i++;
     }
@@ -117,6 +122,8 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
         pointRadius: 3,
         label: "Actual Feed",
         hidden: false,
+        id: filterFeed(filter, dates).map(d=>d.id),
+        patient_feedback: filterFeed(filter, dates).map(d=>d.patient_feedback),
         data: type==="volume"? filterFeed(filter, dates).map(d=>d.volume) : filterFeed(filter, dates).map(d=>d.energy),
         //data: feeds.map(d=>d.volume),
         fill: true,
@@ -184,17 +191,28 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
           let actual = parseFloat(data.datasets[0].data[tooltipItem.index]);
           let target = parseFloat(data.datasets[1].data[tooltipItem.index]);
           let weight = parseFloat(data.datasets[2].data[tooltipItem.index]);
+          let feedback = data.datasets[0].patient_feedback[tooltipItem.index];
+          console.log(feedback)
+          let feedbackText = feedback? `Reason: ${feedback}` : "";
 
           let percentageDiff = parseFloat((Math.abs(actual - target) / ((actual + target) / 2)) * 100).toFixed(1);
         
           return ((type === "volume" && treatmentPlan.target_volume === 0) ||  (type === "energy" && treatmentPlan.target_energy === 0))? 
-            [`Received value: ${actual}`] 
+            [`Received value: ${actual}`, feedbackText] 
           : (tooltipItem.datasetIndex === 0? 
-            [`Received value: ${actual}`, `Percentage difference: ${percentageDiff}%`] 
+            [`Received value: ${actual}`, `Percentage difference: ${percentageDiff}%`, feedbackText] 
             : (tooltipItem.datasetIndex === 1?
             [`Target value: ${target}`, `Percentage difference: ${percentageDiff}%`] :
             [`Weight: ${(weight+0.1) * 100} kg`]));
         }
+      }
+    },
+
+    onClick: (e, element) => {
+      if (element.length > 0) {
+        var ind = element[0]._index;
+        setFeedId(data.datasets[0].id.splice(ind, 1)[0]); // id of the feed in the db.
+        setOpen(true);
       }
     },
     
@@ -223,6 +241,7 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
 
   return (
     <div>
+      <Modal open={open} feed_id={feed_id} setOpen={setOpen} />
       <Line data={data} options={options} />
     </div>
   )

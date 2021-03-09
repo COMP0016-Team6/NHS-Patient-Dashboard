@@ -14,14 +14,17 @@ const Register = () => {
   const [name, nameField] = useInput({placeholder:"name"});
   const [age, ageField] = useInput({placeholder:"age"});
   const [diagnosticConclusion, diagnosisField] = useInput({placeholder:"diagnostic conclusion"});
+  const [description, descriptionField] = useInput({placeholder: "Treatment plan description"});
+  const [target_feed_volume, targetVolField] = useInput({placeholder: "Target Feed Volume"});
+  const [target_feed_energy, targetEnergyField] = useInput({placeholder: "Target Energy Intake (kcal/day)"});
   const [weight, weightField] = useInput({placeholder:"weight"});
   const [role, setRole] = useState("Patient");
   const [gender, setGender] = useState("Male");
-
+  
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const parseRes = await registerUser({email, password, name, role, age, gender, diagnosticConclusion, weight});
+      const parseRes = await registerUser({email, password, name, role, age, gender, diagnosticConclusion, weight}, { description, target_feed_volume, target_feed_energy });
       
       if (parseRes.jwtToken) {
         const user = parseRes.user;
@@ -64,6 +67,10 @@ const Register = () => {
 
               {/** Make this an extendable text box */}
               {diagnosisField}
+              <h5>Treatment Plan:</h5>
+              {descriptionField}
+              {targetVolField}
+              {targetEnergyField}
             </>
           )
         }   

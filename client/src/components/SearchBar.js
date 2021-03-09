@@ -24,7 +24,7 @@ const SearchBar = ({ select }) => {
   }
 
   useEffect(() => {
-    const results = myPatients.filter(patient => patient.user_name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const results = patients.filter(patient => patient.user_name.toLowerCase().includes(searchTerm.toLowerCase()));
     setSearchResults(results);
   }, [searchTerm]);
 

@@ -1,5 +1,5 @@
-export async function registerUser(inputs) {
-  const body = inputs;
+export async function registerUser(inputs, plan) {
+  let body = inputs;
   const res = await fetch(
     "http://localhost:5000/auth/register",
     {
@@ -12,7 +12,12 @@ export async function registerUser(inputs) {
   );
 
   const parseRes = await res.json();
-  
+  let parsePlan;
+
+  if (parseRes.jwtToken) {
+    localStorage.setItem("token", parseRes.jwtToken);
+    parsePlan = await submitTreatmentPlan(plan, parseRes.user.user_id);
+  }
   return parseRes;
 }
 
@@ -138,4 +143,18 @@ export async function patientAllInfo(patient_id) {
     patientFeeds.weights[i].timestamp = new Date(patientFeeds.weights[i].timestamp);
  
   return { info: {... patientInfo.info, weight: patientInfo.weight}, plan: patientTreatmentPlan, feed: patientFeeds };
+}
+
+export async function addFeedback(feed_id, feedback) {
+  const res = await fetch("http://localhost:5000/getFeeds/feedback", {
+    method: "POST",
+    headers: {
+      jwt_token: localStorage.token,
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify({ id: feed_id, feedback })
+  });
+  let parseRes = await res.json();
+
+  return parseRes;
 }
