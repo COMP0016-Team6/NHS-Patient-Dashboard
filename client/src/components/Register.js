@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { registerUser } from "../api/fetches";
@@ -15,7 +16,7 @@ const Register = () => {
   const [password, passwordField] = useInput({type:"password", placeholder:"password"});
   const [name, nameField] = useInput({placeholder:"name"});
   const [dob, setDOB] = useState(null);
-  const [diagnosticConclusion, diagnosisField] = useInput({placeholder: "diagnostic conclusion"});
+  const [diagnosticConclusion, setDiagnosis] = useState("");
   const [description, descriptionField] = useInput({placeholder: "Treatment plan description"});
   const [target_feed_volume, targetVolField] = useInput({placeholder: "Target Feed Volume"});
   const [target_feed_energy, targetEnergyField] = useInput({placeholder: "Target Energy Intake (kcal/day)"});
@@ -71,8 +72,7 @@ const Register = () => {
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
-
-              {diagnosisField}
+              <TextareaAutosize aria-label="empty textarea" value={diagnosticConclusion} onChange={(e) => setDiagnosis(e.target.value)} placeholder="diagnostic conclusion" />
               <h5>Treatment Plan:</h5>
               {descriptionField}
               {targetVolField}
