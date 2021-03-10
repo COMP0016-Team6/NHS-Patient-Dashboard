@@ -8,7 +8,8 @@ const authorize = require("../middleware/authorize");
 
 
 router.post("/register", validInfo, async (req, res) => {
-  const { email, name, password, role, age, gender, diagnosticConclusion, weight } = req.body;
+  const { email, name, password, role, dob, gender, diagnosticConclusion, weight } = req.body.inputs;
+  const { description, target_feed_volume, target_feed_energy, modified_time } = req.body.plan;
 
   try {
     const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [
@@ -30,12 +31,17 @@ router.post("/register", validInfo, async (req, res) => {
     const jwtToken = jwtGenerator(newUser.rows[0].user_id);
 
     if (role === "Patient") {
-      patient = await pool.query(
-        "INSERT INTO patients (patient_id, patient_gender, patient_age, diagnostic_conclusion) VALUES ($1, $2, $3, $4);",
-        [newUser.rows[0].user_id, gender, age, diagnosticConclusion]
+      const patient = await pool.query(
+        "INSERT INTO patients (patient_id, patient_gender, patient_dob, diagnostic_conclusion) VALUES ($1, $2, $3, $4);",
+        [newUser.rows[0].user_id, gender, dob, diagnosticConclusion]
       );
 
-      new_weight = await pool.query(
+      const treatmentPlan = await pool.query(
+        "INSERT INTO treatments(patient_id, description, target_feed_volume, target_feed_energy, modified_time) values ($1, $2, $3, $4, $5);",
+        [newUser.rows[0].user_id, description, target_feed_volume, target_feed_energy, modified_time]
+      );
+
+      const new_weight = await pool.query(
         "INSERT INTO weights (patient_id, weight, timestamp) VALUES ($1, $2, $3);",
         [newUser.rows[0].user_id, weight, new Date()]
       );

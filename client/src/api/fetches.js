@@ -1,23 +1,16 @@
 export async function registerUser(inputs, plan) {
-  let body = inputs;
-  const res = await fetch(
+  let res = await fetch(
     "http://localhost:5000/auth/register",
     {
       method: "POST",
       headers: {
         "Content-type": "application/json"
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify({ inputs, plan })
     }
   );
 
   const parseRes = await res.json();
-  let parsePlan;
-
-  if (parseRes.jwtToken && inputs.role === "Patient") {
-    localStorage.setItem("token", parseRes.jwtToken);
-    parsePlan = await submitTreatmentPlan(plan, parseRes.user.user_id);
-  }
   return parseRes;
 }
 
@@ -51,6 +44,7 @@ export async function cliniciansProfile() {
 }
 
 export async function submitTreatmentPlan(inputs, patient_id) {
+  // for Tianang we had to remove the .toLocaleString() and just with Date()
   const body = { ...inputs, patient_id, modified_time: new Date().toLocaleString() };
 
   const res = await fetch(
@@ -152,6 +146,21 @@ export async function addFeedback(feed_id, feedback) {
     },
     body: JSON.stringify({ id: feed_id, feedback })
   });
+  let parseRes = await res.json();
+
+  return parseRes;
+};
+
+export async function changeWeight(body) {
+  const res = await fetch(`http://localhost:5000/patientInfo/changeWeight`, {
+    method: "POST",
+    headers: { 
+      jwt_token: localStorage.token,
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
   let parseRes = await res.json();
 
   return parseRes;

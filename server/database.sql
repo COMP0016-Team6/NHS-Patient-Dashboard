@@ -12,7 +12,7 @@ CREATE TABLE users (
 CREATE TABLE patients (
   patient_id INT REFERENCES users(user_id) NOT NULL,
   patient_gender VARCHAR(50) NOT NULL,
-  patient_age INT NOT NULL,
+  patient_dob TIMESTAMP NOT NULL,
   diagnostic_conclusion VARCHAR(1000) NOT NULL,
   PRIMARY KEY(patient_id)
 );

@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const authorize = require("../middleware/authorize");
+const validInfo = require("../middleware/validInfo");
 const pool = require("../db");
 
 router.post("/", authorize, async (req, res) => {
@@ -7,7 +8,7 @@ router.post("/", authorize, async (req, res) => {
 
   try {
     const user = await pool.query(
-      "SELECT user_id, user_name, user_email, patient_gender, patient_age, diagnostic_conclusion FROM patients INNER JOIN users ON patient_id=user_id WHERE patient_id = $1",
+      "SELECT user_id, user_name, user_email, patient_gender, patient_dob, diagnostic_conclusion FROM patients INNER JOIN users ON patient_id=user_id WHERE patient_id = $1",
       [patient_id] 
     );
     const weight = await pool.query(
@@ -24,14 +25,15 @@ router.post("/", authorize, async (req, res) => {
 });
     
 
-router.post("/changeTreatmentPlan", authorize, async (req, res) => {
+router.post("/changeTreatmentPlan", [authorize, validInfo], async (req, res) => {
   const { patient_id, description, target_feed_volume, target_feed_energy, modified_time } = req.body;
   try {
     const newTreatment = await pool.query(
       "INSERT INTO treatments(patient_id, description, target_feed_volume, target_feed_energy, modified_time) values ($1, $2, $3, $4, $5) RETURNING description, target_feed_volume, target_feed_energy, modified_time;",
       [patient_id, description, target_feed_volume, target_feed_energy, modified_time]
     );
-   res.json(newTreatment.rows[0]); 
+    res.json("Success");
+    //   res.json(newTreatment.rows[0]); 
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -53,14 +55,14 @@ router.post("/treatmentPlan", authorize, async (req, res) => {
   }
 });
 
-router.post("/changeWeight", authorize, async (req, res) => {
+router.post("/changeWeight", [authorize, validInfo], async (req, res) => {
   const { user_id, newWeight } = req.body;
   try {
-    new_weight = await pool.query(
+    const new_weight = await pool.query(
       "INSERT INTO weights (patient_id, weight, timestamp) VALUES ($1, $2, $3);",
       [user_id, newWeight, new Date()]
     );
-    res.json(newWeight);
+    res.json("Success");
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

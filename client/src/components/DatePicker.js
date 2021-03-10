@@ -1,32 +1,24 @@
 import React from "react";
 import { DatePicker } from "react-rainbow-components";
 
-export default function RainbowDatepicker({dates, setDates}) {
-
-  function maxMinYears(dt,n) 
-  {
+export default function RainbowDatepicker({dates, setDates, single=false}) {
+  
+  function maxMinYears(dt, n) {
     return new Date(dt.setFullYear(dt.getFullYear() + n));      
   }
 
-  function onChange(dates) {
-    setDates(dates);
-  }
-  const containerStyles = {
-    maxWidth: 250,
-  };
-
   return (
-    <div className="rainbow-align-content_center rainbow-m-vertical_large rainbow-p-horizontal_small rainbow-m_auto" style={containerStyles} >
+    <div className="rainbow-align-content_center rainbow-m-vertical_large rainbow-p-horizontal_small rainbow-m_auto" style={{maxWidth: 250}} >
       <DatePicker
         id="datePicker-1"
-        selectionType="range"
-        placeholder="Select range of dates"
+        selectionType={single? "single" : "range"}
+        placeholder={single? "Date of Birth" : "Select range of dates"}
         variant="single"
         formatStyle="medium"
         maxDate={new Date()}
-        minDate={maxMinYears(new Date(), -40)}
+        minDate={single? maxMinYears(new Date(), -80) : maxMinYears(new Date(), -40)}
         value={dates}
-        onChange={onChange}
+        onChange={(dates) => setDates(dates)}
       />
     </div>
   );

@@ -3,34 +3,43 @@ import { useSelector, useDispatch } from "react-redux";
 import { changedWeight } from "../state/action";
 import TreatmentHistory from "./TreatmentHistory";
 import { Link } from "react-router-dom";
+import { changeWeight } from "../api/fetches";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
+toast.configure();
 
 const PatientInfo = () => {
   const dispatch = useDispatch();
   const treatmentPlan = useSelector(state => state.patientPlan);
   const isClinician = useSelector(state => state.isClinician);
   const patientInfo = useSelector(state => state.patientInfo);
-  const { user_id, user_name, user_email, patient_gender, patient_age, diagnostic_conclusion, weight } = patientInfo;
+  const { user_id, user_name, user_email, patient_gender, patient_dob, diagnostic_conclusion, weight } = patientInfo;
 
   const [isChangeWeight, setChangeWeight] = useState(false);
   const [newWeight, setWeight] = useState(weight);
 
-  const changeWeight = async () => {
+  const changePatientWeight = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/patientInfo/changeWeight`, {
-        method: "POST",
-        headers: { 
-          jwt_token: localStorage.token,
-          "Content-type": "application/json"
-        },
-        body: JSON.stringify({ user_id, newWeight })
-      });
+      const parseRes = await changeWeight({ user_id, newWeight });
+      console.log(parseRes);
 
-      dispatch(changedWeight(newWeight));
-      setChangeWeight(false);
+      if (parseRes === "Success") {
+        dispatch(changedWeight(newWeight));
+        toast.success("Weight Change Successful!");
+        setChangeWeight(false);
+      } else {
+        toast.error(parseRes);
+      }
     } catch (err) {
       console.error(err.message);
     }
+  }
+  
+  function calcAge(dateString) {
+    let YEARLEN = 31557600000;
+    var birthday = +new Date(dateString);
+    return ~~((Date.now() - birthday) / (YEARLEN));
   }
 
   return (
@@ -41,7 +50,7 @@ const PatientInfo = () => {
         <div className="mt-5">
           <h2 className="text-info mt-5">Patient Name: {user_name}</h2>
           <h2>Email Address: {user_email} </h2>
-          <h2>Age: {patient_age}</h2>
+          <h2>Date of Birth: {new Date(patient_dob).toLocaleDateString()} ({calcAge(patient_dob)} years)</h2>
           <h2>Gender: {patient_gender}</h2>
           <h4>Diagnostic Conclusion: {diagnostic_conclusion}</h4>
           {!isChangeWeight? 
@@ -51,14 +60,14 @@ const PatientInfo = () => {
           : <div>
               <h4> Weight:</h4>
               <input type="text" value={newWeight} placeholder="weight" onChange={e => setWeight(e.target.value)} className="form-control my-3"/>
-              <button type="submit" className="btn btn-success" onClick={changeWeight} >Change Weight</button>
+              <button type="submit" className="btn btn-success" onClick={changePatientWeight} >Change Weight</button>
               <button type="submit" className="btn btn-danger ml-2" onClick={()=>{setWeight(weight); setChangeWeight(false)}}>Cancel</button>
             </div>
           }
           <h4>Treatment History: </h4>
           <div style={{maxWidth: 800, maxHeight: 600, marginBottom: 50}}>
           {treatmentPlan.length === 0? null : 
-          <TreatmentHistory treatmentPlan={treatmentPlan.reverse()} />
+          <TreatmentHistory treatmentPlan={treatmentPlan} />
           }
           </div>
         </div>

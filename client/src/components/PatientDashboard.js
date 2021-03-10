@@ -35,8 +35,12 @@ const PatientDashboard = ({ match, logout }) => {
     e.preventDefault();
     try {
       const parseRes = await submitTreatmentPlan({description, target_feed_volume, target_feed_energy}, patient_id); // do something with the parseRes
-      toast.success("Treatment Plan Change Successful!");
-      setChangePlan(false);
+      if (parseRes === "Success") {
+        toast.success("Treatment Plan Change Successful!");
+        setChangePlan(false);
+      } else {
+        toast.error(parseRes);
+      }
     } catch (err) {
       console.error(err.message);
       toast.error("Treatment Plan Change Failed!")
