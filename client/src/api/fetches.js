@@ -14,7 +14,7 @@ export async function registerUser(inputs, plan) {
   const parseRes = await res.json();
   let parsePlan;
 
-  if (parseRes.jwtToken) {
+  if (parseRes.jwtToken && inputs.role === "Patient") {
     localStorage.setItem("token", parseRes.jwtToken);
     parsePlan = await submitTreatmentPlan(plan, parseRes.user.user_id);
   }

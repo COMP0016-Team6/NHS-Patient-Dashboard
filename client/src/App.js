@@ -60,7 +60,7 @@ function App() {
   return (
     <>
       <Router>
-        <div className="container">
+        <div>
           <Switch>
             <Route
               exact
