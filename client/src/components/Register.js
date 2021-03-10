@@ -54,8 +54,6 @@ const Register = () => {
         </select>
         
         {role==="Clinician"? null : (
-            // HANDLE THESE! Store those in the patients table, make sure the onchange works and Later verify the values of inputs
-            // make the diagnostic conclusion input a text box
             <>
               {ageField}
               {weightField}
@@ -65,7 +63,6 @@ const Register = () => {
                 <option value="Female">Female</option>
               </select>
 
-              {/** Make this an extendable text box */}
               {diagnosisField}
               <h5>Treatment Plan:</h5>
               {descriptionField}

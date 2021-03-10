@@ -36,8 +36,6 @@ if __name__ == "__main__":
 
     cur = connection.cursor()
 
-    # TODO for now select all the users who are patients and for each one of them
-    # generate a random feed.
     genData(cur)
 
     connection.commit() # Save changes to the database

@@ -14,7 +14,7 @@ export async function registerUser(inputs, plan) {
   const parseRes = await res.json();
   let parsePlan;
 
-  if (parseRes.jwtToken) {
+  if (parseRes.jwtToken && inputs.role === "Patient") {
     localStorage.setItem("token", parseRes.jwtToken);
     parsePlan = await submitTreatmentPlan(plan, parseRes.user.user_id);
   }
@@ -70,7 +70,6 @@ export async function submitTreatmentPlan(inputs, patient_id) {
   return parseRes;
 }
 
-// ---
 export async function patientPlan(patient_id) {
   const res = await fetch(`http://localhost:5000/patientInfo/treatmentPlan?id=${patient_id}`, {
     method: "POST",
@@ -108,7 +107,6 @@ export async function submitAddPatients(myPatients) {
   return parseRes;
 }
 
-// ---
 export async function getPatientFeeds(patient_id) {
   const res = await fetch("http://localhost:5000/getFeeds", {
     method: "POST",

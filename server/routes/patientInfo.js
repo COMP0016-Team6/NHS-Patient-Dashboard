@@ -2,7 +2,6 @@ const router = require("express").Router();
 const authorize = require("../middleware/authorize");
 const pool = require("../db");
 
-// RENAME THE feed table to feeds
 router.post("/", authorize, async (req, res) => {
   let patient_id = req.query.id;
 
@@ -15,7 +14,6 @@ router.post("/", authorize, async (req, res) => {
       "SELECT weight FROM weights WHERE patient_id=$1 ORDER BY timestamp ASC;",
       [patient_id]
     );
-    // We expect there to be only one row with the same patient_id
     const weight_len = weight.rows.length;
     res.json({ info: user.rows[0], weight: weight.rows[weight_len - 1].weight });
 
@@ -45,7 +43,7 @@ router.post("/treatmentPlan", authorize, async (req, res) => {
   let patient_id = req.query.id;
   try {
     const treatment = await pool.query(
-      "SELECT description, target_feed_volume, target_feed_energy, modified_time FROM treatments WHERE patient_id = $1;",
+      "SELECT description, target_feed_volume, target_feed_energy, modified_time FROM treatments WHERE patient_id = $1 ORDER BY modified_time ASC;",
       [patient_id]
     );
    res.json(treatment.rows); 

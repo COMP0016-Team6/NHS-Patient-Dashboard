@@ -49,8 +49,6 @@ function App() {
     auth();
   }, []);
 
-  // should I still keep passing this as a prop?
-  // or is there a nice way around it?
   const logout = () => {
     localStorage.removeItem("token");
     toast.success("Logged out Successfully");
@@ -92,12 +90,10 @@ function App() {
             />
             <Route
               path="/dashboard/:id"
-              // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
               render={ props => isAuth? <PatientDashboard {...props} /> : <Redirect to="/login" /> }
             />
             <Route
               path="/patientInfo/:id"
-              // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
               render={ props => isAuth? <PatientInfo {...props} /> : <Redirect to="/login" /> }
             />
           </Switch>

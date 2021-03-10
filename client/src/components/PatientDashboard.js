@@ -34,7 +34,6 @@ const PatientDashboard = ({ match, logout }) => {
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      // pass in other data to fill in the patients table
       const parseRes = await submitTreatmentPlan({description, target_feed_volume, target_feed_energy}, patient_id); // do something with the parseRes
       toast.success("Treatment Plan Change Successful!");
       setChangePlan(false);

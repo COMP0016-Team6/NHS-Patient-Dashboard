@@ -10,7 +10,6 @@ router.post("/add", authorize, async (req, res) => {
       let patient;
       console.log(patient_list);
       for (var i = 0; i < patient_list.length; i++) {
-        // NOT  ALL THE PERMISSIONS WILL BE WRITE TRUE - pass these in the request body
         patient = await pool.query(
           "INSERT INTO user_perms (user_id, read, write, patients_scope) VALUES ($1, $2, $3, $4) RETURNING *",
           [req.user.id, true, true, patient_list[i].user_id]

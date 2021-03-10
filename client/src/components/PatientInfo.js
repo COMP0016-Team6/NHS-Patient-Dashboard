@@ -12,7 +12,6 @@ const PatientInfo = () => {
   const patientInfo = useSelector(state => state.patientInfo);
   const { user_id, user_name, user_email, patient_gender, patient_age, diagnostic_conclusion, weight } = patientInfo;
 
-  // after updating you can say "The weight will soon be changed..."
   const [isChangeWeight, setChangeWeight] = useState(false);
   const [newWeight, setWeight] = useState(weight);
 
@@ -34,8 +33,6 @@ const PatientInfo = () => {
     }
   }
 
-
-  // edit the returning jsx
   return (
     <>
       {isClinician? (<Link to={`/dashboard/${user_id}`}> <button className="btn btn-primary mt-5">Back</button> </Link>)
@@ -61,7 +58,7 @@ const PatientInfo = () => {
           <h4>Treatment History: </h4>
           <div style={{maxWidth: 800, maxHeight: 600, marginBottom: 50}}>
           {treatmentPlan.length === 0? null : 
-          <TreatmentHistory treatmentPlan={treatmentPlan} />
+          <TreatmentHistory treatmentPlan={treatmentPlan.reverse()} />
           }
           </div>
         </div>

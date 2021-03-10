@@ -1,4 +1,3 @@
-// potentially allow for a bar chart
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useSelector, useDispatch } from "react-redux";
@@ -35,10 +34,8 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
 
   const filterFeed = (filter, dates) => {
     let newFeed = [];
-    // let formattedDate;
     if (filter === "All Data") {
       for (var i = 0; i < feeds.length; i++) {
-        // formattedDate = formatDate(feeds[i].timestamp);
         if (dates === null || (dates[0] <= feeds[i].timestamp && feeds[i].timestamp <= dates[1])) {
           newFeed.push({"id": feeds[i].id, "volume": feeds[i].volume, "energy": feeds[i].energy, "timestamp": feeds[i].timestamp.toLocaleString(), "timestamp_date": feeds[i].timestamp, "patient_feedback": feeds[i].patient_feedback});
         }
@@ -115,7 +112,6 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
   const data = {
     labels: filterFeed(filter, dates).map(d=>d.timestamp),
     
-    // labels: feeds.map(d=>d.timestamp.toLocaleString()),
     datasets: [
       {
         lineTension: 0.4,
@@ -125,14 +121,12 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
         id: filterFeed(filter, dates).map(d=>d.id),
         patient_feedback: filterFeed(filter, dates).map(d=>d.patient_feedback),
         data: type==="volume"? filterFeed(filter, dates).map(d=>d.volume) : filterFeed(filter, dates).map(d=>d.energy),
-        //data: feeds.map(d=>d.volume),
         fill: true,
         backgroundColor: "rgba(52, 191, 110, 0.2)",
         borderColor: "#27AE60",
         fontSize: 20
       },
       {
-        //hidden: ((type === "volume" && (target_volume === 0 || target_volume === "")) ||  (type === "energy" && (target_energy === 0 || target_energy === "")))? true : false,
         pointRadius: 0,
         borderWidth: 2,
         label: "Prescribed Feed",
@@ -211,7 +205,7 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
     onClick: (e, element) => {
       if (element.length > 0) {
         var ind = element[0]._index;
-        setFeedId(data.datasets[0].id.splice(ind, 1)[0]); // id of the feed in the db.
+        setFeedId(data.datasets[0].id.splice(ind, 1)[0]);
         setOpen(true);
       }
     },
