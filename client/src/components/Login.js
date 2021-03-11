@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import { useDispatch } from "react-redux";
 import { loggedIn, loggedOut } from "../state/action";
 import { Link } from "react-router-dom";
-import { useInput } from "../useInput";
 import { loginUser } from "../api/fetches";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -12,7 +11,8 @@ import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { blue } from '@material-ui/core/colors';
 
 import { toast } from "react-toastify";
 
@@ -21,7 +21,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://github.com/COMP0016-Team6/NHS-Patient-Dashboard">
-        COMP0016 Team6
+        COMP0016 Team 6
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -31,10 +31,11 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100vh',
+    minHeight: '100vh',
+    backgroundColor: '#ffffff',
   },
   image: {
-    backgroundImage: 'url(https://media.gosh.nhs.uk/images/logo_1.2e16d0ba.fill-570x385.jpg)',
+    backgroundImage: 'url(https://www.gosh.nhs.uk/static/images/logo.e57c277b2a23.svg)',
     backgroundRepeat: 'no-repeat',
     backgroundColor: '#ffffff',
     backgroundPosition: 'center',
@@ -47,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     marginTop: '25vh',
-    backgroundColor: "#303f9f",
+    backgroundColor: "#1976d2",
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -57,6 +58,15 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+
+const ColorButton = withStyles(() => ({
+  root: {
+    backgroundColor: blue[700],
+    '&:hover': {
+      backgroundColor: blue[900],
+    },
+  },
+}))(Button);
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -91,9 +101,10 @@ const Login = () => {
   const classes = useStyles();
 
   return (
-    <Grid container component="main" direction="row" justify="center" className={classes.root}>
+    <Grid container component="main" direction="row" className={classes.root} spacing={2}>
       <CssBaseline />
-      <Grid item xs={8} sm={8} md={8} component={Paper} elevation={6} square>
+      <Grid item xs={0} sm={2} md={2} />
+      <Grid item xs={12} sm={8} md={4} component={Paper} >
         <div className={classes.paper}>
           <Avatar className={classes.avatar}></Avatar>
           <Typography component="h1" variant="h5">
@@ -126,7 +137,7 @@ const Login = () => {
               value={password}
               onChange={e => onChange(e)}
             />
-            <Button
+            <ColorButton
               type="submit"
               fullWidth
               variant="contained"
@@ -134,7 +145,7 @@ const Login = () => {
               className={classes.submit}
             >
               Sign In
-            </Button>
+            </ColorButton>
             <Grid container>
               <Grid item xs>
                 <Link to="/register" variant="body2">Register</Link>
@@ -146,6 +157,8 @@ const Login = () => {
           </form>
         </div>
       </Grid>
+      <Grid item xs={0} sm={2} md={1} />
+      <Grid item xs={false} sm={4} md={4} className={classes.image} />
     </Grid>
   );
 };

@@ -86,19 +86,19 @@ function App() {
               path="/addPatients"
               render={ props =>
                 isAuth? (
-                  !isClinician? <PatientDashboard {...props} logout={logout} /> : <AddPatients {...props} />
+                  !isClinician? <PatientDashboard {...props} logout={logout} /> : <AddPatients {...props} logout={logout} />
                 ) : <Redirect to="/login" />
               }
             />
             <Route
               path="/dashboard/:id"
               // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
-              render={ props => isAuth? <PatientDashboard {...props} /> : <Redirect to="/login" /> }
+              render={ props => isAuth? <PatientDashboard {...props} logout={logout} /> : <Redirect to="/login" /> }
             />
             <Route
               path="/patientInfo/:id"
               // tbh dont know what that props does and why i need to {...props below}, and why it doesnt work otherwise 
-              render={ props => isAuth? <PatientInfo {...props} /> : <Redirect to="/login" /> }
+              render={ props => isAuth? <PatientInfo {...props} logout={logout} /> : <Redirect to="/login" /> }
             />
           </Switch>
         </div>

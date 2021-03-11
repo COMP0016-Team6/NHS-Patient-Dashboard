@@ -45,7 +45,7 @@ export async function cliniciansProfile() {
 
 export async function submitTreatmentPlan(inputs, patient_id) {
   // for Tianang we had to remove the .toLocaleString() and just with Date()
-  const body = { ...inputs, patient_id, modified_time: new Date().toLocaleString() };
+  const body = { ...inputs, patient_id, modified_time: new Date() };
 
   const res = await fetch(
     "http://localhost:5000/patientInfo/changeTreatmentPlan",

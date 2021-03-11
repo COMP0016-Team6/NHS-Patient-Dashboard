@@ -1,15 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { addFeedback } from "../api/fetches"; 
-import { useInput } from "../useInput";
 import { toast } from 'react-toastify';
 
 export default function FormDialog({ open, feed_id, setOpen }) {
-  const [feedback, feedbackField] = useInput({placeholder:"Reason for abnormality"});
+  const [inputs, setInputs] = useState({
+    feedback: ""
+  });
+
+  const { feedback } = inputs;
+
+  const onChange = e =>
+    setInputs({ ...inputs, [e.target.name]: e.target.value });
 
   const handleClose = () => {
     setOpen(false);
@@ -35,7 +42,19 @@ export default function FormDialog({ open, feed_id, setOpen }) {
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Patient Feedback</DialogTitle>
         <DialogContent>
-          {feedbackField}
+          <TextField
+              variant="outlined"
+              margin="feedback"
+              required
+              fullWidth
+              id="feedback"
+              label="Reason for abnormality"
+              name="feedback"
+              autoComplete="feedback"
+              autoFocus
+              value={feedback}
+              onChange={e => onChange(e)}
+            />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

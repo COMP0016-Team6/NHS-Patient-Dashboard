@@ -12,19 +12,21 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { blue } from '@material-ui/core/colors';
 
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { registerUser } from "../api/fetches";
 import { loggedIn, loggedOut } from "../state/action";
+import RainbowDatepicker from "./DatePicker";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://github.com/COMP0016-Team6/NHS-Patient-Dashboard">
-        COMP0016 Team6
+        COMP0016 Team 6
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -34,10 +36,11 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100vh',
+    minHeight: '100vh',
+    backgroundColor: '#ffffff',
   },
   image: {
-    backgroundImage: 'url(https://media.gosh.nhs.uk/images/logo_1.2e16d0ba.fill-570x385.jpg)',
+    backgroundImage: 'url(https://www.gosh.nhs.uk/static/images/logo.e57c277b2a23.svg)',
     backgroundRepeat: 'no-repeat',
     backgroundColor: '#ffffff',
     backgroundPosition: 'center',
@@ -49,8 +52,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   avatar: {
-    
-    backgroundColor: "#303f9f",
+    backgroundColor: "#1976d2",
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -68,13 +70,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const ColorButton = withStyles(() => ({
+  root: {
+    backgroundColor: blue[700],
+    '&:hover': {
+      backgroundColor: blue[900],
+    },
+  },
+}))(Button);
+
 const Register = () => {
   const dispatch = useDispatch();
+  const classes = useStyles();
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
     name: "",
-    age: "",
     weight: "",
     diagnosticConclusion: "",
     description: "",
@@ -82,18 +93,18 @@ const Register = () => {
     target_feed_energy: ""
   });
 
-  const { email, password, name, age, weight, diagnosticConclusion, description, target_feed_volume, target_feed_energy } = inputs;
+  const { email, password, name, weight, diagnosticConclusion, description, target_feed_volume, target_feed_energy } = inputs;
 
   const onChange = e =>
     setInputs({ ...inputs, [e.target.name]: e.target.value });
+  const [dob, setDOB] = useState(null);
   const [role, setRole] = useState("Patient");
   const [gender, setGender] = useState("Male");
   
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const parseRes = await registerUser({email, password, name, role, age, gender, diagnosticConclusion, weight}, { description, target_feed_volume, target_feed_energy });
-      
+      const parseRes = await registerUser({email, password, name, role, dob, gender, diagnosticConclusion, weight}, { description, target_feed_volume, target_feed_energy, modified_time: new Date()});
       if (parseRes.jwtToken) {
         const user = parseRes.user;
         localStorage.setItem("token", parseRes.jwtToken);
@@ -108,12 +119,19 @@ const Register = () => {
     }
   };
 
-  const classes = useStyles();
+  const formatDate = (date) => {
+    if (date != null) {
+        let newDate = date.toLocaleDateString().split("/");
+        date = new Date(parseInt(newDate[2]), parseInt(newDate[1])-1, parseInt(newDate[0]));
+    }
+    return date;
+  }
 
   return (
     <Grid container component="main" direction="row" justify="center" className={classes.root}>
       <CssBaseline />
-      <Grid item xs={8} sm={8} md={8} component={Paper} elevation={6} square>
+      <Grid item xs={0} sm={2} md={1} />
+      <Grid item xs={12} sm={8} md={5} component={Paper}>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}></Avatar>
           <Typography component="h1" variant="h5">
@@ -177,19 +195,26 @@ const Register = () => {
               // HANDLE THESE! Store those in the patients table, make sure the onchange works and Later verify the values of inputs
               // make the diagnostic conclusion input a text box
               <>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="age"
-                  label="Age"
-                  name="age"
-                  autoComplete="age"
-                  autoFocus
-                  value={age}
-                  onChange={e => onChange(e)}
-                />
+                <Grid container direction="row" justify="flex-start" alignItems="center">
+                  <Grid item md={3}>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <InputLabel id="demo-simple-select-outlined-label">Gender</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        value={gender}
+                        onChange={e => setGender(e.target.value)}
+                        label="Role"
+                      >
+                        <MenuItem value="Male">Male</MenuItem>
+                        <MenuItem value="Female">Female</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item md>
+                    <RainbowDatepicker dates={formatDate(dob)} setDates={setDOB} single={true} />
+                  </Grid>
+                </Grid>
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -203,19 +228,7 @@ const Register = () => {
                   value={weight}
                   onChange={e => onChange(e)}
                 />
-                <FormControl variant="outlined" className={classes.formControl}>
-                  <InputLabel id="demo-simple-select-outlined-label">Gender</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="demo-simple-select-outlined"
-                    value={gender}
-                    onChange={e => setGender(e.target.value)}
-                    label="Role"
-                  >
-                    <MenuItem value="Male">Male</MenuItem>
-                    <MenuItem value="Female">Female</MenuItem>
-                  </Select>
-                </FormControl>
+                
                 {/** Make this an extendable text box */}
                 <TextField
                   variant="outlined"
@@ -273,7 +286,7 @@ const Register = () => {
               </>
               )
             }   
-            <Button
+            <ColorButton
               type="submit"
               fullWidth
               variant="contained"
@@ -281,7 +294,7 @@ const Register = () => {
               className={classes.submit}
             >
               Sign Up
-            </Button>
+            </ColorButton>
             <Grid container>
               <Grid item xs>
                 <Link to="/login" variant="body2">Login</Link>
@@ -293,6 +306,8 @@ const Register = () => {
           </form>
         </div>
       </Grid>
+      <Grid item xs={0} sm={2} md={1} />
+      <Grid item xs={false} sm={4} md={4} className={classes.image} />
     </Grid>
   );
 };
