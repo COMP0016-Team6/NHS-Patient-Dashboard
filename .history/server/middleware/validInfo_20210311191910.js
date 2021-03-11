@@ -46,8 +46,6 @@ module.exports = function(req, res, next) {
       return res.json("New Weight Cannot be Empty!");
     else if (isNaN(req.body.newWeight))
       return res.json("Weight Must be a Number!");
-    else if (parseFloat(req.body.newWeight) < 0) 
-      return res.json("Weight Must be Positive!");
   }
 
   next();

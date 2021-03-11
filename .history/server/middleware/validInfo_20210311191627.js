@@ -24,8 +24,6 @@ module.exports = function(req, res, next) {
         return res.json("Missing Credentials");
       else if (isNaN(target_feed_volume) || isNaN(target_feed_energy))
         return res.json("Target Value Must be a Number!");
-      else if (parseFloat(target_feed_volume) < 0 || parseFloat(target_feed_energy) < 0)
-        return res.json("Target Feed Must be Positive!");
     }
   } else if (req.path === "/login") {
     const { email, password } = req.body;
@@ -39,15 +37,11 @@ module.exports = function(req, res, next) {
       return res.json("Missing Credentials");
     else if (isNaN(req.body.target_feed_volume) || isNaN(req.body.target_feed_energy))
       return res.json("Target Value Must be a Number!")
-    else if (parseFloat(req.body.target_feed_volume) < 0 || parseFloat(req.body.target_feed_energy) < 0) 
-      return res.json("Target Feed Must be Positive!");
   } else if (req.path === "/changeWeight") {
     if (!req.body.newWeight)
       return res.json("New Weight Cannot be Empty!");
     else if (isNaN(req.body.newWeight))
       return res.json("Weight Must be a Number!");
-    else if (parseFloat(req.body.newWeight) < 0) 
-      return res.json("Weight Must be Positive!");
   }
 
   next();

@@ -159,6 +159,7 @@ const PatientDashboard = ({ match, logout }) => {
           ) : null}
         </Grid>
       </Grid>
+      
 
       {isClinician? (
         <h1 className="text-center"><Link to={`/patientInfo/${patient_id}`}>{patientInfo.user_name}</Link>'s Dashboard</h1>
