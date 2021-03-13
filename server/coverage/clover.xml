@@ -1,52 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1615551386411" clover="3.2.0">
-  <project timestamp="1615551386411" name="All files">
-    <metrics statements="43" coveredstatements="43" conditionals="50" coveredconditionals="49" methods="2" coveredmethods="2" elements="95" coveredelements="94" complexity="0" loc="43" ncloc="43" packages="1" files="1" classes="1"/>
-    <file name="validInfo.js" path="C:\Users\Henry\Documents\GitHub\NHS-Patient-Dashboard\server\middleware\validInfo.js">
-      <metrics statements="43" coveredstatements="43" conditionals="50" coveredconditionals="49" methods="2" coveredmethods="2"/>
-      <line num="1" count="1" type="stmt"/>
-      <line num="4" count="25" type="stmt"/>
-      <line num="7" count="47" type="cond" truecount="2" falsecount="0"/>
-      <line num="8" count="30" type="stmt"/>
-      <line num="9" count="30" type="stmt"/>
-      <line num="11" count="30" type="cond" truecount="2" falsecount="0"/>
-      <line num="12" count="7" type="stmt"/>
-      <line num="13" count="23" type="cond" truecount="2" falsecount="0"/>
-      <line num="14" count="1" type="stmt"/>
-      <line num="16" count="22" type="cond" truecount="2" falsecount="0"/>
-      <line num="17" count="21" type="cond" truecount="2" falsecount="0"/>
-      <line num="18" count="7" type="stmt"/>
-      <line num="19" count="14" type="cond" truecount="2" falsecount="0"/>
-      <line num="20" count="1" type="stmt"/>
-      <line num="21" count="13" type="cond" truecount="2" falsecount="0"/>
-      <line num="22" count="1" type="stmt"/>
-      <line num="23" count="12" type="cond" truecount="2" falsecount="0"/>
-      <line num="24" count="7" type="stmt"/>
-      <line num="25" count="5" type="cond" truecount="4" falsecount="0"/>
-      <line num="26" count="2" type="stmt"/>
-      <line num="27" count="3" type="cond" truecount="4" falsecount="0"/>
-      <line num="28" count="2" type="stmt"/>
-      <line num="30" count="17" type="cond" truecount="2" falsecount="0"/>
-      <line num="31" count="4" type="stmt"/>
-      <line num="33" count="4" type="cond" truecount="2" falsecount="0"/>
-      <line num="34" count="2" type="stmt"/>
-      <line num="35" count="2" type="cond" truecount="2" falsecount="0"/>
-      <line num="36" count="1" type="stmt"/>
-      <line num="37" count="13" type="cond" truecount="2" falsecount="0"/>
-      <line num="38" count="9" type="cond" truecount="2" falsecount="0"/>
-      <line num="39" count="4" type="stmt"/>
-      <line num="40" count="5" type="cond" truecount="4" falsecount="0"/>
-      <line num="41" count="2" type="stmt"/>
-      <line num="42" count="3" type="cond" truecount="4" falsecount="0"/>
-      <line num="43" count="2" type="stmt"/>
-      <line num="44" count="4" type="cond" truecount="1" falsecount="1"/>
-      <line num="45" count="4" type="cond" truecount="2" falsecount="0"/>
-      <line num="46" count="1" type="stmt"/>
-      <line num="47" count="3" type="cond" truecount="2" falsecount="0"/>
-      <line num="48" count="1" type="stmt"/>
-      <line num="49" count="2" type="cond" truecount="2" falsecount="0"/>
-      <line num="50" count="1" type="stmt"/>
-      <line num="53" count="5" type="stmt"/>
-    </file>
+<coverage generated="1615629613910" clover="3.2.0">
+  <project timestamp="1615629613911" name="All files">
+    <metrics statements="59" coveredstatements="59" conditionals="52" coveredconditionals="51" methods="4" coveredmethods="4" elements="115" coveredelements="114" complexity="0" loc="59" ncloc="59" packages="2" files="3" classes="3"/>
+    <package name="middleware">
+      <metrics statements="54" coveredstatements="54" conditionals="52" coveredconditionals="51" methods="3" coveredmethods="3"/>
+      <file name="authorize.js" path="C:\Users\Henry\Documents\GitHub\NHS-Patient-Dashboard\server\middleware\authorize.js">
+        <metrics statements="11" coveredstatements="11" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="8" count="7" type="stmt"/>
+        <line num="11" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="16" count="6" type="stmt"/>
+        <line num="18" count="6" type="stmt"/>
+        <line num="20" count="3" type="stmt"/>
+        <line num="21" count="3" type="stmt"/>
+        <line num="23" count="3" type="stmt"/>
+      </file>
+      <file name="validInfo.js" path="C:\Users\Henry\Documents\GitHub\NHS-Patient-Dashboard\server\middleware\validInfo.js">
+        <metrics statements="43" coveredstatements="43" conditionals="50" coveredconditionals="49" methods="2" coveredmethods="2"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="4" count="25" type="stmt"/>
+        <line num="7" count="47" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="30" type="stmt"/>
+        <line num="9" count="30" type="stmt"/>
+        <line num="11" count="30" type="cond" truecount="2" falsecount="0"/>
+        <line num="12" count="7" type="stmt"/>
+        <line num="13" count="23" type="cond" truecount="2" falsecount="0"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="16" count="22" type="cond" truecount="2" falsecount="0"/>
+        <line num="17" count="21" type="cond" truecount="2" falsecount="0"/>
+        <line num="18" count="7" type="stmt"/>
+        <line num="19" count="14" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="21" count="13" type="cond" truecount="2" falsecount="0"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="23" count="12" type="cond" truecount="2" falsecount="0"/>
+        <line num="24" count="7" type="stmt"/>
+        <line num="25" count="5" type="cond" truecount="4" falsecount="0"/>
+        <line num="26" count="2" type="stmt"/>
+        <line num="27" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="30" count="17" type="cond" truecount="2" falsecount="0"/>
+        <line num="31" count="4" type="stmt"/>
+        <line num="33" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="34" count="2" type="stmt"/>
+        <line num="35" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="37" count="13" type="cond" truecount="2" falsecount="0"/>
+        <line num="38" count="9" type="cond" truecount="2" falsecount="0"/>
+        <line num="39" count="4" type="stmt"/>
+        <line num="40" count="5" type="cond" truecount="4" falsecount="0"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="42" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="43" count="2" type="stmt"/>
+        <line num="44" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="45" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="47" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="49" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="50" count="1" type="stmt"/>
+        <line num="53" count="5" type="stmt"/>
+      </file>
+    </package>
+    <package name="utils">
+      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="jwtGenerator.js" path="C:\Users\Henry\Documents\GitHub\NHS-Patient-Dashboard\server\utils\jwtGenerator.js">
+        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
+        <line num="11" count="6" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+      </file>
+    </package>
   </project>
 </coverage>
