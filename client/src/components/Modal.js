@@ -1,19 +1,11 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import { Dialog, DialogActions, DialogContent }  from '@material-ui/core';
 import { addFeedback } from "../api/fetches"; 
-import { useInput } from "../useInput";
+import { useTextArea } from "../useInput";
 import { toast } from 'react-toastify';
 
 export default function FormDialog({ open, feed_id, setOpen }) {
-  const [feedback, feedbackField] = useInput({placeholder:"Reason for abnormality"});
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [feedback, feedbackField] = useTextArea({placeholder:"Reason for abnormality"});
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -27,23 +19,17 @@ export default function FormDialog({ open, feed_id, setOpen }) {
         console.error(err.message);
     }
 
-    handleClose();
+    setOpen(false);
   }
 
   return (
-    <div style={{maxWidth: 700, maxHeight: 600}}>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Patient Feedback</DialogTitle>
-        <DialogContent>
-          {feedbackField}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={onSubmit} color="primary">
-            Submit
-          </Button>
+    <div>
+      <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title" fullWidth="true" maxWidth="sm">
+        <h3 align="center" style={{marginTop: 15}}>Patient Feedback</h3>
+        <DialogContent>{feedbackField}</DialogContent>
+        <DialogActions style={{margin: 10}}>
+          <button onClick={() => setOpen(false)} className="btn btn-danger">Cancel</button>
+          <button onClick={onSubmit} className="btn btn-primary">Submit</button>
         </DialogActions>
       </Dialog>
     </div>

@@ -1,26 +1,30 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { registerUser } from "../api/fetches";
 import { loggedIn, loggedOut } from "../state/action";
-import { useInput } from "../useInput";
+import { useInput, useTextArea } from "../useInput";
 import RainbowDatepicker from "./DatePicker";
 
+import Grid from '@material-ui/core/Grid';
+import { useStylesReg } from "../styles/styles";
 
 const Register = () => {
+  const classes = useStylesReg();
+
   const dispatch = useDispatch();
-  const [email, emailField] = useInput({placeholder: "email"});
-  const [password, passwordField] = useInput({type:"password", placeholder:"password"});
-  const [name, nameField] = useInput({placeholder:"name"});
+  const [email, emailField] = useInput({placeholder: "email *"});
+  const [password, passwordField] = useInput({type:"password", placeholder:"password *"});
+  const [name, nameField] = useInput({placeholder:"name *"});
   const [dob, setDOB] = useState(null);
-  const [diagnosticConclusion, setDiagnosis] = useState("");
-  const [description, descriptionField] = useInput({placeholder: "Treatment plan description"});
-  const [target_feed_volume, targetVolField] = useInput({placeholder: "Target Feed Volume"});
-  const [target_feed_energy, targetEnergyField] = useInput({placeholder: "Target Energy Intake (kcal/day)"});
-  const [weight, weightField] = useInput({placeholder:"weight"});
+  const [diagnosticConclusion, diagnosisField] = useTextArea({placeholder:"diagnostic conclusion *"});
+  const [description, descriptionField] = useInput({placeholder: "Treatment plan description *"});
+  const [target_feed_volume, targetVolField] = useInput({placeholder: "Target Feed Volume *"});
+  const [target_feed_energy, targetEnergyField] = useInput({placeholder: "Target Energy Intake (kcal/day) *"});
+  const [weight, weightField] = useInput({placeholder:"weight *"});
   const [role, setRole] = useState("Patient");
   const [gender, setGender] = useState("Male");
   
@@ -51,39 +55,45 @@ const Register = () => {
   }
 
   return (
-    <>
-      <h1 className="mt-5 text-center">Register</h1>
-      <form onSubmit={onSubmitForm}>
-        {emailField}
-        {passwordField}
-        {nameField}
-        
-        <select name="role" value={role} onChange={e => setRole(e.target.value)}>
-          <option value="Patient">Patient</option>
-          <option value="Clinician">Clinician</option>
-        </select>
-        
-        {role==="Clinician"? null : (
-            <>
-              <RainbowDatepicker dates={formatDate(dob)} setDates={setDOB} single={true} />
-              {weightField}
-
-              <select name="gender" value={gender} onChange={e => setGender(e.target.value)}>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-              <TextareaAutosize aria-label="empty textarea" value={diagnosticConclusion} onChange={(e) => setDiagnosis(e.target.value)} placeholder="diagnostic conclusion" />
-              <h5>Treatment Plan:</h5>
-              {descriptionField}
-              {targetVolField}
-              {targetEnergyField}
-            </>
-          )
-        }   
-        <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
-      </form>
-      <Link to="/login">login</Link>
-    </>
+    <Grid container component="main" direction="row" justify="center">
+      <Grid item xs={0} sm={4} md={1} />
+      <Grid item xs={12} sm={8} md={5} style={{margin: 30}}>
+        <div className={classes.paper}>
+          <h1 className="text-center">Register</h1>
+          <form className={classes.form} onSubmit={onSubmitForm}>
+            <h5>Basic Information:</h5>
+            {emailField}
+            {passwordField}
+            {nameField}
+            <select name="role" className="form-control mt-4 mb-4" style={{maxWidth: 110}} value={role} onChange={e => setRole(e.target.value)}>
+              <option value="Patient">Patient</option>
+              <option value="Clinician">Clinician</option>
+            </select>
+           
+            {role==="Clinician"? null : (
+              <>
+                <select name="gender" className="form-control mb-4" style={{maxWidth: 100}} value={gender} onChange={e => setGender(e.target.value)}>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+                <RainbowDatepicker dates={formatDate(dob)} setDates={setDOB} single={true} />
+                {weightField}
+                <div className="mt-4" /> 
+                {diagnosisField}
+                <h5 className="mt-5">Treatment Plan:</h5>
+                {descriptionField}
+                {targetVolField}
+                {targetEnergyField}
+              </>
+              )
+            }   
+            <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
+            <Link to="/login"><button type="submit" className="btn btn-info mt-2 mb-5">Login</button></Link>
+          </form>
+        </div>
+      </Grid>
+      <Grid item xs={false} sm={4} md={4} className={classes.image} style={{marginLeft: 30}} />
+    </Grid>
   );
 };
 

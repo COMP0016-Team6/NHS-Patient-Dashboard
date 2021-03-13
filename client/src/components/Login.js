@@ -6,11 +6,14 @@ import { useInput } from "../useInput";
 import { loginUser } from "../api/fetches";
 
 import { toast } from "react-toastify";
+import { Grid, Avatar } from '@material-ui/core';
+import { useStylesLogin } from "../styles/styles";
 
 const Login = () => {
+  const classes = useStylesLogin();
   const dispatch = useDispatch();
-  const [email, emailField] = useInput({placeholder: "email"});
-  const [password, passwordField] = useInput({type:"password", placeholder:"password"});
+  const [email, emailField] = useInput({placeholder: "email *"});
+  const [password, passwordField] = useInput({type:"password", placeholder:"password *"});
 
   const onSubmitForm = async e => {
     e.preventDefault();
@@ -31,15 +34,26 @@ const Login = () => {
   };
 
   return (
-    <>
-      <h1 className="mt-5 text-center">Login</h1>
-      <form onSubmit={onSubmitForm}>
-        {emailField}
-        {passwordField}
-        <button type="submit" className="btn btn-success btn-block">Submit</button>
-      </form>
-      <Link to="/register">register</Link>
-    </>
+    <Grid container component="main" direction="row" justify="center">
+      <Grid item xs={0} sm={4} md={1} />
+      <Grid item xs={12} sm={8} md={5} style={{ margin: 30 }}>
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar} />
+          <h1 className="text-center">Login</h1>
+          <form className={classes.form} onSubmit={onSubmitForm}>
+            {emailField}
+            {passwordField}
+            <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
+          </form>
+          <Grid container>
+            <Grid item xs>
+              <Link to="/register" variant="body2"><button type="submit" className="btn btn-info mt-2 mb-5">Register</button></Link>
+            </Grid>
+          </Grid>
+        </div>
+      </Grid>
+      <Grid item xs={false} sm={4} md={4} className={classes.image} style={{ marginLeft: 30 }} />
+    </Grid>
   );
 };
 

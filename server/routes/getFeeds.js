@@ -7,7 +7,7 @@ router.post("/", authorize, async (req, res) => {
   try {
       const user = await pool.query(
         "SELECT id, volume, energy, timestamp, patient_feedback FROM feed WHERE patient_id = $1 ORDER BY timestamp ASC;",
-        [patient_id] 
+        [patient_id]
       );
 
       const weight = await pool.query(

@@ -4,11 +4,13 @@ import { clinicianProfile } from "../state/action";
 import { useSelector, useDispatch } from "react-redux";
 import { cliniciansProfile, allPatients } from "../api/fetches";
 import SearchBar from "../components/SearchBar";
+import { Grid } from '@material-ui/core';
+import { useStylesUser } from "../styles/styles";
+import NavBar from "./Navbar";
 
 const ClinicianDashboard = ({ logout }) => {
+  const classes = useStylesUser();
   const dispatch = useDispatch();
-  const name = useSelector(state => state.user_name);
-  const email = useSelector(state => state.user_email);
   const patients = useSelector(state => state.patients);
 
   useEffect(() => {
@@ -32,19 +34,21 @@ const ClinicianDashboard = ({ logout }) => {
   if (patients===undefined) return null;
   
   return (
-    <div>
-      <h5 className="mt-5 text-success">Clinician {name}</h5>
-      <h1 className="mb-5">My Patients</h1>
+    <div className={classes.root}>
+      <NavBar heading="Welcome, Clinician" logout={logout}/>
+      <h1 className="text-center mt-5 mr-5 mb-4">My Patients</h1>
       
-      <SearchBar />
-      
-      <Link to="/addPatients">
-        <button className="btn btn-primary mt-5 mr-5">Add Patients</button>
-      </Link>
-
-      <button onClick= {logout} className="btn btn-primary mt-5">
-        Logout
-      </button>
+      <Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
+        <Grid md={3}/>
+        <Grid item md> 
+          <SearchBar />
+        </Grid>
+        <Grid item md>
+          <Link to="/addPatients">
+            <button className="btn btn-primary mt-3 mr-5">Add Patients</button>
+          </Link>
+        </Grid>
+      </Grid>
     </div>
   );
 };

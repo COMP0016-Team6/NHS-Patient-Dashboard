@@ -13,10 +13,6 @@ const SearchBar = ({ select }) => {
   const allPatients = useSelector(state => state.allPatients);
   const patients = select? allPatients : myPatients;
 
-  const containerStyles = {
-    maxWidth: 400,
-  };
-
   const handleClick = (patient) => {
     if (!inMyPatients(patient.user_id)) dispatch(setClinicianPatients([...myPatients, patient]));
     else dispatch(setClinicianPatients(myPatients.filter(p => p.user_id !== patient.user_id)));
@@ -36,8 +32,6 @@ const SearchBar = ({ select }) => {
   }
 
   if (patients === undefined) return null;
-
-  console.log(patients);
 
   return (
     <>

@@ -12,7 +12,7 @@ export default function RainbowDatepicker({dates, setDates, single=false}) {
       <DatePicker
         id="datePicker-1"
         selectionType={single? "single" : "range"}
-        placeholder={single? "Date of Birth" : "Select range of dates"}
+        placeholder={single? "Date of Birth *" : "Select range of dates"}
         variant="single"
         formatStyle="medium"
         maxDate={new Date()}

@@ -13,7 +13,6 @@ import {
 import { toast } from "react-toastify";
 
 //components
-
 import Login from "./components/Login";
 import Register from "./components/Register";
 import ClinicianDashboard from "./components/ClinicianDashboard";
@@ -58,7 +57,7 @@ function App() {
   return (
     <>
       <Router>
-        <div className="container">
+        <div>
           <Switch>
             <Route
               exact
@@ -84,17 +83,17 @@ function App() {
               path="/addPatients"
               render={ props =>
                 isAuth? (
-                  !isClinician? <PatientDashboard {...props} logout={logout} /> : <AddPatients {...props} />
+                  !isClinician? <PatientDashboard {...props} logout={logout} /> : <AddPatients {...props} logout={logout} />
                 ) : <Redirect to="/login" />
               }
             />
             <Route
               path="/dashboard/:id"
-              render={ props => isAuth? <PatientDashboard {...props} /> : <Redirect to="/login" /> }
+              render={ props => isAuth? <PatientDashboard {...props} logout={logout} /> : <Redirect to="/login" /> }
             />
             <Route
               path="/patientInfo/:id"
-              render={ props => isAuth? <PatientInfo {...props} /> : <Redirect to="/login" /> }
+              render={ props => isAuth? <PatientInfo {...props} logout={logout} /> : <Redirect to="/login" /> }
             />
           </Switch>
         </div>
