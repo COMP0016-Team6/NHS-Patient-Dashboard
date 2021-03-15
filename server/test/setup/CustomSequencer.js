@@ -8,6 +8,8 @@ class CustomSequencer extends TestSequencer {
       dirPath + 'getFeeds.test.js',
       dirPath + 'authorize.test.js',
       dirPath + 'validInfo.test.js',
+      dirPath + 'myPatients.test.js',
+      dirPath + 'patientInfo.test.js'
     ];
     return tests.sort((testA, testB) => {
       const indexA = orderPath.indexOf(testA.path);

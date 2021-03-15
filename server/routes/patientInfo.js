@@ -23,7 +23,6 @@ router.post("/", authorize, async (req, res) => {
     res.status(500).send("Server error");
   }
 });
-    
 
 router.post("/changeTreatmentPlan", [authorize, validInfo], async (req, res) => {
   const { patient_id, description, target_feed_volume, target_feed_energy, modified_time } = req.body;
@@ -33,13 +32,11 @@ router.post("/changeTreatmentPlan", [authorize, validInfo], async (req, res) => 
       [patient_id, description, target_feed_volume, target_feed_energy, modified_time]
     );
     res.json("Success");
-    //   res.json(newTreatment.rows[0]); 
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
   }
 });
-
 
 router.post("/treatmentPlan", authorize, async (req, res) => {
   let patient_id = req.query.id;

@@ -30,8 +30,8 @@ if __name__ == "__main__":
     connection = psycopg2.connect(
         host="localhost",
         database="application",
-        user="daulet",
-        password="Barcateam1",
+        user="",
+        password="",
         port=5432)
 
     cur = connection.cursor()

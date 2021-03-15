@@ -11,9 +11,6 @@ app.use(cors())
 // register and login route
 app.use("/auth", require("./routes/jwtAuth"));
 
-// dashboard route
-app.use("/dashboard", require("./routes/dashboard"));
-
 // getFeeds for a patient
 app.use("/getFeeds", require("./routes/getFeeds"));
 

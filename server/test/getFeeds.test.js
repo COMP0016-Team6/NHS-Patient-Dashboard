@@ -18,7 +18,6 @@ describe("test-getFeeds-route", () => {
       expect(parseRes.feeds[0].energy).toEqual(2);
       expect(parseRes.feeds[1].volume).toEqual(0.5);
       expect(parseRes.feeds[1].energy).toEqual(1.5);
-      console.log(parseRes);
       expect(parseRes.weights[0].weight).toEqual(70);
   });
   
