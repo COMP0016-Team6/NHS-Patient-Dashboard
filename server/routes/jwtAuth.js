@@ -37,7 +37,7 @@ router.post("/register", validInfo, async (req, res) => {
       );
 
       const treatmentPlan = await pool.query(
-        "INSERT INTO treatments(patient_id, description, target_feed_volume, target_feed_energy, modified_time) values ($1, $2, $3, $4, $5);",
+        "INSERT INTO treatments(patient_id, description, target_feed_volume, target_feed_energy, modified_time) VALUES ($1, $2, $3, $4, $5);",
         [newUser.rows[0].user_id, description, target_feed_volume, target_feed_energy, modified_time]
       );
 

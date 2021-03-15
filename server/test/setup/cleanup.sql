@@ -1,3 +1,18 @@
+-- drop all the tables in the current database, but don't
+-- drop the actual database.
+
+DO $$ DECLARE
+    tabname RECORD;
+BEGIN
+    FOR tabname IN (SELECT tablename 
+                    FROM pg_tables 
+                    WHERE schemaname = current_schema()) 
+LOOP
+    EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(tabname.tablename) || ' CASCADE';
+END LOOP;
+END $$;
+
+
 CREATE TABLE users (
   user_id BIGSERIAL PRIMARY KEY,
   user_name VARCHAR(255) NOT NULL,

@@ -21,11 +21,10 @@ router.post("/", authorize, async (req, res) => {
       res.status(500).send("Server error");
     }
 });
-  
+
 
 router.post("/feedback", authorize, async (req, res) => {
   const { id, feedback } = req.body;
-
   try {
     const feed = await pool.query(
       "UPDATE feed SET patient_feedback = $1 WHERE id = $2 RETURNING *;",
