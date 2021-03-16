@@ -27,16 +27,16 @@ const PatientDashboard = ({ match, logout }) => {
   const [changePlan, setChangePlan] = useState(false);
   const [filter, setFilter] = useState("All Data")
   const [dates, setDates] = useState(null);
-  const [dataType, setDataType] = useState("volume");
+  const [dataType, setDataType] = useState("fluid");
   const [showWeight, setShowWeight] = useState(false);
   const [description, descriptionField] = useInput({placeholder: "Treatment plan description"});
-  const [target_feed_volume, targetVolField] = useInput({placeholder: "Target Feed Volume"});
-  const [target_feed_energy, targetEnergyField] = useInput({placeholder: "Target Energy Intake (kcal/day)"});
+  const [target_feed_fluid, targetFluidField] = useInput({placeholder: "Target Feed Fluid"});
+  const [target_feed_energy, targetEnergyField] = useInput({placeholder: "Target Energy Intake (kcal)"});
 
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const parseRes = await submitTreatmentPlan({description, target_feed_volume, target_feed_energy}, patient_id); // do something with the parseRes
+      const parseRes = await submitTreatmentPlan({description, target_feed_fluid, target_feed_energy}, patient_id); // do something with the parseRes
       if (parseRes === "Success") {
         toast.success("Treatment Plan Change Successful!");
         setChangePlan(false);
@@ -79,7 +79,7 @@ const PatientDashboard = ({ match, logout }) => {
 
   return (
     <div className={classes.root}>
-      <NavBar heading="" logout={logout} />
+      <NavBar heading="" logout={logout} isClinician={isClinician} patient_id={patient_id} />
 
       <div>
         <div style={{width: "75%", justify: "center", alignItems: "center", margin: "auto"}}>
@@ -89,7 +89,7 @@ const PatientDashboard = ({ match, logout }) => {
               <button className="btn btn-primary mt-5">Back</button> 
             </Link>
             <h1 className="mt-3 mb-5" align="center"><Link to={`/patientInfo/${patient_id}`}>{patientInfo.user_name}</Link>'s Dashboard</h1>
-          </div> : <h1 className="mt-3 mb-5" align="center">My Dashboard</h1>}
+          </div> : <h1 className="mt-5 mb-5" align="center">My Dashboard</h1>}
 
           <div className="mb-3" style={{display: 'flex'}}>
             <RainbowDatepicker dates={formatDates(dates)} setDates={setDates} />
@@ -106,19 +106,19 @@ const PatientDashboard = ({ match, logout }) => {
           
           <div className="mr-3" style={{display: 'inline-block'}}>
             <select className="form-control" name="dataType" value={dataType} onChange={e => setDataType(e.target.value)} style={{maxWidth: 250}}>
-              <option value="volume">Volume Over Time</option>
+              <option value="fluid">Fluid Intake Over Time</option>
               <option value="energy">Energy Intake Over Time</option>
             </select>
           </div>
           
           <div style={{display: 'inline-block'}}>
-            <input type="checkbox" defaultChecked={showWeight} onClick={() => setShowWeight(!showWeight)} />
+            <input type="checkbox" defaultChecked={showWeight} onClick={() => setShowWeight(!showWeight)} className="mr-1" />
             Show Weight
           </div>
 
           {patient_id === 0? null :
           <Linechart 
-            patient_id={patient_id} 
+            patient_id={patient_id}
             type={dataType}
             filter={filter}
             dates={formatDates(dates)}
@@ -130,12 +130,12 @@ const PatientDashboard = ({ match, logout }) => {
             <button onClick={() => setChangePlan(!changePlan)} className="btn btn-primary mt-5 mb-5">Change Treatment Plan</button> : 
               <form onSubmit={onSubmitForm}>
                 {descriptionField}
-                {targetVolField}
+                {targetFluidField}
                 {targetEnergyField}
                 <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
                 <button onClick={() => setChangePlan(!changePlan)} className="btn btn-danger btn-block mb-5">Cancel</button>
               </form>
-            ) : ( <button onClick={logout} className="btn btn-primary mt-5"> Logout </button> )
+            ) : <div className="mt-5"> </div>
           }
         </div>
       </div>

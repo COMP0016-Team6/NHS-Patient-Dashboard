@@ -26,7 +26,6 @@ const PatientInfo = ({ logout }) => {
   const changePatientWeight = async () => {
     try {
       const parseRes = await changeWeight({ user_id, newWeight });
-      console.log(parseRes);
 
       if (parseRes === "Success") {
         dispatch(changedWeight(newWeight));
@@ -72,7 +71,7 @@ const PatientInfo = ({ logout }) => {
               </div>
             }
             <h4>Treatment History: </h4>
-            <div>
+            <div className="mb-5">
               {treatmentPlan.length === 0? null : 
               <TreatmentHistory treatmentPlan={treatmentPlan} />
               }

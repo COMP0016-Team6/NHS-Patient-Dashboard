@@ -14,7 +14,7 @@ const TreatmentHistory = () => {
         <TableHead>
           <TableRow>
             <TableCell align="center">Treatment Plan Description</TableCell>
-            <TableCell align="center">Target Volume (ml^3)</TableCell>
+            <TableCell align="center">Target Fluid (ml^3)</TableCell>
             <TableCell align="center">Target Energy (kcal)</TableCell>
             <TableCell align="center">Modified On</TableCell>
           </TableRow>
@@ -23,7 +23,7 @@ const TreatmentHistory = () => {
           {treatmentPlan.map(plan => (
           <TableRow style={{overflow: "scroll"}}>
             <TableCell align="center">{plan.description}</TableCell>
-            <TableCell align="center">{plan.target_feed_volume}</TableCell>
+            <TableCell align="center">{plan.target_feed_fluid}</TableCell>
             <TableCell align="center">{plan.target_feed_energy}</TableCell>
             <TableCell align="center">{plan.modified_time.toLocaleString()}</TableCell>
           </TableRow>

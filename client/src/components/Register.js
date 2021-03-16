@@ -22,7 +22,7 @@ const Register = () => {
   const [dob, setDOB] = useState(null);
   const [diagnosticConclusion, diagnosisField] = useTextArea({placeholder:"diagnostic conclusion *"});
   const [description, descriptionField] = useInput({placeholder: "Treatment plan description *"});
-  const [target_feed_volume, targetVolField] = useInput({placeholder: "Target Feed Volume *"});
+  const [target_feed_fluid, targetFluidField] = useInput({placeholder: "Target Feed Fluid *"});
   const [target_feed_energy, targetEnergyField] = useInput({placeholder: "Target Energy Intake (kcal/day) *"});
   const [weight, weightField] = useInput({placeholder:"weight *"});
   const [role, setRole] = useState("Patient");
@@ -31,7 +31,7 @@ const Register = () => {
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const parseRes = await registerUser({email, password, name, role, dob, gender, diagnosticConclusion, weight}, { description, target_feed_volume, target_feed_energy, modified_time: new Date()});
+      const parseRes = await registerUser({email, password, name, role, dob, gender, diagnosticConclusion, weight}, { description, target_feed_fluid, target_feed_energy, modified_time: new Date()});
       if (parseRes.jwtToken) {
         const user = parseRes.user;
         localStorage.setItem("token", parseRes.jwtToken);
@@ -82,7 +82,7 @@ const Register = () => {
                 {diagnosisField}
                 <h5 className="mt-5">Treatment Plan:</h5>
                 {descriptionField}
-                {targetVolField}
+                {targetFluidField}
                 {targetEnergyField}
               </>
               )

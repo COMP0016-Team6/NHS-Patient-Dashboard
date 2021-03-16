@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Modal from "./Modal";
 
 const Linechart = ({ type, filter, dates, showWeight }) => {
@@ -37,7 +37,7 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
     if (filter === "All Data") {
       for (var i = 0; i < feeds.length; i++) {
         if (dates === null || (dates[0] <= feeds[i].timestamp && feeds[i].timestamp <= dates[1])) {
-          newFeed.push({"id": feeds[i].id, "volume": feeds[i].volume, "energy": feeds[i].energy, "timestamp": feeds[i].timestamp.toLocaleString(), "timestamp_date": feeds[i].timestamp, "patient_feedback": feeds[i].patient_feedback});
+          newFeed.push({"id": feeds[i].id, "fluid": feeds[i].fluid, "energy": feeds[i].energy, "timestamp": feeds[i].timestamp.toLocaleString(), "timestamp_date": feeds[i].timestamp, "patient_feedback": feeds[i].patient_feedback});
         }
       }
       return newFeed;
@@ -58,7 +58,7 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
       if (byDay || byMonth || byYear) { 
         let start = i;
         let feed_id = feeds[i].id;
-        let sumVolume = feeds[i].volume;
+        let sumfluid = feeds[i].fluid;
         let sumEnergy = feeds[i].energy;
         let cur_date = feeds[i].timestamp;
         let cur_date_format = feeds[i].timestamp.toLocaleDateString(undefined, options);
@@ -66,11 +66,11 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
         i++;
         
         while (i < feeds.length && cur_date_format == feeds[i].timestamp.toLocaleDateString(undefined, options)) {
-          sumVolume += feeds[i].volume;
+          sumfluid += feeds[i].fluid;
           sumEnergy += feeds[i].energy;
           i++;
         }
-        newFeed.push({"id": feed_id, "volume": (parseFloat(sumVolume/(i - start)).toFixed(2)), "energy": (parseFloat(sumEnergy/(i - start)).toFixed(2)), "timestamp": cur_date_format, "timestamp_date": cur_date, "patient_feedback": patient_feedback });
+        newFeed.push({"id": feed_id, "fluid": (parseFloat(sumfluid/(i - start)).toFixed(2)), "energy": (parseFloat(sumEnergy/(i - start)).toFixed(2)), "timestamp": cur_date_format, "timestamp_date": cur_date, "patient_feedback": patient_feedback });
       }
       else i++;
     }
@@ -79,7 +79,7 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
   } 
 
   const findTargetVals = (timestamp) => {
-    let targets = {modified_time: "", target_energy: "", target_volume: ""};
+    let targets = {modified_time: "", target_energy: "", target_fluid: ""};
 
     for (var i = 0; i < treatmentPlan.length; i++) {
       if (i+1 < treatmentPlan.length && timestamp >= treatmentPlan[i].modified_time && timestamp < treatmentPlan[i+1].modified_time) {
@@ -115,13 +115,14 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
     datasets: [
       {
         lineTension: 0.4,
-        pointRadius: 3,
         label: "Actual Feed",
         hidden: false,
         id: filterFeed(filter, dates).map(d=>d.id),
         patient_feedback: filterFeed(filter, dates).map(d=>d.patient_feedback),
-        data: type==="volume"? filterFeed(filter, dates).map(d=>d.volume) : filterFeed(filter, dates).map(d=>d.energy),
+        data: type==="fluid"? filterFeed(filter, dates).map(d=>d.fluid) : filterFeed(filter, dates).map(d=>d.energy),
         fill: true,
+        pointBackgroundColor: filterFeed(filter, dates).map(d=> d.patient_feedback? "rgba(255, 224, 0, 1)" : "rgba(52, 191, 110, 0.2)"),
+        pointRadius: filterFeed(filter, dates).map(d=> d.patient_feedback? 5 : 3),
         backgroundColor: "rgba(52, 191, 110, 0.2)",
         borderColor: "#27AE60",
         fontSize: 20
@@ -130,24 +131,12 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
         pointRadius: 0,
         borderWidth: 2,
         label: "Prescribed Feed",
-        data: type==="volume"? filterFeed(filter, dates).map(d => (findTargetVals(d.timestamp_date).target_feed_volume)) : filterFeed(filter, dates).map(d => (findTargetVals(d.timestamp_date).target_feed_energy)),
+        data: type==="fluid"? filterFeed(filter, dates).map(d => (findTargetVals(d.timestamp_date).target_feed_fluid)) : filterFeed(filter, dates).map(d => (findTargetVals(d.timestamp_date).target_feed_energy)),
         borderColor: "#EB5757",
         fill: false,
         borderDash: [35,20],
         steppedLine: "middle",
-      },
-      {
-        lineTension: 0,
-        pointRadius: 0,
-        borderWidth: 2,
-        label: "Weight (kg)",
-        hidden: showWeight? false : true,
-        fill: false,
-        data: showWeight? filterFeed(filter, dates).map(d=>(findWeights(d.timestamp_date).weight / 100 - 0.1)) : null,
-        backgroundColor: "rgba(52, 191, 110, 0.2)",
-        borderColor: "#07A1FF",
-        fontSize: 20
-      },
+      }
     ]
   };
     
@@ -184,20 +173,18 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
         label: function(tooltipItem, data) {
           let actual = parseFloat(data.datasets[0].data[tooltipItem.index]);
           let target = parseFloat(data.datasets[1].data[tooltipItem.index]);
-          let weight = parseFloat(data.datasets[2].data[tooltipItem.index]);
           let feedback = data.datasets[0].patient_feedback[tooltipItem.index];
-          console.log(feedback)
           let feedbackText = feedback? `Reason: ${feedback}` : "";
 
           let percentageDiff = parseFloat((Math.abs(actual - target) / ((actual + target) / 2)) * 100).toFixed(1);
         
-          return ((type === "volume" && treatmentPlan.target_volume === 0) ||  (type === "energy" && treatmentPlan.target_energy === 0))? 
+          return ((type === "fluid" && treatmentPlan.target_fluid === 0) ||  (type === "energy" && treatmentPlan.target_energy === 0))? 
             [`Received value: ${actual}`, feedbackText] 
           : (tooltipItem.datasetIndex === 0? 
             [`Received value: ${actual}`, `Percentage difference: ${percentageDiff}%`, feedbackText] 
             : (tooltipItem.datasetIndex === 1?
             [`Target value: ${target}`, `Percentage difference: ${percentageDiff}%`] :
-            [`Weight: ${(weight+0.1) * 100} kg`]));
+            null ));
         }
       }
     },
@@ -214,7 +201,7 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
       yAxes: [{
       scaleLabel: {
       display: true,
-      labelString: type==="volume"? "Volume (mL^3)" : "Energy Intake (kcal)",
+      labelString: type==="fluid"? "Fluid (mL)" : "Energy Intake (kcal)",
       fontSize: 18
       }
       }],
@@ -233,10 +220,67 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
     }
   };
 
+  const dataWeight = {
+    labels: filterFeed(filter, dates).map(d=>d.timestamp),
+
+    datasets: [
+      {
+        lineTension: 0,
+        pointRadius: 1,
+        borderWidth: 2,
+        label: "Weight (kg)",
+        fill: false,
+        data: filterFeed(filter, dates).map(d=>(findWeights(d.timestamp_date).weight)),
+        fill: true,
+        backgroundColor: "rgba(0, 250, 250, 0.1)",
+        borderColor: "#07A1FF",
+        fontSize: 20
+      }
+    ]
+  }
+
+  const optionWeight = {
+    responsive: true,
+
+    animation: {
+      easing: 'easeOutSine', 
+      duration: 700
+    },
+
+    scales: {      
+      yAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: "Weight (kg)",
+          fontSize: 18
+        },
+        ticks: {
+          suggestedMin: 50,
+          suggestedMax: 80
+        }
+      }],
+
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: "Time Stamp",
+          fontSize: 18
+        }
+      }]
+    },
+
+    legend: {
+      display: false
+    }
+  }
+
   return (
     <div>
+      <div className="mt-5"></div>
       <Modal open={open} feed_id={feed_id} setOpen={setOpen} />
       <Line data={data} options={options} />
+      <div className="mt-5"></div>
+      {showWeight? <Line data={dataWeight} options={optionWeight} /> : null}
     </div>
   )
 }

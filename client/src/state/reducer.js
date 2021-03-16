@@ -8,7 +8,7 @@ export function mainReducer(state = {}, action) {
         isClinician: action.user_role === "Clinician",
         user_name: action.user_name,
         user_email: action.user_email,
-        patientInfo: {}, // { patient_id, patient_name, patient_email, patient_description, target feeds, the actual feeds and etc }
+        patientInfo: {},
         patientPlan: [],
         patientFeed: {}
       };

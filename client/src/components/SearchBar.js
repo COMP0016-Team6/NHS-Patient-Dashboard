@@ -16,7 +16,6 @@ const SearchBar = ({ select }) => {
   const handleClick = (patient) => {
     if (!inMyPatients(patient.user_id)) dispatch(setClinicianPatients([...myPatients, patient]));
     else dispatch(setClinicianPatients(myPatients.filter(p => p.user_id !== patient.user_id)));
-    console.log(myPatients)
   }
 
   useEffect(() => {
@@ -36,7 +35,7 @@ const SearchBar = ({ select }) => {
   return (
     <>
       {searchTermField}
-      <div>
+      <div className="mt-4">
         {searchTerm === ""?
           patients.map(patient => (
             <h3 key={patient.user_id}>

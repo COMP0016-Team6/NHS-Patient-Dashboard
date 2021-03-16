@@ -3,14 +3,16 @@ import { Dialog, DialogActions, DialogContent }  from '@material-ui/core';
 import { addFeedback } from "../api/fetches"; 
 import { useTextArea } from "../useInput";
 import { toast } from 'react-toastify';
+import { useSelector} from "react-redux";
 
 export default function FormDialog({ open, feed_id, setOpen }) {
-  const [feedback, feedbackField] = useTextArea({placeholder:"Reason for abnormality"});
+  const user_name = useSelector(state => state.user_name);
+  const [feedback, feedbackField] = useTextArea({placeholder: "Reason for abnormality"});
 
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const parseRes = await addFeedback(feed_id, feedback);
+      const parseRes = await addFeedback(feed_id, `${feedback} (${user_name})`);
       if (parseRes) {
         toast.success("Feedback Added!");
       }

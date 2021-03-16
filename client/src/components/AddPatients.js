@@ -39,7 +39,7 @@ const AddPatients = ({ logout }) => {
         </Grid>
       </Grid>
     
-      <form className="mt-5" onSubmit={onSubmitForm}>
+      <form className="mt-3" onSubmit={onSubmitForm}>
 
       <Grid container direction="row" justify="center" alignItems="center">
         <Grid item md={6}> <SearchBar select={true}/></Grid>
