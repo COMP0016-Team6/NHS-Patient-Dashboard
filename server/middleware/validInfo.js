@@ -6,7 +6,7 @@ module.exports = function(req, res, next) {
 
   if (req.path === "/register") {
     const { email, name, password, role, dob, gender, diagnosticConclusion, weight } = req.body.inputs;
-    const { description, target_feed_volume, target_feed_energy, modified_time } = req.body.plan;
+    const { description, target_feed_fluid, target_feed_energy, modified_time } = req.body.plan;
 
     if (![email, name, password].every(Boolean))
       return res.json("Missing Credentials");
@@ -20,11 +20,11 @@ module.exports = function(req, res, next) {
         return res.json("Weight Must be a Number!");
       else if (parseFloat(weight) < 0) 
         return res.json("Weight Must be Positive!");
-      else if (![description, target_feed_volume, target_feed_energy].every(Boolean))
+      else if (![description, target_feed_fluid, target_feed_energy].every(Boolean))
         return res.json("Missing Credentials");
-      else if (isNaN(target_feed_volume) || isNaN(target_feed_energy))
+      else if (isNaN(target_feed_fluid) || isNaN(target_feed_energy))
         return res.json("Target Value Must be a Number!");
-      else if (parseFloat(target_feed_volume) < 0 || parseFloat(target_feed_energy) < 0)
+      else if (parseFloat(target_feed_fluid) < 0 || parseFloat(target_feed_energy) < 0)
         return res.json("Target Feed Must be Positive!");
     }
   } else if (req.path === "/login") {
@@ -35,11 +35,11 @@ module.exports = function(req, res, next) {
     else if (!validEmail(email))
       return res.json("Invalid Email");
   } else if (req.path === "/changeTreatmentPlan") {
-    if (![req.body.description, req.body.target_feed_volume, req.body.target_feed_energy].every(Boolean))
+    if (![req.body.description, req.body.target_feed_fluid, req.body.target_feed_energy].every(Boolean))
       return res.json("Missing Credentials");
-    else if (isNaN(req.body.target_feed_volume) || isNaN(req.body.target_feed_energy))
+    else if (isNaN(req.body.target_feed_fluid) || isNaN(req.body.target_feed_energy))
       return res.json("Target Value Must be a Number!")
-    else if (parseFloat(req.body.target_feed_volume) < 0 || parseFloat(req.body.target_feed_energy) < 0) 
+    else if (parseFloat(req.body.target_feed_fluid) < 0 || parseFloat(req.body.target_feed_energy) < 0) 
       return res.json("Target Feed Must be Positive!");
   } else if (req.path === "/changeWeight") {
     if (!req.body.newWeight)

@@ -42,7 +42,7 @@ describe("test-patientInfo-route", () => {
           jwt_token: jwt, 
           "Content-type": "application/json"
         },
-        body: JSON.stringify({ patient_id: 2, description: "test 2", target_feed_volume: 2, target_feed_energy: 2, modified_time: new Date() })
+        body: JSON.stringify({ patient_id: 2, description: "test 2", target_feed_fluid: 2, target_feed_energy: 2, modified_time: new Date() })
       }
     );
     let parseRes = await res.json();

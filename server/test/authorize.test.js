@@ -1,10 +1,12 @@
+// Written by Henry Ching.
+
 const authorize = require("../middleware/authorize");
 const httpMocks = require("node-mocks-http");
 const jwtGen = require("../utils/jwtGenerator");
 
 // some function
 function next() {
-    return "what?";
+    return " ";
 };
 
 let req = {};

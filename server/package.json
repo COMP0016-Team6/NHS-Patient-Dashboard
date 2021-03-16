@@ -7,8 +7,10 @@
     "testSequencer": "/home/dauletbatayev/Desktop/UCL/Year 2/Systems Engineering/application/server/test/setup/CustomSequencer.js"
   },
   "scripts": {
+    "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "nyc npm start"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +28,7 @@
     "pg": "^8.5.1"
   },
   "devDependencies": {
-    "jest": "^26.6.3"
+    "jest": "^26.6.3",
+    "nyc": "^15.1.0"
   }
 }

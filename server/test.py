@@ -19,13 +19,13 @@ def genData(cur):
         for year in range(2010, 2022):
             for month in range(1, 6):
                 for day in range(1, 6):
-                    energy = round(random.random(), 4)
-                    volume = round(random.random(), 4)
+                    fluid = random.randint(70, 150)
+                    energy = random.randint(70, 150)
 
                     cur.execute("""
-                    INSERT INTO feed (patient_id, volume, energy, timestamp)
+                    INSERT INTO feed (patient_id, fluid, energy, timestamp)
                     VALUES (%s, %s, %s, %s);
-                    """, (patient_id, volume, energy, f"{str(year)+'-'+str(month)+'-'+str(day) +'- '+timestamp}"))
+                    """, (patient_id, fluid, energy, f"{str(year)+'-'+str(month)+'-'+str(day) +'- '+timestamp}"))
         
 
 def genTreatment(cur):
@@ -35,12 +35,12 @@ def genTreatment(cur):
     timestamp = dateTimeObj.strftime("%H:%M:%S")
     for patient_id in patients:
         for year in range(2010, 2022, 3):
-            target_volume = round(random.random(), 4)
-            target_energy = round(random.random(), 4)
+            target_fluid = random.randint(70, 150)
+            target_energy = random.randint(70, 150)
             cur.execute("""
-            INSERT INTO treatments (patient_id, description, target_feed_volume, target_feed_energy, modified_time)
+            INSERT INTO treatments (patient_id, description, target_feed_fluid, target_feed_energy, modified_time)
             VALUES (%s, 'test', %s, %s, %s);
-            """, (patient_id, target_volume, target_energy, f"{str(year)+'-01-01'+' '+timestamp}"))
+            """, (patient_id, target_fluid, target_energy, f"{str(year)+'-01-01'+' '+timestamp}"))
         
 
 if __name__ == "__main__":

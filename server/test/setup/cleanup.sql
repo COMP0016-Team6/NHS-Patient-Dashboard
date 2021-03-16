@@ -35,7 +35,7 @@ CREATE TABLE treatments (
   id BIGSERIAL PRIMARY KEY,
   patient_id INT REFERENCES users(user_id) NOT NULL,
   description VARCHAR(1000) NOT NULL,
-  target_feed_volume float8 NOT NULL,
+  target_feed_fluid float8 NOT NULL,
   target_feed_energy float8 NOT NULL,
   modified_time TIMESTAMP NOT NULL
 );
@@ -46,7 +46,7 @@ CREATE TABLE feed (
 -- TODO! SHOULD BE THIS:  patient_id INT REFERENCES patients(patient_id) NOT NULL,
 -- IN THE MEANTIME WORK WITH THIS:
   patient_id INT REFERENCES users(user_id) NOT NULL,
-  volume float8 NOT NULL,
+  fluid float8 NOT NULL,
   energy float8 NOT NULL,
   timestamp TIMESTAMP NOT NULL,
   patient_feedback VARCHAR(255)

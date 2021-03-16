@@ -24,3 +24,9 @@ app.use("/myPatients", require("./routes/myPatients"));
 app.listen(5000, () => {
     console.log("Server is running on port 5000");
 });
+
+app.use(function(err, req, res, next) {
+  console.error(err.message || "Server Error");
+  res.status(err.status || 500);
+  res.end();
+});

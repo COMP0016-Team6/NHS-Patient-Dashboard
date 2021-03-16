@@ -14,9 +14,9 @@ describe("test-getFeeds-route", () => {
       });
     
       let parseRes = await res.json();
-      expect(parseRes.feeds[0].volume).toEqual(1);
+      expect(parseRes.feeds[0].fluid).toEqual(1);
       expect(parseRes.feeds[0].energy).toEqual(2);
-      expect(parseRes.feeds[1].volume).toEqual(0.5);
+      expect(parseRes.feeds[1].fluid).toEqual(0.5);
       expect(parseRes.feeds[1].energy).toEqual(1.5);
       expect(parseRes.weights[0].weight).toEqual(70);
   });
@@ -34,5 +34,5 @@ describe("test-getFeeds-route", () => {
 
     expect(parseRes.patient_id).toEqual(2);
     expect(parseRes.patient_feedback).toEqual("test");
-  })
+  });
 })
