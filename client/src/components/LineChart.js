@@ -51,6 +51,7 @@ const Linechart = ({ type, filter, dates, showWeight }) => {
 
     var i = 0;
     while (i < feeds.length) {
+
       let byDay = (dates===null || dates.length != 2) || (filter === "By Day" && (dates[0] <= feeds[i].timestamp && feeds[i].timestamp <= dates[1]));
       let byMonth = (dates===null || dates.length != 2) || (filter === "By Month" && compareByMonth(dates, feeds[i].timestamp));
       let byYear = (dates===null || dates.length != 2) || (filter === "By Year" && (dates[0].getFullYear() <= feeds[i].timestamp.getFullYear() && feeds[i].timestamp.getFullYear() <= dates[1].getFullYear()));  

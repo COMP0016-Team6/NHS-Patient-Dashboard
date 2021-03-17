@@ -39,7 +39,7 @@ const ClinicianDashboard = ({ logout }) => {
       <h1 className="text-center mt-5 mr-5 mb-4">My Patients</h1>
       
       <Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
-        <Grid md={3}/>
+        <Grid item md={3}/>
         <Grid item md> 
           <SearchBar />
         </Grid>

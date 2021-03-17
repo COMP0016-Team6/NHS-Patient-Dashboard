@@ -6,7 +6,6 @@ export function useInput({
   defaultValue = '',
   placeholder = '',
   type = 'text',
-  ref = null,
   maxlength = null,
   properties = {},
   } = {}) {
@@ -18,10 +17,9 @@ export function useInput({
       type={type}
       label={placeholder}
       onChange={e => setValue(e.target.value)}
-      ref={ref}
       maxLength={maxlength}
       className="form-control my-3"
-      color="#61dafb"
+      style={{ color: "#61dafb" }}
       {...properties}
     />
   );
@@ -33,7 +31,6 @@ export function useTextArea({
   defaultValue = '',
   placeholder = '',
   type = 'text',
-  ref = null,
   maxlength = null,
   properties = {},
   } = {}) {
@@ -45,7 +42,6 @@ export function useTextArea({
       type={type}
       placeholder={placeholder}
       onChange={e => setValue(e.target.value)}
-      ref={ref}
       maxLength={maxlength}
       className="form-control my-3"
       {...properties}

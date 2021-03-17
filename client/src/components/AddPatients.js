@@ -32,9 +32,9 @@ const AddPatients = ({ logout }) => {
 
       <Grid container justify="center" alignItems="center">
         <Grid item md={6}>
-          <Link to="/dashboard">
-            <button className="btn btn-primary mt-5">Back</button>
-          </Link>
+            <Link to="/dashboard">
+              <button className="btn btn-primary mt-5">Back</button>
+            </Link>
           <h1 className="text-center">Add Patients</h1>
         </Grid>
       </Grid>
@@ -45,7 +45,7 @@ const AddPatients = ({ logout }) => {
         <Grid item md={6}> <SearchBar select={true}/></Grid>
       </Grid>
       <Grid container direction="row" justify="center" alignItems="center">
-        <Grid md={6}>
+        <Grid item md={6}>
           <button className="btn btn-success btn-block mt-5">Submit</button>
         </Grid>
       </Grid> 

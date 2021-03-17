@@ -35,7 +35,7 @@ const Login = () => {
 
   return (
     <Grid container component="main" direction="row" justify="center">
-      <Grid item xs={0} sm={4} md={1} />
+      <Grid item sm={4} md={1} />
       <Grid item xs={12} sm={8} md={5} style={{ margin: 30 }}>
         <div className={classes.paper}>
           <Avatar className={classes.avatar} />

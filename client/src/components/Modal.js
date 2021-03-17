@@ -26,7 +26,7 @@ export default function FormDialog({ open, feed_id, setOpen }) {
 
   return (
     <div>
-      <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title" fullWidth="true" maxWidth="sm">
+      <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth="sm">
         <h3 align="center" style={{marginTop: 15}}>Patient Feedback</h3>
         <DialogContent>{feedbackField}</DialogContent>
         <DialogActions style={{margin: 10}}>

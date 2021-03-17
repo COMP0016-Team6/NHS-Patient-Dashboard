@@ -1,0 +1,150 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`login snapshot matches 1`] = `
+<main
+  className="MuiGrid-root MuiGrid-container MuiGrid-justify-xs-center"
+>
+  <div
+    className="MuiGrid-root MuiGrid-item MuiGrid-grid-sm-4 MuiGrid-grid-md-1"
+  />
+  <div
+    className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-8 MuiGrid-grid-md-5"
+    style={
+      Object {
+        "margin": 30,
+      }
+    }
+  >
+    <div
+      className="makeStyles-paper-2"
+    >
+      <div
+        className="MuiAvatar-root MuiAvatar-circle MuiAvatar-colorDefault"
+      >
+        <svg
+          aria-hidden={true}
+          className="MuiSvgIcon-root MuiAvatar-fallback"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+          />
+        </svg>
+      </div>
+      <h1
+        className="text-center"
+      >
+        Login
+      </h1>
+      <form
+        className="makeStyles-form-4"
+        onSubmit={[Function]}
+      >
+        <div
+          className="MuiFormControl-root MuiTextField-root form-control my-3"
+          maxLength={null}
+          style={
+            Object {
+              "color": "#61dafb",
+            }
+          }
+        >
+          <label
+            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+            data-shrink={false}
+          >
+            email *
+          </label>
+          <div
+            className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
+            onClick={[Function]}
+          >
+            <input
+              aria-invalid={false}
+              autoFocus={false}
+              className="MuiInputBase-input MuiInput-input"
+              disabled={false}
+              onAnimationStart={[Function]}
+              onBlur={[Function]}
+              onChange={[Function]}
+              onFocus={[Function]}
+              required={false}
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+        <div
+          className="MuiFormControl-root MuiTextField-root form-control my-3"
+          maxLength={null}
+          style={
+            Object {
+              "color": "#61dafb",
+            }
+          }
+        >
+          <label
+            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+            data-shrink={false}
+          >
+            password *
+          </label>
+          <div
+            className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
+            onClick={[Function]}
+          >
+            <input
+              aria-invalid={false}
+              autoFocus={false}
+              className="MuiInputBase-input MuiInput-input"
+              disabled={false}
+              onAnimationStart={[Function]}
+              onBlur={[Function]}
+              onChange={[Function]}
+              onFocus={[Function]}
+              required={false}
+              type="password"
+              value=""
+            />
+          </div>
+        </div>
+        <button
+          className="btn btn-success btn-block mt-5"
+          type="submit"
+        >
+          Submit
+        </button>
+      </form>
+      <div
+        className="MuiGrid-root MuiGrid-container"
+      >
+        <div
+          className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
+        >
+          <a
+            href="/register"
+            onClick={[Function]}
+            variant="body2"
+          >
+            <button
+              className="btn btn-info mt-2 mb-5"
+              type="submit"
+            >
+              Register
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="MuiGrid-root makeStyles-image-3 MuiGrid-item MuiGrid-grid-sm-4 MuiGrid-grid-md-4"
+    style={
+      Object {
+        "marginLeft": 30,
+      }
+    }
+  />
+</main>
+`;

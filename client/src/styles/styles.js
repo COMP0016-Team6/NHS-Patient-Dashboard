@@ -5,7 +5,6 @@ const image = {
   backgroundImage: `url(${NHS})`,
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
-
 };
 
 const paper = {

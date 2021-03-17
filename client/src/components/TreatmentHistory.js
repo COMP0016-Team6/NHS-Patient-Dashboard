@@ -21,7 +21,7 @@ const TreatmentHistory = () => {
         </TableHead>
         <TableBody>
           {treatmentPlan.map(plan => (
-          <TableRow style={{overflow: "scroll"}}>
+          <TableRow key={plan.modified_time + plan.description} style={{overflow: "scroll"}}>
             <TableCell align="center">{plan.description}</TableCell>
             <TableCell align="center">{plan.target_feed_fluid}</TableCell>
             <TableCell align="center">{plan.target_feed_energy}</TableCell>
