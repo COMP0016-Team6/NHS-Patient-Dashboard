@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddPatients snapshot matches 1`] = `
+<div
+  className="makeStyles-root-1"
+>
+  <header
+    className="MuiPaper-root MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary MuiPaper-elevation4"
+    style={
+      Object {
+        "background": "#066bdd",
+      }
+    }
+  >
+    <div
+      className="MuiToolbar-root MuiToolbar-regular MuiToolbar-gutters"
+    >
+      <h4
+        className="makeStyles-title-2"
+      >
+        
+         
+      </h4>
+      <button
+        className="btn btn-info"
+      >
+        Logout
+      </button>
+    </div>
+  </header>
+  <div
+    className="MuiGrid-root MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
+  >
+    <div
+      className="MuiGrid-root MuiGrid-item MuiGrid-grid-md-6"
+    >
+      <a
+        href="/dashboard"
+        onClick={[Function]}
+      >
+        <button
+          className="btn btn-primary mt-5"
+        >
+          Back
+        </button>
+      </a>
+      <h1
+        className="text-center"
+      >
+        Add Patients
+      </h1>
+    </div>
+  </div>
+  <form
+    className="mt-3"
+    onSubmit={[Function]}
+  >
+    <div
+      className="MuiGrid-root MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
+    >
+      <div
+        className="MuiGrid-root MuiGrid-item MuiGrid-grid-md-6"
+      >
+         
+      </div>
+    </div>
+    <div
+      className="MuiGrid-root MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
+    >
+      <div
+        className="MuiGrid-root MuiGrid-item MuiGrid-grid-md-6"
+      >
+        <button
+          className="btn btn-success btn-block mt-5"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+`;

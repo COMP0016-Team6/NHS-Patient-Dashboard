@@ -1,4 +1,6 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { loggedIn, loggedOut } from "./state/action";
 
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -11,14 +13,21 @@ import {
 import { toast } from "react-toastify";
 
 //components
-
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Dashboard from "./components/Dashboard";
+import ClinicianDashboard from "./components/ClinicianDashboard";
+import PatientDashboard from "./components/PatientDashboard";
+import PatientInfo from "./components/PatientInfo";
+import AddPatients from "./components/AddPatients";
 
 toast.configure();
 
 function App() {
+
+  const isAuth = useSelector(state => state.isAuth);
+  const isClinician = useSelector(state => state.isClinician);  
+  const dispatch = useDispatch();
+
   const checkAuthenticated = async () => {
     try {
       const res = await fetch("http://localhost:5000/auth/verify", {
@@ -26,66 +35,70 @@ function App() {
         headers: { jwt_token: localStorage.token }
       });
 
-      const parseRes = await res.json();
-
-      parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+      const parseRes = await res.json(); // user_id, user_name, user_email, user_role
+      const user = parseRes.user;
+      parseRes.auth === true ? dispatch(loggedIn(user.user_role, user.user_id, user.user_name, user.user_email)) : dispatch(loggedOut());
     } catch (err) {
       console.error(err.message);
     }
   };
 
   useEffect(() => {
-    checkAuthenticated();
+    const auth = async() => await checkAuthenticated();
+    auth();
   }, []);
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const setAuth = boolean => {
-    setIsAuthenticated(boolean);
-  };
+  const logout = () => {
+    localStorage.removeItem("token");
+    toast.success("Logged out Successfully");
+    dispatch(loggedOut());
+  } 
 
   return (
-    <Fragment>
+    <>
       <Router>
-        <div className="container">
+        <div>
           <Switch>
             <Route
               exact
               path="/login"
-              render={props =>
-                !isAuthenticated ? (
-                  <Login {...props} setAuth={setAuth} />
-                ) : (
-                  <Redirect to="/dashboard" />
-                )
-              }
+              render={ props => !isAuth? <Login {...props} /> : <Redirect to="/dashboard" /> }
             />
             <Route
               exact
               path="/register"
-              render={props =>
-                !isAuthenticated ? (
-                  <Register {...props} setAuth={setAuth} />
-                ) : (
-                  <Redirect to="/dashboard" />
-                )
-              }
+              render={ props => !isAuth? <Register {...props} /> : <Redirect to="/dashboard" /> }
             />
             <Route
               exact
               path="/dashboard"
-              render={props =>
-                isAuthenticated ? (
-                  <Dashboard {...props} setAuth={setAuth} />
-                ) : (
-                  <Redirect to="/login" />
-                )
+              render={ props =>
+                isAuth? (
+                  !isClinician? <PatientDashboard {...props} logout={logout} /> : <ClinicianDashboard {...props} logout={logout} />
+                ) : <Redirect to="/login" />
               }
+            />
+            <Route
+              exact
+              path="/addPatients"
+              render={ props =>
+                isAuth? (
+                  !isClinician? <PatientDashboard {...props} logout={logout} /> : <AddPatients {...props} logout={logout} />
+                ) : <Redirect to="/login" />
+              }
+            />
+            <Route
+              path="/dashboard/:id"
+              render={ props => isAuth? <PatientDashboard {...props} logout={logout} /> : <Redirect to="/login" /> }
+            />
+            <Route
+              path="/patientInfo/:id"
+              render={ props => isAuth? <PatientInfo {...props} logout={logout} /> : <Redirect to="/login" /> }
             />
           </Switch>
         </div>
       </Router>
-    </Fragment>
+    </>
   );
 }
 

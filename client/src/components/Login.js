@@ -1,42 +1,31 @@
-import React, { Fragment, useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { loggedIn, loggedOut } from "../state/action";
+import { Link } from "react-router-dom";
+import { useInput } from "../useInput";
+import { loginUser } from "../api/fetches";
 
 import { toast } from "react-toastify";
+import { Grid, Avatar } from '@material-ui/core';
+import { useStylesLogin } from "../styles/styles";
 
-const Login = ({ setAuth }) => {
-  const [inputs, setInputs] = useState({
-    email: "",
-    password: ""
-  });
-
-  const { email, password } = inputs;
-
-  const onChange = e =>
-    setInputs({ ...inputs, [e.target.name]: e.target.value });
+const Login = () => {
+  const classes = useStylesLogin();
+  const dispatch = useDispatch();
+  const [email, emailField] = useInput({placeholder: "email *"});
+  const [password, passwordField] = useInput({type:"password", placeholder:"password *"});
 
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const body = { email, password };
-      const response = await fetch(
-        "http://localhost:5000/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json"
-          },
-          body: JSON.stringify(body)
-        }
-      );
-
-      const parseRes = await response.json();
-
+      const parseRes = await loginUser({email, password});
+      const user = parseRes.user;
       if (parseRes.jwtToken) {
         localStorage.setItem("token", parseRes.jwtToken);
-        setAuth(true);
+        dispatch(loggedIn(user.user_role, user.user_id, user.user_name, user.user_email));
         toast.success("Logged in Successfully");
       } else {
-        setAuth(false);
+        dispatch(loggedOut());
         toast.error(parseRes);
       }
     } catch (err) {
@@ -45,29 +34,26 @@ const Login = ({ setAuth }) => {
   };
 
   return (
-    <Fragment>
-      <h1 className="mt-5 text-center">Login</h1>
-      <form onSubmit={onSubmitForm}>
-        <input
-          type="text"
-          name="email"
-          placeholder="email"
-          value={email}
-          onChange={e => onChange(e)}
-          className="form-control my-3"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="password"
-          value={password}
-          onChange={e => onChange(e)}
-          className="form-control my-3"
-        />
-        <button className="btn btn-success btn-block">Submit</button>
-      </form>
-      <Link to="/register">register</Link>
-    </Fragment>
+    <Grid container component="main" direction="row" justify="center">
+      <Grid item sm={4} md={1} />
+      <Grid item xs={12} sm={8} md={5} style={{ margin: 30 }}>
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar} />
+          <h1 className="text-center">Login</h1>
+          <form className={classes.form} onSubmit={onSubmitForm}>
+            {emailField}
+            {passwordField}
+            <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
+          </form>
+          <Grid container>
+            <Grid item xs>
+              <Link to="/register" variant="body2"><button type="submit" className="btn btn-info mt-2 mb-5">Register</button></Link>
+            </Grid>
+          </Grid>
+        </div>
+      </Grid>
+      <Grid item xs={false} sm={4} md={4} className={classes.image} style={{ marginLeft: 30 }} />
+    </Grid>
   );
 };
 

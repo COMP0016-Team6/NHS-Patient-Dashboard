@@ -1,41 +1,43 @@
-import React, { Fragment, useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { registerUser } from "../api/fetches";
+import { loggedIn, loggedOut } from "../state/action";
+import { useInput, useTextArea } from "../useInput";
+import RainbowDatepicker from "./DatePicker";
 
-const Register = ({ setAuth }) => {
-  const [inputs, setInputs] = useState({
-    email: "",
-    password: "",
-    name: ""
-  });
+import Grid from '@material-ui/core/Grid';
+import { useStylesReg } from "../styles/styles";
 
-  const { email, password, name } = inputs;
+const Register = () => {
+  const classes = useStylesReg();
 
-  const onChange = e =>
-    setInputs({ ...inputs, [e.target.name]: e.target.value });
-
+  const dispatch = useDispatch();
+  const [email, emailField] = useInput({placeholder: "email *"});
+  const [password, passwordField] = useInput({type:"password", placeholder:"password *"});
+  const [name, nameField] = useInput({placeholder:"name *"});
+  const [dob, setDOB] = useState(null);
+  const [diagnosticConclusion, diagnosisField] = useTextArea({placeholder:"diagnostic conclusion *"});
+  const [description, descriptionField] = useInput({placeholder: "Treatment plan description *"});
+  const [target_feed_fluid, targetFluidField] = useInput({placeholder: "Target Feed Fluid *"});
+  const [target_feed_energy, targetEnergyField] = useInput({placeholder: "Target Energy Intake (kcal/day) *"});
+  const [weight, weightField] = useInput({placeholder:"weight *"});
+  const [role, setRole] = useState("Patient");
+  const [gender, setGender] = useState("Male");
+  
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const body = { email, password, name };
-      const response = await fetch(
-        "http://localhost:5000/auth/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json"
-          },
-          body: JSON.stringify(body)
-        }
-      );
-      const parseRes = await response.json();
-
+      const parseRes = await registerUser({email, password, name, role, dob, gender, diagnosticConclusion, weight}, { description, target_feed_fluid, target_feed_energy, modified_time: new Date()});
       if (parseRes.jwtToken) {
+        const user = parseRes.user;
         localStorage.setItem("token", parseRes.jwtToken);
-        setAuth(true);
-        toast.success("Register Successfully");
+        dispatch(loggedIn(user.user_role, user.user_id, user.user_name, user.user_email));
+        toast.success("Registered Successfully");
       } else {
-        setAuth(false);
+        dispatch(loggedOut());
         toast.error(parseRes);
       }
     } catch (err) {
@@ -43,38 +45,54 @@ const Register = ({ setAuth }) => {
     }
   };
 
+  const formatDate = (date) => {
+    if (date != null) {
+      let newDate = date.toLocaleDateString().split("/");
+      date = new Date(parseInt(newDate[2]), parseInt(newDate[1])-1, parseInt(newDate[0]));
+    }
+    return date;
+  }
+
   return (
-    <Fragment>
-      <h1 className="mt-5 text-center">Register</h1>
-      <form onSubmit={onSubmitForm}>
-        <input
-          type="text"
-          name="email"
-          value={email}
-          placeholder="email"
-          onChange={e => onChange(e)}
-          className="form-control my-3"
-        />
-        <input
-          type="password"
-          name="password"
-          value={password}
-          placeholder="password"
-          onChange={e => onChange(e)}
-          className="form-control my-3"
-        />
-        <input
-          type="text"
-          name="name"
-          value={name}
-          placeholder="name"
-          onChange={e => onChange(e)}
-          className="form-control my-3"
-        />
-        <button className="btn btn-success btn-block">Submit</button>
-      </form>
-      <Link to="/login">login</Link>
-    </Fragment>
+    <Grid container component="main" direction="row" justify="center">
+      <Grid item sm={4} md={1} />
+      <Grid item xs={12} sm={8} md={5} style={{margin: 30}}>
+        <div className={classes.paper}>
+          <h1 className="text-center">Register</h1>
+          <form className={classes.form} onSubmit={onSubmitForm}>
+            <h5>Basic Information:</h5>
+            {emailField}
+            {passwordField}
+            {nameField}
+            <select name="role" className="form-control mt-4 mb-4" style={{maxWidth: 110}} value={role} onChange={e => setRole(e.target.value)}>
+              <option value="Patient">Patient</option>
+              <option value="Clinician">Clinician</option>
+            </select>
+           
+            {role==="Clinician"? null : (
+              <>
+                <select name="gender" className="form-control mb-4" style={{maxWidth: 100}} value={gender} onChange={e => setGender(e.target.value)}>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+                <RainbowDatepicker dates={formatDate(dob)} setDates={setDOB} single={true} />
+                {weightField}
+                <div className="mt-4" /> 
+                {diagnosisField}
+                <h5 className="mt-5">Treatment Plan:</h5>
+                {descriptionField}
+                {targetFluidField}
+                {targetEnergyField}
+              </>
+              )
+            }   
+            <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
+            <Link to="/login"><button type="submit" className="btn btn-info mt-2 mb-5">Login</button></Link>
+          </form>
+        </div>
+      </Grid>
+      <Grid item xs={false} sm={4} md={4} className={classes.image} style={{marginLeft: 30}} />
+    </Grid>
   );
 };
 
