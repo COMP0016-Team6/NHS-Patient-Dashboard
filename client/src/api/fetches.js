@@ -1,6 +1,8 @@
+const baseURL = process.env.NODE_ENV === 'production'? "" : "http://localhost:5000";
+
 export async function registerUser(inputs, plan) {
   let res = await fetch(
-    "http://localhost:5000/auth/register",
+    `${baseURL}/auth/register`,
     {
       method: "POST",
       headers: {
@@ -17,7 +19,7 @@ export async function registerUser(inputs, plan) {
 export async function loginUser(inputs) {
   const body = inputs;
   const res = await fetch(
-    "http://localhost:5000/auth/login",
+    `${baseURL}/auth/login`,
     {
       method: "POST",
       headers: {
@@ -33,7 +35,7 @@ export async function loginUser(inputs) {
 }
 
 export async function cliniciansProfile() {
-  const res = await fetch("http://localhost:5000/myPatients", {
+  const res = await fetch(`${baseURL}/myPatients`, {
     method: "POST",
     headers: { jwt_token: localStorage.token }
   });
@@ -48,7 +50,7 @@ export async function submitTreatmentPlan(inputs, patient_id) {
   const body = { ...inputs, patient_id, modified_time: new Date().toLocaleString() };
 
   const res = await fetch(
-    "http://localhost:5000/patientInfo/changeTreatmentPlan",
+    `${baseURL}/patientInfo/changeTreatmentPlan`,
     {
       method: "POST",
       headers: {
@@ -65,7 +67,7 @@ export async function submitTreatmentPlan(inputs, patient_id) {
 }
 
 export async function patientPlan(patient_id) {
-  const res = await fetch(`http://localhost:5000/patientInfo/treatmentPlan?id=${patient_id}`, {
+  const res = await fetch(`${baseURL}/patientInfo/treatmentPlan?id=${patient_id}`, {
     method: "POST",
     headers: { jwt_token: localStorage.token }
   });
@@ -75,7 +77,7 @@ export async function patientPlan(patient_id) {
 }
 
 export async function allPatients() {
-  const res = await fetch("http://localhost:5000/myPatients/getAll", {
+  const res = await fetch(`${baseURL}/myPatients/getAll`, {
     method: "POST",
     headers: { jwt_token: localStorage.token }
   });
@@ -86,7 +88,7 @@ export async function allPatients() {
 
 export async function submitAddPatients(myPatients) {
   const res = await fetch(
-    "http://localhost:5000/myPatients/add",
+    `${baseURL}/myPatients/add`,
     {
       method: "POST",
       headers: { 
@@ -102,7 +104,7 @@ export async function submitAddPatients(myPatients) {
 }
 
 export async function getPatientFeeds(patient_id) {
-  const res = await fetch("http://localhost:5000/getFeeds", {
+  const res = await fetch(`${baseURL}/getFeeds`, {
     method: "POST",
     headers: {
       jwt_token: localStorage.token,
@@ -116,7 +118,7 @@ export async function getPatientFeeds(patient_id) {
 }
 
 export async function patientAllInfo(patient_id) {
-  const res = await fetch(`http://localhost:5000/patientInfo/?id=${patient_id}`, {
+  const res = await fetch(`${baseURL}/patientInfo/?id=${patient_id}`, {
     method: "POST",
     headers: { jwt_token: localStorage.token,
       "Content-type": "application/json"
@@ -138,7 +140,7 @@ export async function patientAllInfo(patient_id) {
 }
 
 export async function addFeedback(feed_id, feedback) {
-  const res = await fetch("http://localhost:5000/getFeeds/feedback", {
+  const res = await fetch(`${baseURL}/getFeeds/feedback`, {
     method: "POST",
     headers: {
       jwt_token: localStorage.token,
@@ -152,7 +154,7 @@ export async function addFeedback(feed_id, feedback) {
 };
 
 export async function changeWeight(body) {
-  const res = await fetch(`http://localhost:5000/patientInfo/changeWeight`, {
+  const res = await fetch(`${baseURL}/patientInfo/changeWeight`, {
     method: "POST",
     headers: { 
       jwt_token: localStorage.token,

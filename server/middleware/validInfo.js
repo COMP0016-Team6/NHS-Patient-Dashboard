@@ -9,7 +9,7 @@ module.exports = function(req, res, next) {
     const { description, target_feed_fluid, target_feed_energy, modified_time } = req.body.plan;
 
     if (![email, name, password].every(Boolean))
-      return res.json("Missing Credentials");
+      return res.json("Missing Fields");
     else if (!validEmail(email))
       return res.json("Invalid Email");
 
@@ -21,7 +21,7 @@ module.exports = function(req, res, next) {
       else if (parseFloat(weight) < 0) 
         return res.json("Weight Must be Positive!");
       else if (![description, target_feed_fluid, target_feed_energy].every(Boolean))
-        return res.json("Missing Credentials");
+        return res.json("Missing Fields");
       else if (isNaN(target_feed_fluid) || isNaN(target_feed_energy))
         return res.json("Target Value Must be a Number!");
       else if (parseFloat(target_feed_fluid) < 0 || parseFloat(target_feed_energy) < 0)

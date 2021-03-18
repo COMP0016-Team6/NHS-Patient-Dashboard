@@ -27,10 +27,11 @@ function App() {
   const isAuth = useSelector(state => state.isAuth);
   const isClinician = useSelector(state => state.isClinician);  
   const dispatch = useDispatch();
+  const baseURL = process.env.NODE_ENV === 'production'? "" : "http://localhost:5000";
 
   const checkAuthenticated = async () => {
     try {
-      const res = await fetch("http://localhost:5000/auth/verify", {
+      const res = await fetch(`${baseURL}/auth/verify`, {
         method: "POST",
         headers: { jwt_token: localStorage.token }
       });
@@ -59,6 +60,10 @@ function App() {
       <Router>
         <div>
           <Switch>
+            <Route exact path="/">
+              <Redirect to="/dashboard" />
+            </Route>
+              
             <Route
               exact
               path="/login"

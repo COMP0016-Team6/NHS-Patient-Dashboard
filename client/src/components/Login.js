@@ -12,7 +12,7 @@ import { useStylesLogin } from "../styles/styles";
 const Login = () => {
   const classes = useStylesLogin();
   const dispatch = useDispatch();
-  const [email, emailField] = useInput({placeholder: "email *"});
+  const [email, emailField] = useInput({placeholder: "email *", properties: {name: "email"}});
   const [password, passwordField] = useInput({type:"password", placeholder:"password *"});
 
   const onSubmitForm = async e => {

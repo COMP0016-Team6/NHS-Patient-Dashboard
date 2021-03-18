@@ -2,6 +2,10 @@
 import psycopg2
 import random
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def getPatients(cur):
     cur.execute("""
@@ -28,11 +32,12 @@ if __name__ == "__main__":
     # TODO Later move this information into database.ini file and add that
     # to .gitignore
     connection = psycopg2.connect(
-        host="localhost",
-        database="application",
-        user="",
-        password="",
-        port=5432)
+        host=os.getenv("PGHOST"),
+        database=os.getenv("PGDATABASE"),
+        user=os.getenv("PGUSER"),
+        password=os.getenv("PGPASSWORD"),
+        port=os.getenv("PGPORT")
+    )
 
     cur = connection.cursor()
 
