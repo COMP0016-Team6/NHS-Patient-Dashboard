@@ -27,16 +27,16 @@ function App() {
   const isAuth = useSelector(state => state.isAuth);
   const isClinician = useSelector(state => state.isClinician);  
   const dispatch = useDispatch();
-  const baseURL = process.env.NODE_ENV === 'production'? "" : "http://localhost:5000";
+  const baseURL = process.env.NODE_ENV === "production"? "/api" : "http://localhost:5000";
 
   const checkAuthenticated = async () => {
     try {
       const res = await fetch(`${baseURL}/auth/verify`, {
         method: "POST",
-        headers: { jwt_token: localStorage.token }
+        headers: { Authorization: `Bearer ${localStorage.token}` }
       });
 
-      const parseRes = await res.json(); // user_id, user_name, user_email, user_role
+      const parseRes = await res.json();
       const user = parseRes.user;
       parseRes.auth === true ? dispatch(loggedIn(user.user_role, user.user_id, user.user_name, user.user_email)) : dispatch(loggedOut());
     } catch (err) {

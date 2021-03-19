@@ -1,4 +1,6 @@
-# TODO Add psycopg2 module into the requirements
+# Run this script to view/test the functionality of the application (generate weights for each patient)
+# Make sure you first run `pip install -r requirements.txt` to install the dependencies
+
 import psycopg2
 import random
 from datetime import datetime
@@ -29,8 +31,6 @@ def genData(cur):
             """, (patient_id, weight, f"{str(year) +'-'+ timestamp}"))
 
 if __name__ == "__main__":
-    # TODO Later move this information into database.ini file and add that
-    # to .gitignore
     connection = psycopg2.connect(
         host=os.getenv("PGHOST"),
         database=os.getenv("PGDATABASE"),

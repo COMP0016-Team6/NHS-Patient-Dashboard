@@ -14,7 +14,7 @@ router.post("/add", authorize, async (req, res) => {
     );
   }
   
-  return res.json({"result": "success"});
+  return res.json({ "result": "success" });
 });
 
 router.post("/getAll", authorize, async (req, res) => {

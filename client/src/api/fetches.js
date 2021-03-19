@@ -1,4 +1,4 @@
-const baseURL = process.env.NODE_ENV === 'production'? "" : "http://localhost:5000";
+const baseURL = process.env.NODE_ENV === "production"? "/api" : "http://localhost:5000";
 
 export async function registerUser(inputs, plan) {
   let res = await fetch(
@@ -37,7 +37,7 @@ export async function loginUser(inputs) {
 export async function cliniciansProfile() {
   const res = await fetch(`${baseURL}/myPatients`, {
     method: "POST",
-    headers: { jwt_token: localStorage.token }
+    headers: { Authorization: `Bearer ${localStorage.token}` }
   });
 
   const parseRes = await res.json();
@@ -46,7 +46,6 @@ export async function cliniciansProfile() {
 }
 
 export async function submitTreatmentPlan(inputs, patient_id) {
-  // for Tianang we had to remove the .toLocaleString() and just with Date()
   const body = { ...inputs, patient_id, modified_time: new Date().toLocaleString() };
 
   const res = await fetch(
@@ -54,7 +53,7 @@ export async function submitTreatmentPlan(inputs, patient_id) {
     {
       method: "POST",
       headers: {
-        jwt_token: localStorage.token, 
+        Authorization: `Bearer ${localStorage.token}`,
         "Content-type": "application/json"
       },
       body: JSON.stringify(body)
@@ -69,7 +68,7 @@ export async function submitTreatmentPlan(inputs, patient_id) {
 export async function patientPlan(patient_id) {
   const res = await fetch(`${baseURL}/patientInfo/treatmentPlan?id=${patient_id}`, {
     method: "POST",
-    headers: { jwt_token: localStorage.token }
+    headers: { Authorization: `Bearer ${localStorage.token}` }
   });
 
   const parseRes = await res.json();
@@ -79,7 +78,7 @@ export async function patientPlan(patient_id) {
 export async function allPatients() {
   const res = await fetch(`${baseURL}/myPatients/getAll`, {
     method: "POST",
-    headers: { jwt_token: localStorage.token }
+    headers: { Authorization: `Bearer ${localStorage.token}` }
   });
   const parseRes = await res.json();
 
@@ -92,7 +91,7 @@ export async function submitAddPatients(myPatients) {
     {
       method: "POST",
       headers: { 
-        jwt_token: localStorage.token, 
+        Authorization: `Bearer ${localStorage.token}`, 
         "Content-type": "application/json"
       },
       body: JSON.stringify(myPatients)
@@ -107,7 +106,7 @@ export async function getPatientFeeds(patient_id) {
   const res = await fetch(`${baseURL}/getFeeds`, {
     method: "POST",
     headers: {
-      jwt_token: localStorage.token,
+      Authorization: `Bearer ${localStorage.token}`,
       "Content-type": "application/json"
     },
     body: JSON.stringify({patient_id})
@@ -120,7 +119,7 @@ export async function getPatientFeeds(patient_id) {
 export async function patientAllInfo(patient_id) {
   const res = await fetch(`${baseURL}/patientInfo/?id=${patient_id}`, {
     method: "POST",
-    headers: { jwt_token: localStorage.token,
+    headers: { Authorization: `Bearer ${localStorage.token}`,
       "Content-type": "application/json"
     }
   });
@@ -143,7 +142,7 @@ export async function addFeedback(feed_id, feedback) {
   const res = await fetch(`${baseURL}/getFeeds/feedback`, {
     method: "POST",
     headers: {
-      jwt_token: localStorage.token,
+      Authorization: `Bearer ${localStorage.token}`,
       "Content-type": "application/json"
     },
     body: JSON.stringify({ id: feed_id, feedback })
@@ -157,7 +156,7 @@ export async function changeWeight(body) {
   const res = await fetch(`${baseURL}/patientInfo/changeWeight`, {
     method: "POST",
     headers: { 
-      jwt_token: localStorage.token,
+      Authorization: `Bearer ${localStorage.token}`,
       "Content-type": "application/json"
     },
     body: JSON.stringify(body)

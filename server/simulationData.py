@@ -1,4 +1,6 @@
-# TODO Add psycopg2 module into the requirements
+# Run this script to view/test the functionality of the application
+# Make sure you first run `pip install -r requirements.txt` to install the dependencies
+
 import psycopg2
 import random
 from datetime import datetime
@@ -48,8 +50,6 @@ def genTreatment(cur):
         
 
 if __name__ == "__main__":
-    # TODO Later move this information into database.ini file and add that
-    # to .gitignore
     connection = psycopg2.connect(
         host=os.getenv("PGHOST"),
         database=os.getenv("PGDATABASE"),
@@ -60,8 +60,6 @@ if __name__ == "__main__":
 
     cur = connection.cursor()
 
-    # TODO for now select all the users who are patients and for each one of them
-    # generate a random feed.
     genData(cur)
     genTreatment(cur)
 

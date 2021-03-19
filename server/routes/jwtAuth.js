@@ -6,7 +6,6 @@ const validInfo = require("../middleware/validInfo");
 const jwtGenerator = require("../utils/jwtGenerator");
 const authorize = require("../middleware/authorize");
 
-
 router.post("/register", validInfo, async (req, res) => {
   const { email, name, password, role, dob, gender, diagnosticConclusion, weight } = req.body.inputs;
   const { description, target_feed_fluid, target_feed_energy, modified_time } = req.body.plan;

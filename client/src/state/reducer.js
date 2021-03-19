@@ -19,7 +19,7 @@ export function mainReducer(state = {}, action) {
       };
     
     case "CLINICIAN_PROFILE":
-      newState.patients = action.patients; // patients that clinician supervises [{user_id, user_name, user_email}]
+      newState.patients = action.patients; // patients that clinician supervises [{user_id:, user_name:, user_email:}]
       newState.allPatients = action.allPatients; // the list of all patients in the system 
       newState.patientInfo = {};
       newState.patientPlan = [];

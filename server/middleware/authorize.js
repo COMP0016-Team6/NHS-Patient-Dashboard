@@ -5,8 +5,13 @@ require("dotenv").config();
 
 module.exports = function(req, res, next) {
   // Get token from header
-  const token = req.header("jwt_token");
+  const authorisation = req.header("Authorization").split(" ");
 
+  if (authorisation.length !== 2) return res.status(400).json({ msg: "bad request" });
+  if (authorisation[0] !== "Bearer") return res.status(400).json({ msg: "bad request" });
+
+  const token = authorisation[1];
+  
   // Check if not token
   if (!token) {
     return res.status(403).json({ msg: "authorization denied" });
