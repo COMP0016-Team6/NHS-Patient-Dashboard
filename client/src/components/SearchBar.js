@@ -3,7 +3,7 @@ import { useInput } from "../useInput";
 import { Link } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
-import { clinicianProfile, setClinicianPatients } from "../state/action";
+import { setClinicianPatients } from "../state/action";
 
 const SearchBar = ({ select }) => {
   const dispatch = useDispatch();

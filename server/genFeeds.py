@@ -1,13 +1,16 @@
-# TODO Add psycopg2 module into the requirements
+# The cron job is running this script every 30 min to imitate the infusion pump
+# Make sure you first run `pip install -r requirements.txt` to install the dependencies
+
 import psycopg2
 import random
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def getPatients(cur):
-    cur.execute("""
-    SELECT user_id FROM users WHERE user_role='Patient';
-    """)
-
+    cur.execute("""SELECT user_id FROM users WHERE user_role='Patient';""")
     return cur.fetchall()
 
 def genData(cur):
@@ -25,19 +28,15 @@ def genData(cur):
         """, (patient_id, fluid, energy, timestamp))
 
 if __name__ == "__main__":
-    # TODO Later move this information into database.ini file and add that
-    # to .gitignore
     connection = psycopg2.connect(
-        host="localhost",
-        database="application",
-        user="",
-        password="",
-        port=5432)
+        host=os.getenv("PGHOST"),
+        database=os.getenv("PGDATABASE"),
+        user=os.getenv("PGUSER"),
+        password=os.getenv("PGPASSWORD"),
+        port=os.getenv("PGPORT")
+    )
 
     cur = connection.cursor()
-
-    # TODO for now select all the users who are patients and for each one of them
-    # generate a random feed.
     genData(cur)
 
     connection.commit() # Save changes to the database

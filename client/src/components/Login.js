@@ -12,13 +12,13 @@ import { useStylesLogin } from "../styles/styles";
 const Login = () => {
   const classes = useStylesLogin();
   const dispatch = useDispatch();
-  const [email, emailField] = useInput({placeholder: "email *"});
-  const [password, passwordField] = useInput({type:"password", placeholder:"password *"});
+  const [email, emailField] = useInput({ placeholder: "email *", properties: {name: "email"} });
+  const [password, passwordField] = useInput({ type:"password", placeholder:"password *" });
 
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const parseRes = await loginUser({email, password});
+      const parseRes = await loginUser({ email, password });
       const user = parseRes.user;
       if (parseRes.jwtToken) {
         localStorage.setItem("token", parseRes.jwtToken);
@@ -45,11 +45,11 @@ const Login = () => {
             {passwordField}
             <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
           </form>
-          <Grid container>
+          {/* <Grid container>
             <Grid item xs>
               <Link to="/register" variant="body2"><button type="submit" className="btn btn-info mt-2 mb-5">Register</button></Link>
             </Grid>
-          </Grid>
+          </Grid> */}
         </div>
       </Grid>
       <Grid item xs={false} sm={4} md={4} className={classes.image} style={{ marginLeft: 30 }} />

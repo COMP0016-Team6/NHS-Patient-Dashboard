@@ -6,7 +6,6 @@ const validInfo = require("../middleware/validInfo");
 const jwtGenerator = require("../utils/jwtGenerator");
 const authorize = require("../middleware/authorize");
 
-
 router.post("/register", validInfo, async (req, res) => {
   const { email, name, password, role, dob, gender, diagnosticConclusion, weight } = req.body.inputs;
   const { description, target_feed_fluid, target_feed_energy, modified_time } = req.body.plan;
@@ -52,6 +51,11 @@ router.post("/register", validInfo, async (req, res) => {
 router.post("/login", validInfo, async (req, res) => {
   const { email, password } = req.body;
 
+  if (email === "admin@admin.com" && password === process.env.ADMINPASSWORD) {
+    const jwtToken = jwtGenerator(0);
+    return res.json({ jwtToken, user: { user_id: 0, user_name: "Admin", user_email: email, user_role: "Admin" }});
+  }
+
   const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [
     email
   ]);
@@ -73,11 +77,13 @@ router.post("/login", validInfo, async (req, res) => {
 });
 
 router.post("/verify", authorize, async (req, res) => {
+  if (req.user.id == 0) return res.json({ "auth": true, "user": { user_id: 0, user_name: "Admin", user_email: "admin@admin.com", user_role: "Admin" } }) 
+
   const user = await pool.query("SELECT user_id, user_name, user_email, user_role FROM users WHERE user_id = $1", [
     req.user.id
   ]);
   
-  res.json({ "auth": true, "user": user.rows[0] });
+  return res.json({ "auth": true, "user": user.rows[0] });
 });
 
 module.exports = router;

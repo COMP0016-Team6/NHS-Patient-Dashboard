@@ -1,22 +1,19 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-
-import { Link } from "react-router-dom";
+// import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { registerUser } from "../api/fetches";
-import { loggedIn, loggedOut } from "../state/action";
 import { useInput, useTextArea } from "../useInput";
 import RainbowDatepicker from "./DatePicker";
 
 import Grid from '@material-ui/core/Grid';
 import { useStylesReg } from "../styles/styles";
 
-const Register = () => {
+const Register = ({ logout }) => {
   const classes = useStylesReg();
 
-  const dispatch = useDispatch();
   const [email, emailField] = useInput({placeholder: "email *"});
   const [password, passwordField] = useInput({type:"password", placeholder:"password *"});
+  const [confPassword, confPasswordField] = useInput({type:"password", placeholder:"confirm password *"});
   const [name, nameField] = useInput({placeholder:"name *"});
   const [dob, setDOB] = useState(null);
   const [diagnosticConclusion, diagnosisField] = useTextArea({placeholder:"diagnostic conclusion *"});
@@ -26,18 +23,15 @@ const Register = () => {
   const [weight, weightField] = useInput({placeholder:"weight *"});
   const [role, setRole] = useState("Patient");
   const [gender, setGender] = useState("Male");
-  
+  const delay = ms => new Promise(res => setTimeout(res, ms));
+
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const parseRes = await registerUser({email, password, name, role, dob, gender, diagnosticConclusion, weight}, { description, target_feed_fluid, target_feed_energy, modified_time: new Date()});
+      const parseRes = await registerUser({email, password, confPassword, name, role, dob, gender, diagnosticConclusion, weight}, { description, target_feed_fluid, target_feed_energy, modified_time: new Date()});
       if (parseRes.jwtToken) {
-        const user = parseRes.user;
-        localStorage.setItem("token", parseRes.jwtToken);
-        dispatch(loggedIn(user.user_role, user.user_id, user.user_name, user.user_email));
-        toast.success("Registered Successfully");
+        toast.success(`Successfully Registered ${role} ${name}`);
       } else {
-        dispatch(loggedOut());
         toast.error(parseRes);
       }
     } catch (err) {
@@ -63,6 +57,7 @@ const Register = () => {
             <h5>Basic Information:</h5>
             {emailField}
             {passwordField}
+            {confPasswordField}
             {nameField}
             <select name="role" className="form-control mt-4 mb-4" style={{maxWidth: 110}} value={role} onChange={e => setRole(e.target.value)}>
               <option value="Patient">Patient</option>
@@ -87,7 +82,9 @@ const Register = () => {
               )
             }   
             <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
-            <Link to="/login"><button type="submit" className="btn btn-info mt-2 mb-5">Login</button></Link>
+            <button onClick={logout} className="btn btn-info mt-4">Logout From Admin</button>
+            <button onClick={() => window.location.reload()} className="btn btn-danger mt-4 ml-3">Clear Fields</button>
+
           </form>
         </div>
       </Grid>

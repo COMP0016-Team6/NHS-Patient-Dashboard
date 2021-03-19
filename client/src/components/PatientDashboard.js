@@ -36,7 +36,7 @@ const PatientDashboard = ({ match, logout }) => {
   const onSubmitForm = async e => {
     e.preventDefault();
     try {
-      const parseRes = await submitTreatmentPlan({description, target_feed_fluid, target_feed_energy}, patient_id); // do something with the parseRes
+      const parseRes = await submitTreatmentPlan({description, target_feed_fluid, target_feed_energy}, patient_id);
       if (parseRes === "Success") {
         toast.success("Treatment Plan Change Successful!");
         setChangePlan(false);
@@ -127,7 +127,7 @@ const PatientDashboard = ({ match, logout }) => {
 
           { isClinician ? (
             !changePlan? 
-            <button onClick={() => setChangePlan(!changePlan)} className="btn btn-primary mt-5 mb-5">Change Treatment Plan</button> : 
+            <button onClick={() => setChangePlan(!changePlan)} className="btn btn-primary mt-3 mb-5">Change Treatment Plan</button> : 
               <form onSubmit={onSubmitForm}>
                 {descriptionField}
                 {targetFluidField}

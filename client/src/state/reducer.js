@@ -4,6 +4,7 @@ export function mainReducer(state = {}, action) {
     case "LOGGED_IN":
       return {
         isAuth: true,
+        isAdmin: action.user_role === "Admin",
         user_id: action.user_id,
         isClinician: action.user_role === "Clinician",
         user_name: action.user_name,
@@ -19,7 +20,7 @@ export function mainReducer(state = {}, action) {
       };
     
     case "CLINICIAN_PROFILE":
-      newState.patients = action.patients; // patients that clinician supervises [{user_id, user_name, user_email}]
+      newState.patients = action.patients; // patients that clinician supervises [{user_id:, user_name:, user_email:}]
       newState.allPatients = action.allPatients; // the list of all patients in the system 
       newState.patientInfo = {};
       newState.patientPlan = [];
