@@ -4,6 +4,7 @@ export function mainReducer(state = {}, action) {
     case "LOGGED_IN":
       return {
         isAuth: true,
+        isAdmin: action.user_role === "Admin",
         user_id: action.user_id,
         isClinician: action.user_role === "Clinician",
         user_name: action.user_name,

@@ -127,7 +127,7 @@ const PatientDashboard = ({ match, logout }) => {
 
           { isClinician ? (
             !changePlan? 
-            <button onClick={() => setChangePlan(!changePlan)} className="btn btn-primary mt-5 mb-5">Change Treatment Plan</button> : 
+            <button onClick={() => setChangePlan(!changePlan)} className="btn btn-primary mt-3 mb-5">Change Treatment Plan</button> : 
               <form onSubmit={onSubmitForm}>
                 {descriptionField}
                 {targetFluidField}

@@ -25,6 +25,7 @@ toast.configure();
 function App() {
 
   const isAuth = useSelector(state => state.isAuth);
+  const isAdmin = useSelector(state => state.isAdmin);
   const isClinician = useSelector(state => state.isClinician);  
   const dispatch = useDispatch();
   const baseURL = process.env.NODE_ENV === "production"? "/api" : "http://localhost:5000";
@@ -67,12 +68,12 @@ function App() {
             <Route
               exact
               path="/login"
-              render={ props => !isAuth? <Login {...props} /> : <Redirect to="/dashboard" /> }
+              render={ props => !isAuth? ( <Login {...props} /> ) : ( isAdmin? <Redirect to="/register" /> : <Redirect to="/dashboard" /> ) }
             />
             <Route
               exact
               path="/register"
-              render={ props => !isAuth? <Register {...props} /> : <Redirect to="/dashboard" /> }
+              render={ props => !isAuth? ( <Redirect to="/login" /> ) : ( isAdmin? <Register {...props} logout={logout}/> : <Redirect to="/dashboard" /> ) }
             />
             <Route
               exact
