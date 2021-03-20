@@ -14,10 +14,10 @@ export default function FormDialog({ open, feed_id, setOpen }) {
     try {
       const parseRes = await addFeedback(feed_id, `${feedback} (${user_name})`);
       if (parseRes) {
-        toast.success("Feedback Added!");
+        toast.success("Feedback Added");
       }
     } catch (err) {
-        toast.error("Feedback Add Failed!");
+        toast.error("Feedback Add Failed");
         console.error(err.message);
     }
 

@@ -1,5 +1,5 @@
 const TestSequencer = require('@jest/test-sequencer').default;
-const dirPath = '/home/dauletbatayev/Desktop/UCL/Year 2/Systems Engineering/application/server/test/';
+const dirPath = '<YOUR FULL PATH TO test DIR>';
 
 class CustomSequencer extends TestSequencer {
   sort(tests) {

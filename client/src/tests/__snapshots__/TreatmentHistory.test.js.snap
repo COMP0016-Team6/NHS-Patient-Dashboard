@@ -28,7 +28,7 @@ Object {
                 class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter"
                 scope="col"
               >
-                Target Fluid (ml^3)
+                Target Fluid (mL)
               </th>
               <th
                 class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter"
@@ -101,7 +101,7 @@ Object {
               class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter"
               scope="col"
             >
-              Target Fluid (ml^3)
+              Target Fluid (mL)
             </th>
             <th
               class="MuiTableCell-root MuiTableCell-head MuiTableCell-alignCenter"

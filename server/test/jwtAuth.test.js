@@ -10,7 +10,7 @@ describe("test-register-route", () => {
         {
           method: "POST",
           headers: { "Content-type": "application/json" },
-          body: JSON.stringify({ inputs: { email: "test.user.one@gmail.com", password: "useronepassword", name: "Test User One", role: "Clinician" }, plan: {} })
+          body: JSON.stringify({ inputs: { email: "test.user.one@gmail.com", password: "useronepassword", confPassword: "useronepassword", name: "Test User One", role: "Clinician" }, plan: {} })
         }
     );
 
@@ -27,11 +27,11 @@ describe("test-register-route", () => {
         {
           method: "POST",
           headers: { "Content-type": "application/json" },
-          body: JSON.stringify({ inputs: { email: "test.user.one@gmail.com", password: "useronepassword", name: "Test User One", role: "Clinician" }, plan: {} })
+          body: JSON.stringify({ inputs: { email: "test.user.one@gmail.com", password: "useronepassword", confPassword: "useronepassword", name: "Test User One", role: "Clinician" }, plan: {} })
         }
     );
     const parseRes = await res.json();
-    expect(parseRes).toEqual("User already exists!");
+    expect(parseRes).toEqual("User Already Exists");
   });
 
   it("register a patient", async () => {
@@ -41,7 +41,7 @@ describe("test-register-route", () => {
           method: "POST",
           headers: { "Content-type": "application/json" },
           body: JSON.stringify({ inputs: 
-            { email: "test.user.two@gmail.com", password: "usertwopassword", name: "Test User Two", role: "Patient", dob:  '2000-01-03 00:00:00', gender: "Male", diagnosticConclusion: 'Lung Cancer I', weight: "70"}, 
+            { email: "test.user.two@gmail.com", password: "usertwopassword", confPassword: "usertwopassword", name: "Test User Two", role: "Patient", dob:  '2000-01-03 00:00:00', gender: "Male", diagnosticConclusion: 'Lung Cancer I', weight: "70"}, 
             plan: { description: "test", target_feed_fluid: "1.5", target_feed_energy: "2.5", modified_time: '2020-05-05 20:20:20' } })
         }
     );
@@ -63,7 +63,7 @@ describe("test-register-route", () => {
           method: "POST",
           headers: { "Content-type": "application/json" },
           body: JSON.stringify({ inputs: 
-            { email: "test.user.three@gmail.com", password: "userthreepassword", name: "Test User Three", role: "Patient", dob:  '2002-05-01 00:00:00', gender: "Female", diagnosticConclusion: 'Breast Cancer II', weight: "50"}, 
+            { email: "test.user.three@gmail.com", password: "userthreepassword", confPassword: "userthreepassword", name: "Test User Three", role: "Patient", dob:  '2002-05-01 00:00:00', gender: "Female", diagnosticConclusion: 'Breast Cancer II', weight: "50"}, 
             plan: { description: "test", target_feed_fluid: "2.5", target_feed_energy: "2.0", modified_time: '2020-01-03 20:20:20' } })
         }
     );
@@ -131,12 +131,13 @@ describe("test-login-route", () => {
 
 describe("test-verify-route", () => {
   it("verification successful", async () => {
+      const jwt = jwtGenerator(2);
       const res = await fetch(
         "http://localhost:5000/auth/verify",
         {
           method: "POST",
           headers: {
-            jwt_token: jwtGenerator(2),
+            Authorization: `Bearer ${jwt}`,
             "Content-type": "application/json"
           }
         }

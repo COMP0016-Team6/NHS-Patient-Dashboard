@@ -1,7 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { loggedIn, loggedOut } from "../state/action";
-import { Link } from "react-router-dom";
 import { useInput } from "../useInput";
 import { loginUser } from "../api/fetches";
 
@@ -13,7 +12,7 @@ const Login = () => {
   const classes = useStylesLogin();
   const dispatch = useDispatch();
   const [email, emailField] = useInput({ placeholder: "email *", properties: {name: "email"} });
-  const [password, passwordField] = useInput({ type:"password", placeholder:"password *" });
+  const [password, passwordField] = useInput({ type: "password", placeholder: "password *" });
 
   const onSubmitForm = async e => {
     e.preventDefault();
@@ -45,11 +44,6 @@ const Login = () => {
             {passwordField}
             <button type="submit" className="btn btn-success btn-block mt-5">Submit</button>
           </form>
-          {/* <Grid container>
-            <Grid item xs>
-              <Link to="/register" variant="body2"><button type="submit" className="btn btn-info mt-2 mb-5">Register</button></Link>
-            </Grid>
-          </Grid> */}
         </div>
       </Grid>
       <Grid item xs={false} sm={4} md={4} className={classes.image} style={{ marginLeft: 30 }} />

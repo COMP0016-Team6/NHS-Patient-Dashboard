@@ -29,7 +29,7 @@ const PatientInfo = ({ logout }) => {
 
       if (parseRes === "Success") {
         dispatch(changedWeight(newWeight));
-        toast.success("Weight Change Successful!");
+        toast.success("Weight Change Successful");
         setChangeWeight(false);
       } else {
         toast.error(parseRes);

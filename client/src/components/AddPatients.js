@@ -17,7 +17,7 @@ const AddPatients = ({ logout }) => {
     try {
       const parseRes = await submitAddPatients(myPatients);
       if (parseRes.result === "success") {
-        toast.success("Patients are successfully added!");
+        toast.success("Patients are successfully added");
       } else {
         toast.success(parseRes);
       }

@@ -43,6 +43,7 @@ Object {
                   <input
                     aria-invalid="false"
                     class="MuiInputBase-input MuiInput-input"
+                    name="email"
                     type="text"
                     value=""
                   />
@@ -64,6 +65,7 @@ Object {
                   <input
                     aria-invalid="false"
                     class="MuiInputBase-input MuiInput-input"
+                    name="password"
                     type="password"
                     value=""
                   />
@@ -77,7 +79,7 @@ Object {
                   class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
                   data-shrink="false"
                 >
-                  name *
+                  confirm password *
                 </label>
                 <div
                   class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
@@ -85,6 +87,29 @@ Object {
                   <input
                     aria-invalid="false"
                     class="MuiInputBase-input MuiInput-input"
+                    name="confPassword"
+                    type="password"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div
+                class="MuiFormControl-root MuiTextField-root form-control my-3"
+                style="color: rgb(97, 218, 251);"
+              >
+                <label
+                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+                  data-shrink="false"
+                >
+                  full name *
+                </label>
+                <div
+                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
+                >
+                  <input
+                    aria-invalid="false"
+                    class="MuiInputBase-input MuiInput-input"
+                    name="name"
                     type="text"
                     value=""
                   />
@@ -244,6 +269,7 @@ Object {
                   <input
                     aria-invalid="false"
                     class="MuiInputBase-input MuiInput-input"
+                    name="weight"
                     type="text"
                     value=""
                   />
@@ -254,6 +280,7 @@ Object {
               />
               <textarea
                 class="form-control my-3"
+                name="diagnosis"
                 placeholder="diagnostic conclusion *"
                 rows="1"
                 style="height: -4px; overflow: hidden;"
@@ -279,7 +306,7 @@ Object {
                   class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
                   data-shrink="false"
                 >
-                  Treatment plan description *
+                  treatment plan description *
                 </label>
                 <div
                   class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
@@ -287,6 +314,7 @@ Object {
                   <input
                     aria-invalid="false"
                     class="MuiInputBase-input MuiInput-input"
+                    name="description"
                     type="text"
                     value=""
                   />
@@ -300,7 +328,7 @@ Object {
                   class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
                   data-shrink="false"
                 >
-                  Target Feed Fluid *
+                  target feed fluid (mL) *
                 </label>
                 <div
                   class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
@@ -308,6 +336,7 @@ Object {
                   <input
                     aria-invalid="false"
                     class="MuiInputBase-input MuiInput-input"
+                    name="targetFluid"
                     type="text"
                     value=""
                   />
@@ -321,7 +350,7 @@ Object {
                   class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
                   data-shrink="false"
                 >
-                  Target Energy Intake (kcal/day) *
+                  target energy intake (kcal) *
                 </label>
                 <div
                   class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
@@ -329,6 +358,7 @@ Object {
                   <input
                     aria-invalid="false"
                     class="MuiInputBase-input MuiInput-input"
+                    name="targetEnergy"
                     type="text"
                     value=""
                   />
@@ -340,16 +370,16 @@ Object {
               >
                 Submit
               </button>
-              <a
-                href="/login"
+              <button
+                class="btn btn-info mt-4"
               >
-                <button
-                  class="btn btn-info mt-2 mb-5"
-                  type="submit"
-                >
-                  Login
-                </button>
-              </a>
+                Logout From Admin
+              </button>
+              <button
+                class="btn btn-danger mt-4 ml-3"
+              >
+                Clear Fields
+              </button>
             </form>
           </div>
         </div>
@@ -399,6 +429,7 @@ Object {
                 <input
                   aria-invalid="false"
                   class="MuiInputBase-input MuiInput-input"
+                  name="email"
                   type="text"
                   value=""
                 />
@@ -420,6 +451,7 @@ Object {
                 <input
                   aria-invalid="false"
                   class="MuiInputBase-input MuiInput-input"
+                  name="password"
                   type="password"
                   value=""
                 />
@@ -433,7 +465,7 @@ Object {
                 class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
                 data-shrink="false"
               >
-                name *
+                confirm password *
               </label>
               <div
                 class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
@@ -441,6 +473,29 @@ Object {
                 <input
                   aria-invalid="false"
                   class="MuiInputBase-input MuiInput-input"
+                  name="confPassword"
+                  type="password"
+                  value=""
+                />
+              </div>
+            </div>
+            <div
+              class="MuiFormControl-root MuiTextField-root form-control my-3"
+              style="color: rgb(97, 218, 251);"
+            >
+              <label
+                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+                data-shrink="false"
+              >
+                full name *
+              </label>
+              <div
+                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
+              >
+                <input
+                  aria-invalid="false"
+                  class="MuiInputBase-input MuiInput-input"
+                  name="name"
                   type="text"
                   value=""
                 />
@@ -600,6 +655,7 @@ Object {
                 <input
                   aria-invalid="false"
                   class="MuiInputBase-input MuiInput-input"
+                  name="weight"
                   type="text"
                   value=""
                 />
@@ -610,6 +666,7 @@ Object {
             />
             <textarea
               class="form-control my-3"
+              name="diagnosis"
               placeholder="diagnostic conclusion *"
               rows="1"
               style="height: -4px; overflow: hidden;"
@@ -635,7 +692,7 @@ Object {
                 class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
                 data-shrink="false"
               >
-                Treatment plan description *
+                treatment plan description *
               </label>
               <div
                 class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
@@ -643,6 +700,7 @@ Object {
                 <input
                   aria-invalid="false"
                   class="MuiInputBase-input MuiInput-input"
+                  name="description"
                   type="text"
                   value=""
                 />
@@ -656,7 +714,7 @@ Object {
                 class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
                 data-shrink="false"
               >
-                Target Feed Fluid *
+                target feed fluid (mL) *
               </label>
               <div
                 class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
@@ -664,6 +722,7 @@ Object {
                 <input
                   aria-invalid="false"
                   class="MuiInputBase-input MuiInput-input"
+                  name="targetFluid"
                   type="text"
                   value=""
                 />
@@ -677,7 +736,7 @@ Object {
                 class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
                 data-shrink="false"
               >
-                Target Energy Intake (kcal/day) *
+                target energy intake (kcal) *
               </label>
               <div
                 class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
@@ -685,6 +744,7 @@ Object {
                 <input
                   aria-invalid="false"
                   class="MuiInputBase-input MuiInput-input"
+                  name="targetEnergy"
                   type="text"
                   value=""
                 />
@@ -696,16 +756,16 @@ Object {
             >
               Submit
             </button>
-            <a
-              href="/login"
+            <button
+              class="btn btn-info mt-4"
             >
-              <button
-                class="btn btn-info mt-2 mb-5"
-                type="submit"
-              >
-                Login
-              </button>
-            </a>
+              Logout From Admin
+            </button>
+            <button
+              class="btn btn-danger mt-4 ml-3"
+            >
+              Clear Fields
+            </button>
           </form>
         </div>
       </div>

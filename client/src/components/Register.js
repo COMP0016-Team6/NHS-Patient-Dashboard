@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { registerUser } from "../api/fetches";
 import { useInput, useTextArea } from "../useInput";
@@ -10,20 +9,19 @@ import { useStylesReg } from "../styles/styles";
 
 const Register = ({ logout }) => {
   const classes = useStylesReg();
-
-  const [email, emailField] = useInput({placeholder: "email *"});
-  const [password, passwordField] = useInput({type:"password", placeholder:"password *"});
-  const [confPassword, confPasswordField] = useInput({type:"password", placeholder:"confirm password *"});
-  const [name, nameField] = useInput({placeholder:"name *"});
+  // Name properties are needed for end to end testing
+  const [email, emailField] = useInput({placeholder: "email *", properties: {name: "email"}});
+  const [password, passwordField] = useInput({type:"password", placeholder:"password *", properties: {name: "password"}});
+  const [confPassword, confPasswordField] = useInput({type:"password", placeholder:"confirm password *", properties: {name: "confPassword"}});
+  const [name, nameField] = useInput({placeholder:"full name *", properties: {name: "name"}});
   const [dob, setDOB] = useState(null);
-  const [diagnosticConclusion, diagnosisField] = useTextArea({placeholder:"diagnostic conclusion *"});
-  const [description, descriptionField] = useInput({placeholder: "Treatment plan description *"});
-  const [target_feed_fluid, targetFluidField] = useInput({placeholder: "Target Feed Fluid *"});
-  const [target_feed_energy, targetEnergyField] = useInput({placeholder: "Target Energy Intake (kcal/day) *"});
-  const [weight, weightField] = useInput({placeholder:"weight *"});
+  const [diagnosticConclusion, diagnosisField] = useTextArea({placeholder:"diagnostic conclusion *", properties: {name: "diagnosis"}});
+  const [description, descriptionField] = useInput({placeholder: "treatment plan description *", properties: {name: "description"}});
+  const [target_feed_fluid, targetFluidField] = useInput({placeholder: "target feed fluid (mL) *", properties: {name: "targetFluid"}});
+  const [target_feed_energy, targetEnergyField] = useInput({placeholder: "target energy intake (kcal) *", properties: {name: "targetEnergy"}});
+  const [weight, weightField] = useInput({placeholder:"weight *", properties: {name: "weight"}});
   const [role, setRole] = useState("Patient");
   const [gender, setGender] = useState("Male");
-  const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const onSubmitForm = async e => {
     e.preventDefault();

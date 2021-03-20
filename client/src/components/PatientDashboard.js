@@ -29,7 +29,7 @@ const PatientDashboard = ({ match, logout }) => {
   const [dates, setDates] = useState(null);
   const [dataType, setDataType] = useState("fluid");
   const [showWeight, setShowWeight] = useState(false);
-  const [description, descriptionField] = useInput({placeholder: "Treatment plan description"});
+  const [description, descriptionField] = useInput({placeholder: "Treatment Plan Description"});
   const [target_feed_fluid, targetFluidField] = useInput({placeholder: "Target Feed Fluid"});
   const [target_feed_energy, targetEnergyField] = useInput({placeholder: "Target Energy Intake (kcal)"});
 
@@ -38,14 +38,14 @@ const PatientDashboard = ({ match, logout }) => {
     try {
       const parseRes = await submitTreatmentPlan({description, target_feed_fluid, target_feed_energy}, patient_id);
       if (parseRes === "Success") {
-        toast.success("Treatment Plan Change Successful!");
+        toast.success("Treatment Plan Change Successful");
         setChangePlan(false);
       } else {
         toast.error(parseRes);
       }
     } catch (err) {
       console.error(err.message);
-      toast.error("Treatment Plan Change Failed!")
+      toast.error("Treatment Plan Change Failed")
     }
   };
 

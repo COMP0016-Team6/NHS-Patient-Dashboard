@@ -7,7 +7,7 @@ describe("test-getFeeds-route", () => {
     const res = await fetch("http://localhost:5000/getFeeds", {
         method: "POST",
         headers: {
-          jwt_token: jwt,
+          "Authorization": `Bearer ${jwt}`,
           "Content-type": "application/json"
         },
         body: JSON.stringify({patient_id: 2})
@@ -25,7 +25,7 @@ describe("test-getFeeds-route", () => {
     const res = await fetch("http://localhost:5000/getFeeds/feedback", {
       method: "POST",
       headers: {
-        jwt_token: jwt,
+        "Authorization": `Bearer ${jwt}`,
         "Content-type": "application/json"
       },
       body: JSON.stringify({ id: 1, feedback: "test" })

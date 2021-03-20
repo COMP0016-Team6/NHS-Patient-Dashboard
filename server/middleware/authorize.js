@@ -5,7 +5,8 @@ require("dotenv").config();
 
 module.exports = function(req, res, next) {
   // Get token from header
-  const authorisation = req.header("Authorization").split(" ");
+  const authHeader = req.header("Authorization");
+  const authorisation = authHeader? authHeader.split(" ") : [];
 
   if (authorisation.length !== 2) return res.status(400).json({ msg: "bad request" });
   if (authorisation[0] !== "Bearer") return res.status(400).json({ msg: "bad request" });

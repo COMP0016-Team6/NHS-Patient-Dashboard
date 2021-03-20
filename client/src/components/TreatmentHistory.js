@@ -14,7 +14,7 @@ const TreatmentHistory = () => {
         <TableHead>
           <TableRow>
             <TableCell align="center">Treatment Plan Description</TableCell>
-            <TableCell align="center">Target Fluid (ml^3)</TableCell>
+            <TableCell align="center">Target Fluid (mL)</TableCell>
             <TableCell align="center">Target Energy (kcal)</TableCell>
             <TableCell align="center">Modified On</TableCell>
           </TableRow>

@@ -8,6 +8,7 @@ const okInputs = Object.freeze({
     email: "emailTest123@test123.com",
     name: "nameTest123",
     password: "passwordTest123",
+    confPassword: "passwordTest123",
     role: "Patient",
     dob: "some date",
     gender: "Male",
@@ -42,6 +43,7 @@ const blankInputs = Object.freeze({
     email: "",
     name: "",
     password: "",
+    confPassword: "",
     role: "Patient", // default
     dob: "",
     gender: "Male", // default
@@ -92,8 +94,8 @@ beforeEach(() => {
 // /register
 
 // Partial inputs
-test("Register: blank input => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: blank input => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const req = { path: regPath, body: { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) } };
 
@@ -101,8 +103,8 @@ test("Register: blank input => Missing Credentials", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: email => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.email = okInputs.email;
@@ -112,8 +114,8 @@ test("Register: email => Missing Credentials", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: name => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: name => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.name = okInputs.name;
@@ -123,8 +125,8 @@ test("Register: name => Missing Credentials", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: password => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: password => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.password = okInputs.password;
@@ -134,8 +136,8 @@ test("Register: password => Missing Credentials", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: email, name => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.email = okInputs.email;
@@ -146,8 +148,8 @@ test("Register: email, name => Missing Credentials", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, password => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: email, password => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.email = okInputs.email;
@@ -158,8 +160,8 @@ test("Register: email, password => Missing Credentials", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: name, password => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: name, password => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.name = okInputs.name;
@@ -176,33 +178,51 @@ test("Register: email, name, password - clinician => undefined", () => {
     changeRegBody.inputs.email = okInputs.email;
     changeRegBody.inputs.name = okInputs.name;
     changeRegBody.inputs.password = okInputs.password;
-    changeRegBody.inputs.role = "clinician"
+    changeRegBody.inputs.confPassword = okInputs.confPassword;
+    changeRegBody.inputs.role = "Clinician"
     const req = { path: regPath, body: changeRegBody };
 
     expect(validInfo(req, res, next)).toBeUndefined();
 });
 
+test("Register: email, name, password - clinician => Passwords Do Not Match", () => {
+    const expMsg = "Passwords Do Not Match";
+
+    const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
+    changeRegBody.inputs.email = okInputs.email;
+    changeRegBody.inputs.name = okInputs.name;
+    changeRegBody.inputs.password = okInputs.password;
+    changeRegBody.inputs.confPassword = "testl";
+    changeRegBody.inputs.role = "Clinician"
+    const req = { path: regPath, body: changeRegBody };
+
+    const msg = JSON.parse(validInfo(req, res, next)._getData());
+    expect(msg).toEqual(expMsg);
+});
+
 // default role = patient
-test("Register: email, name, password - patient => All fields must be filled!", () => {
-    const expMsg = "All fields must be filled!";
+test("Register: email, name, password - patient => All Fields Must be Filled", () => {
+    const expMsg = "All Fields Must be Filled";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.email = okInputs.email;
     changeRegBody.inputs.name = okInputs.name;
     changeRegBody.inputs.password = okInputs.password;
+    changeRegBody.inputs.confPassword = okInputs.confPassword;
     const req = { path: regPath, body: changeRegBody };
 
     const msg = JSON.parse(validInfo(req, res, next)._getData());
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, dob => All fields must be filled!", () => {
-    const expMsg = "All fields must be filled!";
+test("Register: email, name, password, dob => All Fields Must be Filled", () => {
+    const expMsg = "All Fields Must be Filled";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.email = okInputs.email;
     changeRegBody.inputs.name = okInputs.name;
     changeRegBody.inputs.password = okInputs.password;
+    changeRegBody.inputs.confPassword = okInputs.confPassword;
     changeRegBody.inputs.dob = okInputs.dob;
     const req = { path: regPath, body: changeRegBody };
 
@@ -210,13 +230,14 @@ test("Register: email, name, password, dob => All fields must be filled!", () =>
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, diagnosis => All fields must be filled!", () => {
-    const expMsg = "All fields must be filled!";
+test("Register: email, name, password, diagnosis => All Fields Must be Filled", () => {
+    const expMsg = "All Fields Must be Filled";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.email = okInputs.email;
     changeRegBody.inputs.name = okInputs.name;
     changeRegBody.inputs.password = okInputs.password;
+    changeRegBody.inputs.confPassword = okInputs.confPassword;
     changeRegBody.inputs.diagnosticConclusion = okInputs.diagnosticConclusion;
     const req = { path: regPath, body: changeRegBody };
 
@@ -224,13 +245,14 @@ test("Register: email, name, password, diagnosis => All fields must be filled!",
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, weight => All fields must be filled!", () => {
-    const expMsg = "All fields must be filled!";
+test("Register: email, name, password, weight => All Fields Must be Filled", () => {
+    const expMsg = "All Fields Must be Filled";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.email = okInputs.email;
     changeRegBody.inputs.name = okInputs.name;
     changeRegBody.inputs.password = okInputs.password;
+    changeRegBody.inputs.confPassword = okInputs.confPassword;
     changeRegBody.inputs.weight = okInputs.weight;
     const req = { path: regPath, body: changeRegBody };
 
@@ -238,13 +260,14 @@ test("Register: email, name, password, weight => All fields must be filled!", ()
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, dob, diagnosis => All fields must be filled!", () => {
-    const expMsg = "All fields must be filled!";
+test("Register: email, name, password, dob, diagnosis => All Fields Must be Filled", () => {
+    const expMsg = "All Fields Must be Filled";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.email = okInputs.email;
     changeRegBody.inputs.name = okInputs.name;
     changeRegBody.inputs.password = okInputs.password;
+    changeRegBody.inputs.confPassword = okInputs.confPassword;
     changeRegBody.inputs.dob = okInputs.dob;
     changeRegBody.inputs.diagnosticConclusion = okInputs.diagnosticConclusion;
     const req = { path: regPath, body: changeRegBody };
@@ -253,13 +276,14 @@ test("Register: email, name, password, dob, diagnosis => All fields must be fill
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, dob, weight => All fields must be filled!", () => {
-    const expMsg = "All fields must be filled!";
+test("Register: email, name, password, dob, weight => All Fields Must be Filled", () => {
+    const expMsg = "All Fields Must be Filled";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.email = okInputs.email;
     changeRegBody.inputs.name = okInputs.name;
     changeRegBody.inputs.password = okInputs.password;
+    changeRegBody.inputs.confPassword = okInputs.confPassword;
     changeRegBody.inputs.dob = okInputs.dob;
     changeRegBody.inputs.weight = okInputs.weight;
     const req = { path: regPath, body: changeRegBody };
@@ -268,13 +292,14 @@ test("Register: email, name, password, dob, weight => All fields must be filled!
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, diagnosis, weight => All fields must be filled!", () => {
-    const expMsg = "All fields must be filled!";
+test("Register: email, name, password, diagnosis, weight => All Fields Must be Filled", () => {
+    const expMsg = "All Fields Must be Filled";
 
     const changeRegBody = { inputs: Object.assign({}, blankInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.inputs.email = okInputs.email;
     changeRegBody.inputs.name = okInputs.name;
     changeRegBody.inputs.password = okInputs.password;
+    changeRegBody.inputs.confPassword = okInputs.confPassword;
     changeRegBody.inputs.diagnosticConclusion = okInputs.diagnosticConclusion;
     changeRegBody.inputs.weight = okInputs.weight;
     const req = { path: regPath, body: changeRegBody };
@@ -283,8 +308,8 @@ test("Register: email, name, password, diagnosis, weight => All fields must be f
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, dob, diagnosis, weight => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: email, name, password, dob, diagnosis, weight => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, blankPlan) };
     const req = { path: regPath, body: changeRegBody };
@@ -293,8 +318,8 @@ test("Register: email, name, password, dob, diagnosis, weight => Missing Credent
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, dob, diagnosis, weight, discript => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: email, name, password, dob, diagnosis, weight, discript => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.plan.description = okPlan.description;
@@ -304,8 +329,8 @@ test("Register: email, name, password, dob, diagnosis, weight, discript => Missi
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, dob, diagnosis, weight, fluid => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: email, name, password, dob, diagnosis, weight, fluid => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.plan.target_feed_fluid = okPlan.target_feed_fluid;
@@ -315,8 +340,8 @@ test("Register: email, name, password, dob, diagnosis, weight, fluid => Missing 
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, dob, diagnosis, weight, energy => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: email, name, password, dob, diagnosis, weight, energy => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.plan.target_feed_energy = okPlan.target_feed_energy;
@@ -326,8 +351,8 @@ test("Register: email, name, password, dob, diagnosis, weight, energy => Missing
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, dob, diagnosis, weight, discript, fluid => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: email, name, password, dob, diagnosis, weight, discript, fluid => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.plan.description = okPlan.description;
@@ -338,8 +363,8 @@ test("Register: email, name, password, dob, diagnosis, weight, discript, fluid =
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, dob, diagnosis, weight, discript, energy => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: email, name, password, dob, diagnosis, weight, discript, energy => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.plan.description = okPlan.description;
@@ -350,8 +375,8 @@ test("Register: email, name, password, dob, diagnosis, weight, discript, energy 
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: email, name, password, dob, diagnosis, weight, energy, fluid => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("Register: email, name, password, dob, diagnosis, weight, energy, fluid => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, blankPlan) };
     changeRegBody.plan.target_feed_energy = okPlan.target_feed_energy;
@@ -382,8 +407,8 @@ test("Register: email(incorrect), all others => Invalid Email", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: weight(not number), all others => Weight Must be a Number!", () => {
-    const expMsg = "Weight Must be a Number!";
+test("Register: weight(not number), all others => Weight Must be a Number", () => {
+    const expMsg = "Weight Must be a Number";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, okPlan) };
     changeRegBody.inputs.weight = "test123wrong";
@@ -393,8 +418,8 @@ test("Register: weight(not number), all others => Weight Must be a Number!", () 
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: weight(negative), all others => Weight Must be Positive!", () => {
-    const expMsg = "Weight Must be Positive!";
+test("Register: weight(negative), all others => Weight Must be Positive", () => {
+    const expMsg = "Weight Must be Positive";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, okPlan) };
     changeRegBody.inputs.weight = "-123";
@@ -404,8 +429,8 @@ test("Register: weight(negative), all others => Weight Must be Positive!", () =>
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: fluid(not number), all others => Target Value Must be a Number!", () => {
-    const expMsg = "Target Value Must be a Number!";
+test("Register: fluid(not number), all others => Target Value Must be a Number", () => {
+    const expMsg = "Target Value Must be a Number";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, okPlan) };
     changeRegBody.plan.target_feed_fluid = "test123wrong";
@@ -415,8 +440,8 @@ test("Register: fluid(not number), all others => Target Value Must be a Number!"
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: energy(not number), all others => Target Value Must be a Number!", () => {
-    const expMsg = "Target Value Must be a Number!";
+test("Register: energy(not number), all others => Target Value Must be a Number", () => {
+    const expMsg = "Target Value Must be a Number";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, okPlan) };
     changeRegBody.plan.target_feed_energy = "test123wrong";
@@ -426,8 +451,8 @@ test("Register: energy(not number), all others => Target Value Must be a Number!
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: fluid(negative), all others => Target Feed Must be Positive!", () => {
-    const expMsg = "Target Feed Must be Positive!";
+test("Register: fluid(negative), all others => Target Feed Must be Positive", () => {
+    const expMsg = "Target Feed Must be Positive";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, okPlan) };
     changeRegBody.plan.target_feed_fluid = "-123";
@@ -437,8 +462,8 @@ test("Register: fluid(negative), all others => Target Feed Must be Positive!", (
     expect(msg).toEqual(expMsg);
 });
 
-test("Register: energy(negative), all others => Target Feed Must be Positive!", () => {
-    const expMsg = "Target Feed Must be Positive!";
+test("Register: energy(negative), all others => Target Feed Must be Positive", () => {
+    const expMsg = "Target Feed Must be Positive";
 
     const changeRegBody = { inputs: Object.assign({}, okInputs), plan: Object.assign({}, okPlan) };
     changeRegBody.plan.target_feed_energy = "-123";
@@ -496,8 +521,8 @@ test("Login: email, password => undefined", () => {
 
 // /changeTreatmentPlan
 
-test("ChangeTreatmentPlan: blank body => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("ChangeTreatmentPlan: blank body => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const req = { path: changeTreatPath, body: Object.assign({}, blankChangeTreatBody) };
 
@@ -505,8 +530,8 @@ test("ChangeTreatmentPlan: blank body => Missing Credentials", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("ChangeTreatmentPlan: discript => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("ChangeTreatmentPlan: discript => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeTreatBody = Object.assign({}, blankChangeTreatBody);
     changeTreatBody.description = okChangeTreatBody.description;
@@ -516,8 +541,8 @@ test("ChangeTreatmentPlan: discript => Missing Credentials", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("ChangeTreatmentPlan: fluid => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("ChangeTreatmentPlan: fluid => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeTreatBody = Object.assign({}, blankChangeTreatBody);
     changeTreatBody.target_feed_fluid = okChangeTreatBody.target_feed_fluid;
@@ -527,8 +552,8 @@ test("ChangeTreatmentPlan: fluid => Missing Credentials", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("ChangeTreatmentPlan: energy => Missing Credentials", () => {
-    const expMsg = "Missing Credentials";
+test("ChangeTreatmentPlan: energy => Missing Fields", () => {
+    const expMsg = "Missing Fields";
 
     const changeTreatBody = Object.assign({}, blankChangeTreatBody);
     changeTreatBody.target_feed_energy = okChangeTreatBody.target_feed_energy;
@@ -545,8 +570,8 @@ test("ChangeTreatmentPlan: discript, fluid, energy => undefined", () => {
     expect(validInfo(req, res, next)).toBeUndefined();
 });
 
-test("ChangeTreatmentPlan: discript, fluid(not number), energy => Target Value Must be a Number!", () => {
-    const expMsg = "Target Value Must be a Number!";
+test("ChangeTreatmentPlan: discript, fluid(not number), energy => Target Value Must be a Number", () => {
+    const expMsg = "Target Value Must be a Number";
 
     const changeTreatBody = Object.assign({}, okChangeTreatBody);
     changeTreatBody.target_feed_fluid = "test123wrong";
@@ -556,8 +581,8 @@ test("ChangeTreatmentPlan: discript, fluid(not number), energy => Target Value M
     expect(msg).toEqual(expMsg);
 });
 
-test("ChangeTreatmentPlan: discript, fluid, energy(not number) => Target Value Must be a Number!", () => {
-    const expMsg = "Target Value Must be a Number!";
+test("ChangeTreatmentPlan: discript, fluid, energy(not number) => Target Value Must be a Number", () => {
+    const expMsg = "Target Value Must be a Number";
 
     const changeTreatBody = Object.assign({}, okChangeTreatBody);
     changeTreatBody.target_feed_energy = "test123wrong";
@@ -567,8 +592,8 @@ test("ChangeTreatmentPlan: discript, fluid, energy(not number) => Target Value M
     expect(msg).toEqual(expMsg);
 });
 
-test("ChangeTreatmentPlan: discript, fluid(negative), energy => Target Feed Must be Positive!", () => {
-    const expMsg = "Target Feed Must be Positive!";
+test("ChangeTreatmentPlan: discript, fluid(negative), energy => Target Feed Must be Positive", () => {
+    const expMsg = "Target Feed Must be Positive";
 
     const changeTreatBody = Object.assign({}, okChangeTreatBody);
     changeTreatBody.target_feed_energy = "-123";
@@ -578,8 +603,8 @@ test("ChangeTreatmentPlan: discript, fluid(negative), energy => Target Feed Must
     expect(msg).toEqual(expMsg);
 });
 
-test("ChangeTreatmentPlan: discript, fluid, energy(negative) => Target Feed Must be Positive!", () => {
-    const expMsg = "Target Feed Must be Positive!";
+test("ChangeTreatmentPlan: discript, fluid, energy(negative) => Target Feed Must be Positive", () => {
+    const expMsg = "Target Feed Must be Positive";
 
     const changeTreatBody = Object.assign({}, okChangeTreatBody);
     changeTreatBody.target_feed_energy = "-123";
@@ -591,8 +616,8 @@ test("ChangeTreatmentPlan: discript, fluid, energy(negative) => Target Feed Must
 
 // /changeWeight
 
-test("ChangeWeight: blank body => New Weight Cannot be Empty!", () => {
-    const expMsg = "New Weight Cannot be Empty!";
+test("ChangeWeight: blank body => New Weight Cannot be Empty", () => {
+    const expMsg = "New Weight Cannot be Empty";
 
     const req = { path: changeWeightPath, body: Object.assign({}, blankChangeWeightBody) };
 
@@ -600,8 +625,8 @@ test("ChangeWeight: blank body => New Weight Cannot be Empty!", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("ChangeWeight: body(not number) => Weight Must be a Number!", () => {
-    const expMsg = "Weight Must be a Number!";
+test("ChangeWeight: body(not number) => Weight Must be a Number", () => {
+    const expMsg = "Weight Must be a Number";
 
     const changeWeightBody = Object.assign({}, blankChangeWeightBody);
     changeWeightBody.newWeight = "test123wrong";
@@ -611,8 +636,8 @@ test("ChangeWeight: body(not number) => Weight Must be a Number!", () => {
     expect(msg).toEqual(expMsg);
 });
 
-test("ChangeWeight: body(negative) => Weight Must be Positive!", () => {
-    const expMsg = "Weight Must be Positive!";
+test("ChangeWeight: body(negative) => Weight Must be Positive", () => {
+    const expMsg = "Weight Must be Positive";
 
     const changeWeightBody = Object.assign({}, blankChangeWeightBody);
     changeWeightBody.newWeight = "-123";

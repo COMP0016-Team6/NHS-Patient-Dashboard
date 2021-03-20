@@ -7,7 +7,7 @@ describe("test-myPatients-route", () => {
     const res = await fetch("http://localhost:5000/myPatients/getAll", {
         method: "POST",
         headers: {
-          jwt_token: jwt,
+          "Authorization": `Bearer ${jwt}`,
           "Content-type": "application/json"
         }
       });
@@ -21,7 +21,7 @@ describe("test-myPatients-route", () => {
     const res = await fetch("http://localhost:5000/myPatients", {
       method: "POST",
       headers: {
-        jwt_token: jwt,
+        "Authorization": `Bearer ${jwt}`,
         "Content-type": "application/json"
       }
     });
@@ -34,7 +34,7 @@ describe("test-myPatients-route", () => {
     const res = await fetch("http://localhost:5000/myPatients/add", {
       method: "POST",
       headers: {
-        jwt_token: jwt,
+        "Authorization": `Bearer ${jwt}`,
         "Content-type": "application/json"
       },
       body: JSON.stringify([{ user_id: 2 }, { user_id: 3 }])
@@ -48,7 +48,7 @@ describe("test-myPatients-route", () => {
     const res = await fetch("http://localhost:5000/myPatients", {
       method: "POST",
       headers: {
-        jwt_token: jwt,
+        "Authorization": `Bearer ${jwt}`,
         "Content-type": "application/json"
       }
     });

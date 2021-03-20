@@ -7,7 +7,7 @@ describe("test-patientInfo-route", () => {
     const res = await fetch("http://localhost:5000/patientInfo/?id=2", {
         method: "POST",
         headers: {
-          jwt_token: jwt,
+          "Authorization": `Bearer ${jwt}`,
           "Content-type": "application/json"
         }
       });
@@ -23,7 +23,7 @@ describe("test-patientInfo-route", () => {
     const res = await fetch("http://localhost:5000/patientInfo/treatmentPlan?id=2", {
       method: "POST",
       headers: {
-        jwt_token: jwt,
+        "Authorization": `Bearer ${jwt}`,
         "Content-type": "application/json"
       }
     });
@@ -39,7 +39,7 @@ describe("test-patientInfo-route", () => {
       {
         method: "POST",
         headers: {
-          jwt_token: jwt, 
+          "Authorization": `Bearer ${jwt}`, 
           "Content-type": "application/json"
         },
         body: JSON.stringify({ patient_id: 2, description: "test 2", target_feed_fluid: 2, target_feed_energy: 2, modified_time: new Date() })
@@ -53,7 +53,7 @@ describe("test-patientInfo-route", () => {
     const res = await fetch(`http://localhost:5000/patientInfo/changeWeight`, {
         method: "POST",
         headers: { 
-          jwt_token: jwt,
+          "Authorization": `Bearer ${jwt}`,
           "Content-type": "application/json"
         },
         body: JSON.stringify({ user_id: 2, newWeight: 65 })

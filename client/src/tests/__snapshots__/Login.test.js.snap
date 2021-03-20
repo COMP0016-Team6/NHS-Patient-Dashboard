@@ -65,6 +65,7 @@ exports[`login snapshot matches 1`] = `
               autoFocus={false}
               className="MuiInputBase-input MuiInput-input"
               disabled={false}
+              name="email"
               onAnimationStart={[Function]}
               onBlur={[Function]}
               onChange={[Function]}
@@ -116,26 +117,6 @@ exports[`login snapshot matches 1`] = `
           Submit
         </button>
       </form>
-      <div
-        className="MuiGrid-root MuiGrid-container"
-      >
-        <div
-          className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true"
-        >
-          <a
-            href="/register"
-            onClick={[Function]}
-            variant="body2"
-          >
-            <button
-              className="btn btn-info mt-2 mb-5"
-              type="submit"
-            >
-              Register
-            </button>
-          </a>
-        </div>
-      </div>
     </div>
   </div>
   <div

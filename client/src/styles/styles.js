@@ -36,7 +36,7 @@ const useStylesLogin = makeStyles(() => ({
   paper,
   image,
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%',
     marginTop: '',
   }
 }));

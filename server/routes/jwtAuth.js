@@ -15,7 +15,7 @@ router.post("/register", validInfo, async (req, res) => {
   ]);
 
   if (user.rows.length > 0) {
-    return res.status(401).json("User already exists!");
+    return res.status(401).json("User Already Exists");
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -61,7 +61,7 @@ router.post("/login", validInfo, async (req, res) => {
   ]);
 
   if (user.rows.length === 0) {
-    return res.status(401).json("Invalid Credentials!");
+    return res.status(401).json("Invalid Credentials");
   }
 
   const validPassword = await bcrypt.compare(
@@ -70,7 +70,7 @@ router.post("/login", validInfo, async (req, res) => {
   );
 
   if (!validPassword) {
-    return res.status(401).json("Invalid Credentials!");
+    return res.status(401).json("Invalid Credentials");
   }
   const jwtToken = jwtGenerator(user.rows[0].user_id);
   return res.json({ jwtToken, user: user.rows[0] });
