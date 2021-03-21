@@ -20,6 +20,7 @@
 * ### [Testing](#testing)
 * ### [Contacts](#contacts)
 
+<br />
 
 ## Project Description and Team Members
 ---
@@ -42,6 +43,7 @@ The demonstration video can be accessed here: "link".
 
 **Team members: Daulet Batayev, Henry Ching, Tianang Chen - all second-year Computer Science students at UCL.**
 
+<br />
 
 ## Getting Started
 ---
