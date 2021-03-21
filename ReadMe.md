@@ -4,7 +4,9 @@
 
 <br />
 
-### The application is deployed at [dauletbatayev.com](https://dauletbatayev.com/) for demonstration purposes. 
+### The application is deployed at [dauletbatayev.com](https://dauletbatayev.com/) for demonstration purposes.
+
+### The user manual can be found [here](https://comp0016-team6.github.io/user-manual/).
 
 <br />
 <br />
