@@ -1,4 +1,6 @@
-# Dashboard for visualising patients’ infusion pump feed data (UCL x GOSH).
+# Dashboard for visualising patients’ infusion pump feed data (UCL x GOSH)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+![Version](https://img.shields.io/badge/v-1.0-yellow)
 
 ![onefetch](./images/onefetch.png)
 
@@ -13,12 +15,12 @@
 ## Contents
 ---
 
-* ### [Project Description and Team Members](#project-description-and-team-members)
-* ### [Getting Started](#getting-started)
-  * ### [Local Deployment](#running-the-app-locally) 
-  * ### [Deployment on a Ubuntu Server (AWS, Digital Ocean, etc.)](#deploying-the-application-on-ubuntu-vps-(aws,-digital-ocean-and-etc.))
-* ### [Testing](#testing)
-* ### [Contacts](#contacts)
+* #### [Project Description and Team Members](#project-description-and-team-members)
+* #### [Getting Started](#getting-started)
+  * #### [Local Deployment](#running-the-app-locally) 
+  * #### [Deployment on a Ubuntu Server (AWS, Digital Ocean, etc.)](#deploying-the-application-on-ubuntu-vps-(aws,-digital-ocean-and-etc.))
+* #### [Testing](#testing)
+* #### [Contacts](#contacts)
 
 <br />
 
