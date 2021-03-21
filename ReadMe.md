@@ -9,11 +9,9 @@
 ### The user manual can be found [here](https://comp0016-team6.github.io/user-manual/).
 
 <br />
-<br />
 
 ## Contents
 ---
-<br />
 
 * ### [Project Description and Team Members](#project-description-and-team-members)
 * ### [Getting Started](#getting-started)
@@ -22,7 +20,6 @@
 * ### [Testing](#testing)
 * ### [Contacts](#contacts)
 
-<br />
 
 ## Project Description and Team Members
 ---
@@ -39,23 +36,18 @@ The project was developed by **Team 6**, as a part of **UCL COMP0016**, for the 
 
 - Data filtering tools: filter by date range, show feed by day, by month and by year.
 
-<br />
 
 The demonstration video can be accessed here: "link".
 
-<br />
 
 **Team members: Daulet Batayev, Henry Ching, Tianang Chen - all second-year Computer Science students at UCL.**
 
-<br />
 
 ## Getting Started
 ---
 
-<br />
 
 ## Running the App Locally
-<br />
 
 ### Prerequisites:
 * git
@@ -156,10 +148,8 @@ $ python3 genWeights.py
 ```
 
 <br />
-<br />
 
 ## Deploying the Application on Ubuntu VPS (AWS, Digital Ocean and etc.)
-<br />
 
 ### 1. Startup
 
@@ -233,11 +223,9 @@ $ systemctl restart nginx
 **Congratulations, your application is deployed and can be accessed at the domain name you have set.**
 
 <br />
-<br />
 
 ## Testing
 ---
-<br />
 
 The repository contains **unit tests**, **backend integration tests**, **snapshot tests**, and **end-to-end tests**. Always run the tests locally and never in production.
 
@@ -294,10 +282,8 @@ To run the tests, you also need to start the local client (`npm start`) in anoth
 Finally run `npm run e2e` for end-to-end testing.
 
 <br />
-<br />
 
 ## Contacts
 ---
-<br />
 
 **If you are working on further development of the project, please feel free to contact me at daulet.batayev@gmail.com or daulet.batayev.19@ucl.ac.uk**
