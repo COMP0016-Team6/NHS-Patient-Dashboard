@@ -15,12 +15,12 @@
 ## Contents
 ---
 
-* #### [Project Description and Team Members](#project-description-and-team-members)
-* #### [Getting Started](#getting-started)
+* #### [Project Description and Team Members](#project-description-and-team-members-1)
+* #### [Getting Started](#getting-started-1)
   * #### [Local Deployment](#running-the-app-locally) 
-  * #### [Deployment on a Ubuntu Server (AWS, Digital Ocean, etc.)](#deploying-the-application-on-ubuntu-vps-(aws,-digital-ocean-and-etc.))
-* #### [Testing](#testing)
-* #### [Contacts](#contacts)
+  * #### [Deployment on a Ubuntu Server (AWS, Digital Ocean, etc.)](#deploying-the-application-on-ubuntu-vps-aws-digital-ocean-and-etc)
+* #### [Testing](#testing-1)
+* #### [Contacts](#contacts-1)
 
 <br />
 
