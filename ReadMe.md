@@ -40,7 +40,7 @@ The project was developed by **Team 6**, as a part of **UCL COMP0016**, for the 
 - Data filtering tools: filter by date range, show feed by day, by month and by year.
 
 
-The demonstration video can be accessed here: "link".
+The demonstration video can be accessed [here](https://www.youtube.com/watch?v=uFFqcel0S2g).
 
 
 **Team members: Daulet Batayev, Henry Ching, Tianang Chen - all second-year Computer Science students at UCL.**
