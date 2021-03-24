@@ -65,7 +65,7 @@ The demonstration video can be accessed [here](https://www.youtube.com/watch?v=u
 $ git clone https://github.com/COMP0016-Team6/NHS-Patient-Dashboard.git
 $ cd server
 $ npm install
-$ cd ../server
+$ cd ../client
 $ npm install
 ```
 <br />
